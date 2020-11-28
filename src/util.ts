@@ -47,4 +47,4 @@ export const forEachHero = (fn: (hero: Unit) => void): void => {
 	}
 };
 
-// export { log } from "../node_modules/w3ts-jsx/dist/node_modules/basic-pragma/src/utils/log";
+export { log } from "../node_modules/w3ts-jsx/dist/node_modules/basic-pragma/src/utils/log";

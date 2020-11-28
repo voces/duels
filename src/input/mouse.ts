@@ -5,6 +5,7 @@ import {
 	Trigger,
 	W3TS_HOOK,
 } from "../../node_modules/w3ts/index";
+import { state } from "../states/state";
 import { forEachHero, forEachPlayer, times } from "../util";
 
 interface Mouse {
@@ -21,8 +22,14 @@ const mouse: Mouse[] = times(bj_MAX_PLAYER_SLOTS, () => ({
 	y: 0,
 }));
 
+const issueMoveToMouse = (playerId: number) => {
+	if (state.state !== "grind") return;
+	const hero = state.heroes[playerId];
+	hero.issueOrderAt("move", mouse[playerId].x, mouse[playerId].y);
+};
+
 const mouseDownTrigger = new Trigger();
-mouseDownTrigger.addCondition(() => {
+const onMouseDown = () => {
 	const playerId = MapPlayer.fromEvent().id;
 	const button = BlzGetTriggerPlayerMouseButton();
 	mouse[playerId] = {
@@ -35,11 +42,12 @@ mouseDownTrigger.addCondition(() => {
 		x: BlzGetTriggerPlayerMouseX(),
 		y: BlzGetTriggerPlayerMouseY(),
 	};
+	if (button === MOUSE_BUTTON_TYPE_LEFT) issueMoveToMouse(playerId);
 	return false;
-});
+};
 
 const mouseUpTrigger = new Trigger();
-mouseUpTrigger.addCondition(() => {
+const onMouseUp = () => {
 	const playerId = MapPlayer.fromEvent().id;
 	const button = BlzGetTriggerPlayerMouseButton();
 	mouse[playerId] = mouse[playerId] = {
@@ -55,10 +63,10 @@ mouseUpTrigger.addCondition(() => {
 		y: BlzGetTriggerPlayerMouseY(),
 	};
 	return false;
-});
+};
 
 const mouseMoveTrigger = new Trigger();
-mouseMoveTrigger.addCondition(() => {
+const onMouseMove = () => {
 	const playerId = MapPlayer.fromEvent().id;
 	mouse[playerId] = mouse[playerId] = {
 		leftDown: mouse[playerId].leftDown,
@@ -67,14 +75,13 @@ mouseMoveTrigger.addCondition(() => {
 		y: BlzGetTriggerPlayerMouseY(),
 	};
 	return false;
-});
+};
 
 const ticker = new Timer();
 const tick = () => {
 	forEachHero((hero) => {
 		const pid = hero.owner.id;
-		if (mouse[pid].leftDown)
-			hero.issueOrderAt("move", mouse[pid].x, mouse[pid].y);
+		if (mouse[pid].leftDown) issueMoveToMouse(pid);
 	});
 };
 
@@ -86,7 +93,13 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
 		);
 
 		mouseUpTrigger.registerPlayerMouseEvent(player, bj_MOUSEEVENTTYPE_UP);
+
+		mouseUpTrigger.registerPlayerMouseEvent(player, bj_MOUSEEVENTTYPE_MOVE);
 	});
 
-	ticker.start(0.03, true, tick);
+	mouseDownTrigger.addCondition(Condition(onMouseDown));
+	mouseUpTrigger.addCondition(Condition(onMouseUp));
+	mouseMoveTrigger.addCondition(Condition(onMouseMove));
+
+	ticker.start(0.25, true, tick);
 });

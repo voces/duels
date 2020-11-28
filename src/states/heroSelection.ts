@@ -11,7 +11,7 @@ import { forEachPlayer } from "../util";
 import { advanceToGrindState } from "./grind";
 import { setGlobalState, state } from "./state";
 
-const wisps: Unit[] = [];
+const tempUnits: Unit[] = [];
 
 const advanceFromHeroSelection = () => {
 	if (state.state !== "hero-selection") return;
@@ -39,9 +39,8 @@ const advanceFromHeroSelection = () => {
 	Camera.setField(CAMERA_FIELD_TARGET_DISTANCE, 1650, 0);
 	Camera.setField(CAMERA_FIELD_FIELD_OF_VIEW, 70, 0);
 
-	// Remove wisps
-	wisps.forEach((wisp) => wisp.destroy());
-	wisps.splice(0);
+	tempUnits.forEach((u) => u.destroy());
+	tempUnits.splice(0);
 
 	advanceToGrindState(heroes);
 };
@@ -61,6 +60,7 @@ const spawnHeroOptions = () => {
 			angle + 180,
 		);
 		u.setScale(1.25, 1.25, 1.25);
+		tempUnits.push(u);
 	}
 };
 
@@ -69,7 +69,7 @@ const spawnWisps = () => {
 		const u = new Unit(player, FourCC("e000"), 0, 0, 270);
 		u.x = 0;
 		u.y = 0;
-		wisps.push(u);
+		tempUnits.push(u);
 
 		// Disables moving the camera
 		if (player.handle === GetLocalPlayer())
