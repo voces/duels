@@ -1,0 +1,49 @@
+{
+	"compilerOptions": {
+		"outDir": ".",
+		"strict": true,
+		"allowJs": false,
+		"alwaysStrict": true,
+		"noImplicitAny": true,
+		"noImplicitThis": true,
+		"skipLibCheck": true,
+		"strictNullChecks": true,
+		"jsx": "react",
+		"target": "es6",
+		"lib": ["es2020"],
+		"moduleResolution": "node",
+		"rootDir": ".",
+		"baseUrl": "src",
+		"paths": {
+			"*": [
+				"../node_modules/*/src/index",
+				"../node_modules/*/lib/index",
+				"../node_modules/*/index",
+				"../node_modules/*/dist/index",
+				"../node_modules/*"
+			]
+		},
+		"plugins": [
+			{
+				"transform": "war3-transformer"
+			}
+		],
+		"types": [
+			"lua-types/core/global",
+			"lua-types/5.3",
+			"@types/jest",
+			"@types/node",
+			"war3-types/core/compat",
+			"war3-types/core/common",
+			"war3-types/core/blizzard",
+			"war3-types/core/commonai",
+			"war3-types/core/polyfill",
+			"war3-types/special/w3ts",
+			"mdx-m3-viewer/src/types",
+			"w3ts-jsx/dist/src/types"
+		],
+		"esModuleInterop": true
+	},
+	"include": [ "src", "scripts" ],
+	"exclude": ["node_modules"]
+}
