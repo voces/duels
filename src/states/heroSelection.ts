@@ -6,7 +6,7 @@ import {
 	Unit,
 	W3TS_HOOK,
 } from "../../node_modules/w3ts/index";
-import { heroTypes } from "../types";
+import { heroData, heroDataArr } from "../types";
 import { forEachPlayer } from "../util";
 import { advanceToGrindState } from "./grind";
 import { setGlobalState, state } from "./state";
@@ -25,8 +25,8 @@ const advanceFromHeroSelection = () => {
 	forEachPlayer((player) => {
 		if (state.state !== "hero-selection") return;
 
-		const heroType = state.heroSelection.selections[player.id];
-		const u = new Unit(player, heroType, 0, 0, 270);
+		const hero = state.heroSelection.selections[player.id];
+		const u = new Unit(player, heroData[hero].type, 0, 0, 270);
 		heroes[player.id] = u;
 
 		// Disables moving the camera and auto-follows the hero
@@ -48,13 +48,13 @@ const advanceFromHeroSelection = () => {
 const spawnHeroOptions = () => {
 	const theoreticalCount = 24;
 	const angleDelta = 360 / theoreticalCount;
-	const startingAngle = 90 + angleDelta * ((heroTypes.length - 1) / 2);
+	const startingAngle = 90 + angleDelta * ((heroDataArr.length - 1) / 2);
 	const distance = 450;
-	for (let i = 0; i < heroTypes.length; i++) {
+	for (let i = 0; i < heroDataArr.length; i++) {
 		const angle = startingAngle - angleDelta * i;
 		const u = new Unit(
 			PLAYER_NEUTRAL_PASSIVE,
-			heroTypes[i],
+			heroDataArr[i].type,
 			distance * CosBJ(angle),
 			distance * SinBJ(angle),
 			angle + 180,

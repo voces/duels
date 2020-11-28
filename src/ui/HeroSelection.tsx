@@ -1,6 +1,6 @@
 import * as React from "../../node_modules/w3ts-jsx/dist/src/index";
 import { setGlobalState } from "../states/state";
-import { Hero, heroNamesMap } from "../types";
+import { Hero, heroData } from "../types";
 import { everyPlayer } from "../util";
 import { useGlobalState } from "./hooks/useGlobalState";
 import { ExtraLargeText, LargeText } from "./Text";
@@ -73,9 +73,8 @@ export const HeroSelection = (): React.Node => {
 
 	const selected =
 		globalState.state === "hero-selection"
-			? globalState.heroSelection.selections[triggerPlayerId] ??
-			  Hero.Amazon
-			: Hero.Amazon;
+			? globalState.heroSelection.selections[triggerPlayerId]
+			: "amazon";
 	const setSelected = (hero: Hero) => {
 		if (globalState.state !== "hero-selection") return;
 		setGlobalState({
@@ -119,50 +118,50 @@ export const HeroSelection = (): React.Node => {
 				absPosition={{ point: FRAMEPOINT_CENTER, x: 0.4, y: 0.55 }}
 			/>
 			<LargeText
-				text={heroNamesMap[selected]}
+				text={heroData[selected].name}
 				absPosition={{ point: FRAMEPOINT_CENTER, x: 0.4, y: 0.5 }}
 			/>
 			<HeroPane
 				tooltip={amazonTooltip}
 				x={75}
 				width={200}
-				onClick={() => setSelected(Hero.Amazon)}
+				onClick={() => setSelected("amazon")}
 			/>
 			<HeroPane
 				tooltip={assassinTooltip}
 				x={280}
 				width={185}
-				onClick={() => setSelected(Hero.Assassin)}
+				onClick={() => setSelected("assassin")}
 			/>
 			<HeroPane
 				tooltip={necromancerTooltip}
 				x={475}
 				width={200}
-				onClick={() => setSelected(Hero.Necromancer)}
+				onClick={() => setSelected("necromancer")}
 			/>
 			<HeroPane
 				tooltip={barbarianTooltip}
 				x={690}
 				width={170}
-				onClick={() => setSelected(Hero.Barbarian)}
+				onClick={() => setSelected("barbarian")}
 			/>
 			<HeroPane
 				tooltip={paladinTooltip}
 				x={875}
 				width={195}
-				onClick={() => setSelected(Hero.Paladin)}
+				onClick={() => setSelected("paladin")}
 			/>
 			<HeroPane
 				tooltip={sorceressTooltip}
 				x={1080}
 				width={190}
-				onClick={() => setSelected(Hero.Sorceress)}
+				onClick={() => setSelected("sorceress")}
 			/>
 			<HeroPane
 				tooltip={druidTooltip}
 				x={1310}
 				width={250}
-				onClick={() => setSelected(Hero.Druid)}
+				onClick={() => setSelected("druid")}
 			/>
 			<gluetextbutton
 				inherits="ScriptDialogButton"
