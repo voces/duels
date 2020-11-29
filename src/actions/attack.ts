@@ -1,7 +1,12 @@
+import {
+	addScriptHook,
+	Trigger,
+	W3TS_HOOK,
+} from "../../node_modules/w3ts/index";
 import { Hero } from "../Hero";
 import { mice } from "../input/data";
 import { UnitEx } from "../UnitEx";
-import { log, timeout } from "../util";
+import { timeout } from "../util";
 
 interface AttackAction {
 	type: "attack";
@@ -32,9 +37,16 @@ export const attackAction = (
 			hero.setAnimation("attack");
 
 			timeout(0.51, () => {
-				log("damage");
+				hero.doMeleeArea();
 				timeout(0.49, () => done());
 			});
 		}
 	},
+});
+
+const onAttackTrigger = new Trigger();
+
+addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
+	onAttackTrigger.registerAnyUnitEvent(EVENT_PLAYER_UNIT_ATTACKED);
+	// onAttackTrigger.addCondition(onMouseDown);
 });

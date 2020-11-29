@@ -14,15 +14,17 @@ export const times = <T>(count: number, fn: (i: number) => T): T[] => {
 	return arr;
 };
 
-export const forEachPlayer = (fn: (player: MapPlayer) => void): void => {
+const isPlayingHuman = (player: MapPlayer) =>
+	player.controller === MAP_CONTROL_USER &&
+	player.slotState === PLAYER_SLOT_STATE_PLAYING;
+
+export const forEachPlayer = (
+	fn: (player: MapPlayer) => void,
+	filter: (player: MapPlayer) => boolean = isPlayingHuman,
+): void => {
 	for (let i = 0; i < bj_MAX_PLAYER_SLOTS; i++) {
 		const player = MapPlayer.fromHandle(Player(i));
-		if (
-			player.controller !== MAP_CONTROL_USER ||
-			player.slotState !== PLAYER_SLOT_STATE_PLAYING
-		)
-			continue;
-		fn(player);
+		if (filter(player)) fn(player);
 	}
 };
 

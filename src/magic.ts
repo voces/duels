@@ -2,26 +2,40 @@
 
 import { colorize } from "./util";
 
-const OldTriggerAddCondition = TriggerAddCondition;
+const wrapAndPrint = <T>(fn: () => T, fallback: T) => () => {
+	try {
+		return fn();
+	} catch (err) {
+		print(colorize.red(err));
+	}
+	return fallback;
+};
 
+const OldTriggerAddCondition = TriggerAddCondition;
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 TriggerAddCondition = (
 	trigger: trigger,
-	fn: conditionfunc | (() => void | boolean),
+	fn: conditionfunc | (() => boolean),
 ) => {
 	const condition =
-		typeof fn === "function"
-			? Condition((): boolean => {
-					try {
-						const ret = fn();
-						return typeof ret === "boolean" ? ret : false;
-					} catch (err) {
-						print(colorize.red(err));
-					}
-					return false;
-			  })
-			: fn;
+		typeof fn === "function" ? Condition(wrapAndPrint(fn, false)) : fn;
 
 	OldTriggerAddCondition(trigger, condition);
 };
+
+const OldTimerStart = TimerStart;
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+TimerStart = (
+	whichTimer: timer,
+	timeout: number,
+	periodic: boolean,
+	handlerFunc: () => void,
+) =>
+	OldTimerStart(
+		whichTimer,
+		timeout,
+		periodic,
+		wrapAndPrint(handlerFunc, null),
+	);
