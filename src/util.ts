@@ -1,4 +1,4 @@
-import { MapPlayer, Unit } from "../node_modules/w3ts/index";
+import { MapPlayer, Timer, Unit } from "../node_modules/w3ts/index";
 import { state } from "./states/state";
 
 export const iflt = (fn: () => void): void => {
@@ -48,3 +48,13 @@ export const forEachHero = (fn: (hero: Unit) => void): void => {
 };
 
 export { log } from "../node_modules/w3ts-jsx/dist/node_modules/basic-pragma/src/utils/log";
+
+const timerPool: Timer[] = [];
+
+export const timeout = (seconds: number, fn: () => void): void => {
+	const timer = timerPool[0] ?? new Timer();
+	timer.start(seconds, false, () => {
+		timerPool.push(timer);
+		fn();
+	});
+};

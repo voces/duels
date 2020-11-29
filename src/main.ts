@@ -1,3 +1,3 @@
 import "./ui/setup";
 import "./states/heroSelection";
-import "./input";
+import "./input/input";
