@@ -1,17 +1,18 @@
-import { Unit } from "../../node_modules/w3ts/index";
+import { Hero } from "../Hero";
 import { mice } from "../input/data";
+import { UnitEx } from "../UnitEx";
 import { log, timeout } from "../util";
 
 interface AttackAction {
 	type: "attack";
-	target: Unit | null;
+	target: UnitEx | null;
 	interruptable: false;
 	perform: (done: () => void) => void;
 }
 
 export const attackAction = (
-	hero: Unit,
-	target: Unit | null = null,
+	hero: Hero,
+	target: UnitEx | null = null,
 ): AttackAction => ({
 	type: "attack",
 	target,
@@ -19,10 +20,10 @@ export const attackAction = (
 	perform: (done) => {
 		// If we have an actual target, just attack it
 		// This gives us the move-to-target-and-hit sequence for free
-		if (target) hero.issueTargetOrder("attackonce", target);
+		if (target) hero.unit.issueTargetOrder("attackonce", target.unit);
 		// If no target, just attack from where we are standing
 		else {
-			hero.issueImmediateOrder("stop");
+			hero.unit.issueImmediateOrder("stop");
 
 			const mouse = mice[hero.owner.id];
 			const facing = Math.atan2(mouse.y - hero.y, mouse.x - hero.x);

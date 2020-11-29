@@ -1,4 +1,5 @@
-import { MapPlayer, Timer, Unit } from "../node_modules/w3ts/index";
+import { Group, MapPlayer, Timer } from "../node_modules/w3ts/index";
+import { Hero } from "./Hero";
 import { state } from "./states/state";
 
 export const iflt = (fn: () => void): void => {
@@ -38,7 +39,7 @@ export const everyPlayer = (fn: (player: MapPlayer) => boolean): boolean => {
 	return true;
 };
 
-export const forEachHero = (fn: (hero: Unit) => void): void => {
+export const forEachHero = (fn: (hero: Hero) => void): void => {
 	if (state.state !== "grind") return;
 	for (let i = 0; i < bj_MAX_PLAYER_SLOTS; i++) {
 		const hero = state.heroes[i];
@@ -48,6 +49,7 @@ export const forEachHero = (fn: (hero: Unit) => void): void => {
 };
 
 export { log } from "../node_modules/w3ts-jsx/dist/node_modules/basic-pragma/src/utils/log";
+export { colorize } from "../node_modules/w3ts-jsx/dist/node_modules/basic-pragma/src/utils/colorize";
 
 const timerPool: Timer[] = [];
 
@@ -58,3 +60,5 @@ export const timeout = (seconds: number, fn: () => void): void => {
 		fn();
 	});
 };
+
+export const dummyGroup = new Group();

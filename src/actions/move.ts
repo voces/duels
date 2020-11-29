@@ -1,4 +1,4 @@
-import { Unit } from "../../node_modules/w3ts/index";
+import { Hero } from "../Hero";
 import { mice } from "../input/data";
 
 interface MoveAction {
@@ -7,11 +7,11 @@ interface MoveAction {
 	perform: () => void;
 }
 
-export const moveAction = (hero: Unit): MoveAction => ({
+export const moveAction = (hero: Hero): MoveAction => ({
 	type: "move",
 	interruptable: true,
 	perform: () => {
 		const playerId = hero.owner.id;
-		hero.issueOrderAt("move", mice[playerId].x, mice[playerId].y);
+		hero.unit.issueOrderAt("move", mice[playerId].x, mice[playerId].y);
 	},
 });

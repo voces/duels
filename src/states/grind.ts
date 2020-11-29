@@ -1,7 +1,8 @@
-import { Timer, TimerDialog, Unit } from "../../node_modules/w3ts/index";
+import { Timer, TimerDialog } from "../../node_modules/w3ts/index";
+import { Hero } from "../Hero";
 import { setGlobalState, state } from "./state";
 
-export const advanceToGrindState = (heroes: Unit[]): void => {
+export const advanceToGrindState = (heroes: Hero[]): void => {
 	const timer = new Timer();
 	const timerDialog = new TimerDialog(timer);
 	timerDialog.setTitle("Time to duels...");

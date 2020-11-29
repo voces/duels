@@ -3,23 +3,25 @@ import {
 	MapPlayer,
 	Timer,
 	Trigger,
-	Unit,
 	W3TS_HOOK,
 } from "../../node_modules/w3ts/index";
 import { attackAction } from "../actions/attack";
 import { moveAction } from "../actions/move";
 import { queueAction } from "../actions/queue";
 import { state } from "../states/state";
-import { forEachHero, forEachPlayer } from "../util";
+import { UnitEx } from "../UnitEx";
+import { forEachHero, forEachPlayer, log } from "../util";
 import { keyboards, mice } from "./data";
 
 const queueMove = (playerId: number) => {
 	if (state.state !== "grind") return;
+
 	const hero = state.heroes[playerId];
 	queueAction(playerId, moveAction(hero));
 };
 
-const queueLeftAction = (playerId: number, target?: Unit) => {
+const queueLeftAction = (playerId: number, target?: UnitEx) => {
+	log("queueLeftAction");
 	if (state.state !== "grind") return;
 
 	const hero = state.heroes[playerId];
@@ -29,6 +31,10 @@ const queueLeftAction = (playerId: number, target?: Unit) => {
 const mouseDownTrigger = new Trigger();
 const onMouseDown = () => {
 	const player = MapPlayer.fromEvent();
+
+	// Enables keyboard listeners while the mouse is down
+	if (GetLocalPlayer() === player.handle) EnableUserControl(true);
+
 	const playerId = player.id;
 	const button = BlzGetTriggerPlayerMouseButton();
 	mice[playerId] = {
@@ -42,15 +48,12 @@ const onMouseDown = () => {
 		y: BlzGetTriggerPlayerMouseY(),
 	};
 
-	const target = Unit.fromHandle(BlzGetMouseFocusUnit());
+	const target = UnitEx.fromHandle(BlzGetMouseFocusUnit());
 
 	if (button === MOUSE_BUTTON_TYPE_LEFT)
 		if (target) queueLeftAction(playerId, target);
 		else if (keyboards[playerId].shiftDown) queueLeftAction(playerId);
 		else queueMove(playerId);
-
-	// Enables keyboard listeners while the mouse is down
-	if (GetLocalPlayer() === player.handle) EnableUserControl(true);
 
 	return false;
 };
@@ -123,11 +126,11 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
 		keyUpTrigger.registerPlayerKeyEvent(player, OSKEY_LSHIFT, 0, false);
 	});
 
-	mouseDownTrigger.addCondition(Condition(onMouseDown));
-	mouseUpTrigger.addCondition(Condition(onMouseUp));
-	mouseMoveTrigger.addCondition(Condition(onMouseMove));
-	keyDownTrigger.addCondition(Condition(onKeyDown));
-	keyUpTrigger.addCondition(Condition(onKeyUp));
+	mouseDownTrigger.addCondition(onMouseDown);
+	mouseUpTrigger.addCondition(onMouseUp);
+	mouseMoveTrigger.addCondition(onMouseMove);
+	keyDownTrigger.addCondition(onKeyDown);
+	keyUpTrigger.addCondition(onKeyUp);
 
 	ticker.start(0.25, true, tick);
 });

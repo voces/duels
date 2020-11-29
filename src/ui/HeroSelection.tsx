@@ -1,6 +1,6 @@
 import * as React from "../../node_modules/w3ts-jsx/dist/src/index";
 import { setGlobalState } from "../states/state";
-import { Hero, heroData } from "../types";
+import { heroData, HeroType } from "../types";
 import { everyPlayer } from "../util";
 import { useGlobalState } from "./hooks/useGlobalState";
 import { ExtraLargeText, LargeText } from "./Text";
@@ -75,7 +75,7 @@ export const HeroSelection = (): React.Node => {
 		globalState.state === "hero-selection"
 			? globalState.heroSelection.selections[triggerPlayerId]
 			: "amazon";
-	const setSelected = (hero: Hero) => {
+	const setSelected = (hero: HeroType) => {
 		if (globalState.state !== "hero-selection") return;
 		setGlobalState({
 			...globalState,

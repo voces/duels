@@ -1,5 +1,6 @@
-import { Timer, TimerDialog, Unit } from "../../node_modules/w3ts/index";
-import { Hero } from "../types";
+import { Timer, TimerDialog } from "../../node_modules/w3ts/index";
+import { Hero } from "../Hero";
+import { HeroType } from "../types";
 
 interface InitialState {
 	state: "initial";
@@ -9,7 +10,7 @@ interface HeroSelectionState {
 	state: "hero-selection";
 	heroSelection: {
 		advance: () => void;
-		selections: Hero[];
+		selections: HeroType[];
 		timer: Timer;
 		timerDialog: TimerDialog;
 	};
@@ -22,7 +23,7 @@ interface GrindState {
 		timer: Timer;
 		timerDialog: TimerDialog;
 	};
-	heroes: Unit[];
+	heroes: Hero[];
 }
 
 export type State = InitialState | HeroSelectionState | GrindState;

@@ -3,15 +3,16 @@ import {
 	Camera,
 	Timer,
 	TimerDialog,
-	Unit,
 	W3TS_HOOK,
 } from "../../node_modules/w3ts/index";
+import { Hero } from "../Hero";
 import { heroData, heroDataArr } from "../types";
+import { UnitEx } from "../UnitEx";
 import { forEachPlayer } from "../util";
 import { advanceToGrindState } from "./grind";
 import { setGlobalState, state } from "./state";
 
-const tempUnits: Unit[] = [];
+const tempUnits: UnitEx[] = [];
 
 const advanceFromHeroSelection = () => {
 	if (state.state !== "hero-selection") return;
@@ -19,19 +20,25 @@ const advanceFromHeroSelection = () => {
 	state.heroSelection.timer.destroy();
 	state.heroSelection.timerDialog.destroy();
 
-	const heroes: Unit[] = [];
+	const heroes: Hero[] = [];
 
 	// Spawn heroes
 	forEachPlayer((player) => {
 		if (state.state !== "hero-selection") return;
 
-		const hero = state.heroSelection.selections[player.id];
-		const u = new Unit(player, heroData[hero].type, 0, 0, 270);
-		heroes[player.id] = u;
+		const heroType = state.heroSelection.selections[player.id];
+		const hero = new Hero({
+			owner: player,
+			unit: heroData[heroType].type,
+			x: 0,
+			y: 0,
+			...heroData[heroType].initial,
+		});
+		heroes[player.id] = hero;
 
 		// Disables moving the camera and auto-follows the hero
 		if (player.handle === GetLocalPlayer())
-			Camera.setTargetController(u.handle, 0, 128, false);
+			Camera.setTargetController(hero.handle, 0, 128, false);
 	});
 
 	// Reset camera
@@ -39,7 +46,7 @@ const advanceFromHeroSelection = () => {
 	Camera.setField(CAMERA_FIELD_TARGET_DISTANCE, 1650, 0);
 	Camera.setField(CAMERA_FIELD_FIELD_OF_VIEW, 70, 0);
 
-	tempUnits.forEach((u) => u.destroy());
+	tempUnits.forEach((u) => u.unit.destroy());
 	tempUnits.splice(0);
 
 	advanceToGrindState(heroes);
@@ -52,21 +59,21 @@ const spawnHeroOptions = () => {
 	const distance = 450;
 	for (let i = 0; i < heroDataArr.length; i++) {
 		const angle = startingAngle - angleDelta * i;
-		const u = new Unit(
-			PLAYER_NEUTRAL_PASSIVE,
-			heroDataArr[i].type,
-			distance * CosBJ(angle),
-			distance * SinBJ(angle),
-			angle + 180,
-		);
-		u.setScale(1.25, 1.25, 1.25);
+		const u = new UnitEx({
+			owner: PLAYER_NEUTRAL_PASSIVE,
+			unit: heroDataArr[i].type,
+			x: distance * CosBJ(angle),
+			y: distance * SinBJ(angle),
+			facing: angle + 180,
+		});
+		u.unit.setScale(1.25, 1.25, 1.25);
 		tempUnits.push(u);
 	}
 };
 
 const spawnWisps = () => {
 	forEachPlayer((player) => {
-		const u = new Unit(player, FourCC("e000"), 0, 0, 270);
+		const u = new UnitEx({ owner: player, unit: "e000", x: 0, y: 0 });
 		u.x = 0;
 		u.y = 0;
 		tempUnits.push(u);
