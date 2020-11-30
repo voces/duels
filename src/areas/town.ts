@@ -14,14 +14,14 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
 	trigger.registerEnterRegion(
 		region.handle,
 		Filter(() => {
-			UnitEx.fromFilter()?.unit.addAbility(FourCC("Avul"));
+			UnitEx.fromFilter()!.unit.addAbility(FourCC("Avul"));
 			return false;
 		}),
 	);
 	trigger.registerLeaveRegion(
 		region.handle,
 		Filter(() => {
-			UnitEx.fromFilter()?.unit.removeAbility(FourCC("Avul"));
+			UnitEx.fromFilter()!.unit.removeAbility(FourCC("Avul"));
 			return false;
 		}),
 	);

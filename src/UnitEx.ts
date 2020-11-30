@@ -49,17 +49,21 @@ export class UnitEx {
 				unit = new Unit(
 					owner,
 					typeof unit === "number" ? unit : FourCC(unit),
-					x,
-					y,
+					// A spot to avoid spawning in a region
+					-1056,
+					0,
 					facing ?? Math.random() * 360,
 				);
 
-		if (map.has(unit.handle)) throw "Duplicate UnitEx";
+		if (map.has(unit.handle)) throw "Duplicate UnitEx " + unit.typeId;
 		map.set(unit.handle, this);
 		this.unit = unit;
 		this.maxHealth = maxHealth;
 		this.health = maxHealth;
 		this.weapon = weapon;
+
+		if (x) unit.x = x;
+		if (y) unit.y = y;
 	}
 
 	public isAlly(whichPlayer: MapPlayer): boolean {
