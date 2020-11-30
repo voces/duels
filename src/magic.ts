@@ -39,3 +39,19 @@ TimerStart = (
 		periodic,
 		wrapAndPrint(handlerFunc, null),
 	);
+
+const OldTriggerRegisterEnterRegion = TriggerRegisterEnterRegion;
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+TriggerRegisterEnterRegion = (
+	whichTrigger: trigger,
+	whichRegion: region,
+	filter: boolexpr | (() => boolean) | null,
+) => {
+	const fn =
+		typeof filter === "function"
+			? Filter(wrapAndPrint(filter, false))
+			: filter;
+
+	OldTriggerRegisterEnterRegion(whichTrigger, whichRegion, fn);
+};

@@ -1,10 +1,15 @@
 import {
+	addScriptHook,
 	getElapsedTime,
 	Group,
 	Region,
+	Timer,
 	Trigger,
+	W3TS_HOOK,
 } from "../../node_modules/w3ts/index";
+import { isHeroType } from "../types";
 import { UnitEx } from "../UnitEx";
+import { startTimeout } from "../util";
 
 export interface Spawn {
 	x: number;
@@ -25,6 +30,10 @@ interface InternalSpawn extends Spawn {
 }
 
 const randomHostile = () => 16 + Math.floor(Math.random() * 8);
+
+const zones: Zone[] = [];
+
+const unitSpawnMap = new Map<UnitEx, Group>();
 
 export class Zone {
 	players = 0;
@@ -66,31 +75,35 @@ export class Zone {
 				return false;
 			}),
 		);
+
+		zones.push(this);
 	}
 
-	spawnUnit(spawn: InternalSpawn): void {
-		const time = getElapsedTime();
+	spawnUnit(spawn: InternalSpawn, time = getElapsedTime()): void {
 		const distance =
 			Math.random() * spawn.distanceRange + spawn.minDistance;
 		const angle = Math.random() * Math.PI * 2;
+		const x = spawn.x + distance * Math.cos(angle);
+		const y = spawn.y + distance * Math.sin(angle);
+		const owner = randomHostile();
 		const u = new UnitEx({
 			unit: spawn.unit,
-			owner: randomHostile(),
-			x: spawn.x + distance * Math.cos(angle),
-			y: spawn.y + distance * Math.sin(angle),
+			owner,
+			x,
+			y,
 		});
 		spawn.units.addUnit(u.unit);
 		spawn.last = time;
+		unitSpawnMap.set(u, spawn.units);
 	}
 
-	activate(): void {
+	activate(time = getElapsedTime()): void {
 		this.activated = true;
 		for (const spawn of this.spawns)
-			for (let i = 0; i < spawn.initial; i++) this.spawnUnit(spawn);
+			for (let i = 0; i < spawn.initial; i++) this.spawnUnit(spawn, time);
 	}
 
-	tick(): void {
-		const time = getElapsedTime();
+	tick(time = getElapsedTime()): void {
 		for (const spawn of this.spawns)
 			if (
 				time - spawn.frequency >= spawn.last &&
@@ -99,3 +112,23 @@ export class Zone {
 				this.spawnUnit(spawn);
 	}
 }
+
+addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
+	new Timer().start(1, true, () => {
+		const time = getElapsedTime();
+		for (const zone of zones) if (zone.activated) zone.tick(time);
+	});
+
+	const t = new Trigger();
+	t.registerAnyUnitEvent(EVENT_PLAYER_UNIT_DEATH);
+	t.addCondition(() => {
+		const u = UnitEx.fromEvent()!;
+		if (!isHeroType(u))
+			startTimeout(90, () => {
+				u.unit.destroy();
+				const group = unitSpawnMap.get(u);
+				group?.removeUnit(u.unit);
+			});
+		return false;
+	});
+});

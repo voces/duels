@@ -1,3 +1,4 @@
+import { UnitEx } from "../UnitEx";
 import { times } from "../util";
 
 interface Mouse {
@@ -5,6 +6,7 @@ interface Mouse {
 	rightDown: boolean;
 	x: number;
 	y: number;
+	targetLock: UnitEx | null;
 }
 
 interface Keyboard {
@@ -16,6 +18,7 @@ export const mice: Mouse[] = times(bj_MAX_PLAYER_SLOTS, () => ({
 	rightDown: false,
 	x: 0,
 	y: 0,
+	targetLock: null,
 }));
 
 export const keyboards: Keyboard[] = times(bj_MAX_PLAYER_SLOTS, () => ({

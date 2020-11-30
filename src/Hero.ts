@@ -1,4 +1,4 @@
-import { MapPlayer, Unit } from "../node_modules/w3ts/index";
+import { MapPlayer } from "../node_modules/w3ts/index";
 import { UnitEx } from "./UnitEx";
 
 export class Hero extends UnitEx {
@@ -38,10 +38,10 @@ export class Hero extends UnitEx {
 		staminaPerVitality,
 		manaPerEnergy,
 	}: {
-		unit: Unit | number;
-		owner?: MapPlayer;
-		x?: number;
-		y?: number;
+		unit: string | number;
+		owner: MapPlayer;
+		x: number;
+		y: number;
 		strength: number;
 		dexterity: number;
 		vitality: number;
@@ -82,5 +82,8 @@ export class Hero extends UnitEx {
 		this.healthPerVitality = healthPerVitality;
 		this.staminaPerVitality = staminaPerVitality;
 		this.manaPerEnergy = manaPerEnergy;
+
+		// Disable auto-attack
+		this.unit.addType(UNIT_TYPE_PEON);
 	}
 }

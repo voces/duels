@@ -55,12 +55,36 @@ export { colorize } from "../node_modules/w3ts-jsx/dist/node_modules/basic-pragm
 
 const timerPool: Timer[] = [];
 
-export const timeout = (seconds: number, fn: () => void): void => {
-	const timer = timerPool[0] ?? new Timer();
+export const startTimeout = (seconds: number, fn: () => void): (() => void) => {
+	const timer = timerPool.pop() ?? new Timer();
 	timer.start(seconds, false, () => {
 		timerPool.push(timer);
 		fn();
 	});
+
+	let canceled = false;
+	return () => {
+		if (canceled) return;
+		canceled = true;
+		timer.pause();
+		timerPool.push(timer);
+	};
+};
+
+export const startInterval = (
+	seconds: number,
+	fn: () => void,
+): (() => void) => {
+	const timer = timerPool.pop() ?? new Timer();
+	timer.start(seconds, true, () => fn());
+
+	let canceled = false;
+	return () => {
+		if (canceled) return;
+		canceled = true;
+		timer.pause();
+		timerPool.push(timer);
+	};
 };
 
 export const dummyGroup = new Group();

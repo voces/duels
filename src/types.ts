@@ -1,3 +1,5 @@
+import { UnitEx } from "./UnitEx";
+
 interface HeroTypeMap<T> {
 	amazon: T;
 	assassin: T;
@@ -33,7 +35,7 @@ const initial = {
 	dexterity: 1,
 	vitality: 1,
 	energy: 1,
-	maxHealth: 1,
+	maxHealth: 50,
 	maxStamina: 1,
 	maxMana: 1,
 	healthPerLevel: 1,
@@ -67,3 +69,10 @@ export const heroKeys = [
 export type HeroType = keyof HeroTypeMap<unknown>;
 
 export const heroDataArr: HeroData[] = heroKeys.map((key) => heroData[key]);
+
+export const heroTypeIds = heroDataArr.map((h) => h.type);
+
+export const isHeroType = (unit: UnitEx): boolean => {
+	const typeId = unit.unit.typeId;
+	return heroTypeIds.includes(typeId);
+};

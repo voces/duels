@@ -1,8 +1,11 @@
 import { state } from "../states/state";
 import { times } from "../util";
 
+export type Done = (performNext?: boolean) => void;
+export type Perform = (done: Done) => void;
+
 interface Action {
-	perform: (done: () => void) => void;
+	perform: Perform;
 	interruptable: boolean;
 }
 
@@ -16,18 +19,23 @@ const actionQueue: ActionQueue[] = times(bj_MAX_PLAYER_SLOTS, () => ({
 	next: undefined,
 }));
 
-export const queueAction = (playerId: number, action: Action): void => {
+export const queueAction = (
+	playerId: number,
+	action: Action,
+	interrupt = true,
+): void => {
 	if (state.state !== "grind") return;
 	const queue = actionQueue[playerId];
-	if (!queue.current || queue.current.interruptable) {
+	if (!queue.current || (queue.current.interruptable && interrupt)) {
 		queue.current = action;
-		action.perform(() => {
+		action.perform((performNext = true) => {
 			queue.current = undefined;
-			if (queue.next) {
-				const next = queue.next;
-				queue.next = undefined;
-				queueAction(playerId, next);
-			}
+			if (queue.next)
+				if (performNext) {
+					const next = queue.next;
+					queue.next = undefined;
+					queueAction(playerId, next);
+				} else queue.next = undefined;
 		});
 	} else queue.next = action;
 };

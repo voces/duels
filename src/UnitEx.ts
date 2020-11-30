@@ -1,6 +1,6 @@
 import { MapPlayer, Unit } from "../node_modules/w3ts/index";
 import { Damage, damageTypes, Weapon } from "./damage";
-import { dummyGroup } from "./util";
+import { dummyGroup, log } from "./util";
 
 const map = new Map<unit, UnitEx>();
 
@@ -11,6 +11,16 @@ export class UnitEx {
 
 	weapon: Weapon;
 
+	constructor(props: { unit: Unit });
+	constructor(props: {
+		unit: number | string;
+		owner: MapPlayer | number;
+		x: number;
+		y: number;
+		facing?: number;
+		maxHealth?: number;
+		weapon?: Weapon;
+	});
 	constructor({
 		unit,
 		owner,
@@ -18,7 +28,10 @@ export class UnitEx {
 		y,
 		facing,
 		maxHealth = 1,
-		weapon = { minimumDamage: {}, maximumDamage: {} },
+		weapon = {
+			minimumDamage: { physical: 1 },
+			maximumDamage: { physical: 1 },
+		},
 	}: {
 		unit: Unit | number | string;
 		owner?: MapPlayer | number;
@@ -110,7 +123,7 @@ export class UnitEx {
 			const lMax = max[damageType] ?? 0;
 			const range = lMax - lMin;
 
-			max[damageType] = range * Math.random() + lMin;
+			damage[damageType] = range * Math.random() + lMin;
 		}
 
 		return damage;
@@ -121,30 +134,43 @@ export class UnitEx {
 			const damageFromType = damage[damageType];
 			if (typeof damageFromType !== "number") continue;
 			target.health -= damageFromType;
+			log(damageType, damageFromType, target.health, target.maxHealth);
 		}
 
-		if (target.health < 0) target.unit.setAnimation("death");
+		if (target.health <= 0) target.unit.kill();
 	}
 
-	doMeleeArea(): void {
+	doMeleeAttack(): void {
 		const damage = this.randomDamage();
 
 		const facing = Deg2Rad(this.unit.facing);
 		const x = this.unit.x + 64 * Math.cos(facing);
 		const y = this.unit.y + 64 * Math.sin(facing);
 
+		let foundAUnit = false;
 		dummyGroup.enumUnitsInRange(
 			x,
 			y,
 			128,
 			Filter((): boolean => {
 				const u = UnitEx.fromFilter()!;
-				if (u.isAlly(this.unit.owner) || u.health < 0) return false;
+
+				if (u.isAlly(this.unit.owner) || u.health < 0 || foundAUnit)
+					return false;
+				foundAUnit = true;
 
 				this.damage(u, damage);
 
 				return false;
 			}),
+		);
+		dummyGroup.clear();
+	}
+
+	distanceTo(target: UnitEx): number {
+		return Math.sqrt(
+			(this.unit.y - target.unit.y) ** 2 +
+				(this.unit.x - target.unit.x) ** 2,
 		);
 	}
 
@@ -152,9 +178,13 @@ export class UnitEx {
 	public static fromHandle(unit: null): null;
 	public static fromHandle(unit: unit | null): UnitEx | null {
 		if (!unit) return null;
-		const unitEx = map.get(unit);
+		let unitEx = map.get(unit);
+
+		// Hopefully a pre-placed unit
 		if (unitEx == null)
-			throw "Called UnitEx.fromHandle with an unknown unit";
+			unitEx = new UnitEx({ unit: Unit.fromHandle(unit) });
+
+		// throw "Called UnitEx.fromHandle with an unknown unit";
 		return unitEx;
 	}
 
@@ -164,6 +194,12 @@ export class UnitEx {
 
 	public static fromFilter(): UnitEx | null {
 		const u = GetFilterUnit();
+		if (!u) return null;
+		return this.fromHandle(u);
+	}
+
+	public static fromEvent(): UnitEx | null {
+		const u = GetTriggerUnit();
 		if (!u) return null;
 		return this.fromHandle(u);
 	}

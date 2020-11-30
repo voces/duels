@@ -10,7 +10,7 @@ import { moveAction } from "../actions/move";
 import { queueAction } from "../actions/queue";
 import { state } from "../states/state";
 import { UnitEx } from "../UnitEx";
-import { forEachHero, forEachPlayer, log } from "../util";
+import { forEachHero, forEachPlayer } from "../util";
 import { keyboards, mice } from "./data";
 
 const queueMove = (playerId: number) => {
@@ -21,10 +21,14 @@ const queueMove = (playerId: number) => {
 };
 
 const queueLeftAction = (playerId: number, target?: UnitEx) => {
-	log("queueLeftAction");
 	if (state.state !== "grind") return;
 
 	const hero = state.heroes[playerId];
+
+	// Only attack enemies!
+	if (target && hero.unit.isAlly(target.unit.owner))
+		return queueMove(playerId);
+
 	queueAction(playerId, attackAction(hero, target));
 };
 
@@ -32,11 +36,16 @@ const mouseDownTrigger = new Trigger();
 const onMouseDown = () => {
 	const player = MapPlayer.fromEvent();
 
+	// We must get this before calling EnableUserControl
+	const targetHandle = BlzGetMouseFocusUnit();
+
 	// Enables keyboard listeners while the mouse is down
 	if (GetLocalPlayer() === player.handle) EnableUserControl(true);
 
 	const playerId = player.id;
 	const button = BlzGetTriggerPlayerMouseButton();
+	const target = UnitEx.fromHandle(targetHandle);
+
 	mice[playerId] = {
 		leftDown:
 			button === MOUSE_BUTTON_TYPE_LEFT ? true : mice[playerId].leftDown,
@@ -46,9 +55,8 @@ const onMouseDown = () => {
 				: mice[playerId].rightDown,
 		x: BlzGetTriggerPlayerMouseX(),
 		y: BlzGetTriggerPlayerMouseY(),
+		targetLock: target,
 	};
-
-	const target = UnitEx.fromHandle(BlzGetMouseFocusUnit());
 
 	if (button === MOUSE_BUTTON_TYPE_LEFT)
 		if (target) queueLeftAction(playerId, target);
@@ -71,6 +79,7 @@ const onMouseUp = () => {
 				: mice[playerId].rightDown,
 		x: BlzGetTriggerPlayerMouseX(),
 		y: BlzGetTriggerPlayerMouseY(),
+		targetLock: null,
 	};
 	return false;
 };
@@ -83,6 +92,7 @@ const onMouseMove = () => {
 		rightDown: mice[playerId].rightDown,
 		x: BlzGetTriggerPlayerMouseX(),
 		y: BlzGetTriggerPlayerMouseY(),
+		targetLock: mice[playerId].targetLock,
 	};
 	return false;
 };
@@ -107,7 +117,7 @@ const ticker = new Timer();
 const tick = () => {
 	forEachHero((hero) => {
 		const pid = hero.owner.id;
-		if (mice[pid].leftDown) queueMove(pid);
+		if (mice[pid].leftDown && !mice[pid].targetLock) queueMove(pid);
 	});
 };
 
