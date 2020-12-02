@@ -1,0 +1,43 @@
+interface PosObj {
+	point: framepointtype;
+	relative: RelativeFrame;
+	relativePoint: framepointtype;
+	x?: number | undefined;
+	y?: number | undefined;
+}
+
+const topLeftBase: Pos = {
+	point: FRAMEPOINT_TOPLEFT,
+	relative: "parent",
+	relativePoint: FRAMEPOINT_TOPLEFT,
+};
+
+export const topLeft = (pos: Partial<PosObj> = {}): Pos => ({
+	...topLeftBase,
+	...pos,
+});
+
+const topRightBase: Pos = {
+	point: FRAMEPOINT_TOPRIGHT,
+	relative: "parent",
+	relativePoint: FRAMEPOINT_TOPRIGHT,
+};
+
+export const topRight = (pos: Partial<PosObj> = {}): Pos => ({
+	...topRightBase,
+	...pos,
+});
+
+export const leftToRight = (pos: Partial<PosObj> = {}): Pos => ({
+	point: FRAMEPOINT_TOPLEFT,
+	relative: "previous",
+	relativePoint: FRAMEPOINT_TOPRIGHT,
+	...pos,
+});
+
+export const topDown = (pos: Partial<PosObj> = {}): Pos => ({
+	point: FRAMEPOINT_TOPLEFT,
+	relative: "previous",
+	relativePoint: FRAMEPOINT_BOTTOMLEFT,
+	...pos,
+});

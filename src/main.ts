@@ -15,6 +15,10 @@ const isHuman = (player: MapPlayer) => player.id < 16;
 const isNPC = (player: MapPlayer) => player.id === PLAYER_NEUTRAL_PASSIVE;
 const isHostile = (player: MapPlayer) => !isHuman(player) && !isNPC(player);
 
+// addScriptHook(W3TS_HOOK.CONFIG_AFTER, () => {
+// 	for (let i = 0; i < 16; i++) SetPlayerRaceSelectable(Player(i), false);
+// });
+
 addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
 	for (let i = 0; i < bj_MAX_PLAYERS + 4; i++)
 		for (let n = 0; n < bj_MAX_PLAYERS + 4; n++) {
