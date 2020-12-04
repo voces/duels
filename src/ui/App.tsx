@@ -8,6 +8,7 @@ import { Statuses } from "./Statuses/Statuses";
 
 export const App = (): React.Node => {
 	const state = useGlobalState();
+	const [attributesVisibile, setAttributesVisible] = React.useState(false);
 
 	return (
 		<container
@@ -27,8 +28,15 @@ export const App = (): React.Node => {
 			{state.state === "hero-selection" && <HeroSelection />}
 			{state.state !== "hero-selection" && state.state !== "initial" && (
 				<>
-					<Attributes />
-					<BottomBar />
+					<Attributes
+						hero={state.heroes[MapPlayer.fromLocal().id]}
+						visible={attributesVisibile}
+					/>
+					<BottomBar
+						toggleAttributesVisibile={() =>
+							setAttributesVisible(!attributesVisibile)
+						}
+					/>
 					<Statuses hero={state.heroes[MapPlayer.fromLocal().id]} />
 				</>
 			)}

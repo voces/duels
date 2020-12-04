@@ -182,6 +182,10 @@ export const heroDataArr: HeroData[] = heroKeys.map((key) => heroData[key]);
 
 export const heroTypeIds = heroDataArr.map((h) => h.type);
 
+export const heroTypeMap = Object.fromEntries(
+	heroDataArr.map((h) => [h.type, h]),
+);
+
 export const isHeroType = (unit: UnitEx): boolean => {
 	const typeId = unit.unit.typeId;
 	return heroTypeIds.includes(typeId);

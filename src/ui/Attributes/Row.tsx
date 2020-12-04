@@ -1,4 +1,5 @@
 import * as React from "../../../node_modules/w3ts-jsx/dist/src/index";
+import { bottomRight, topLeft, topRight } from "../util/pos";
 import { WIDTH } from "./shared";
 
 export const Row = ({
@@ -7,6 +8,7 @@ export const Row = ({
 	canIncrement,
 	onIncrement,
 	first = false,
+	header = false,
 	gap = false,
 }: {
 	name: string;
@@ -14,6 +16,7 @@ export const Row = ({
 	canIncrement?: boolean;
 	onIncrement?: () => void;
 	first?: boolean;
+	header?: boolean;
 	gap?: boolean;
 }): React.Node => (
 	<container
@@ -28,19 +31,22 @@ export const Row = ({
 						point: FRAMEPOINT_TOPLEFT,
 						relative: "previous",
 						relativePoint: FRAMEPOINT_BOTTOMLEFT,
-						y: gap ? -8 : 0,
+						y: header || gap ? -8 : 0,
 				  }
 		}
-		size={{ width: WIDTH, height: 20 }}
+		size={{ width: WIDTH, height: header ? 40 : 20 }}
 	>
-		<text
-			text={name}
-			position={{
-				point: FRAMEPOINT_TOPLEFT,
-				relative: "parent",
-				relativePoint: FRAMEPOINT_TOPLEFT,
-			}}
-		/>
+		{header && (
+			<backdrop
+				texture="assets/img/red_gradient"
+				position={[
+					topLeft({ x: -16, y: -2 }),
+					bottomRight({ x: -48, y: 2 }),
+				]}
+				alpha={200}
+			/>
+		)}
+		<text text={name} position={topLeft({ y: header ? -10 : 0 })} />
 		{canIncrement && (
 			<button
 				size={{ width: 20, height: 20 }}
@@ -58,13 +64,6 @@ export const Row = ({
 				/>
 			</button>
 		)}
-		<text
-			text={value}
-			position={{
-				point: FRAMEPOINT_TOPRIGHT,
-				relative: "parent",
-				relativePoint: FRAMEPOINT_TOPRIGHT,
-			}}
-		/>
+		<text text={value} position={topRight({ y: header ? -10 : 0 })} />
 	</container>
 );

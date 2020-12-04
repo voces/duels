@@ -9,10 +9,12 @@ const ICON_SIZE = 48;
 const ButtonIcon = ({
 	icon,
 	tooltip,
+	onClick,
 	first = false,
 }: {
 	icon: string;
 	tooltip?: string;
+	onClick: () => void;
 	first?: boolean;
 }) => {
 	const buttonRef = useRefState<framehandle | null>(null);
@@ -21,6 +23,7 @@ const ButtonIcon = ({
 			position={first ? topLeft() : leftToRight()}
 			size={{ width: ICON_SIZE, height: ICON_SIZE }}
 			ref={buttonRef}
+			onClick={onClick}
 			tooltip={
 				tooltip && (
 					<Tooltip>
@@ -42,7 +45,11 @@ const ButtonIcon = ({
 	);
 };
 
-export const BottomBar = (): React.Node => (
+export const BottomBar = ({
+	toggleAttributesVisibile,
+}: {
+	toggleAttributesVisibile: () => void;
+}): React.Node => (
 	<container
 		absPosition={{
 			point: FRAMEPOINT_TOPLEFT,
@@ -54,9 +61,14 @@ export const BottomBar = (): React.Node => (
 		<ButtonIcon
 			icon="assets/img/Player_eq_icon_r"
 			tooltip="Character"
+			onClick={toggleAttributesVisibile}
 			first
 		/>
-		<ButtonIcon icon="assets/img/Bag2_eq_icon_r" tooltip="Inventory" />
+		<ButtonIcon
+			icon="assets/img/Bag2_eq_icon_r"
+			tooltip="Inventory"
+			onClick={() => {}}
+		/>
 		<backdrop texture="asdf" position="parent" alpha={10} />
 	</container>
 );
