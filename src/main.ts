@@ -1,9 +1,10 @@
-import "./magic";
-import "./ui/setup";
-import "./states/heroSelection";
-import "./input/input";
 import "./areas/index";
 import "./hostiles/damage";
+import "./input/commands/default";
+import "./input/input";
+import "./magic";
+import "./states/heroSelection";
+import "./ui/setup";
 
 import {
 	addScriptHook,

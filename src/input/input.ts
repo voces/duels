@@ -5,31 +5,84 @@ import {
 	Trigger,
 	W3TS_HOOK,
 } from "../../node_modules/w3ts/index";
-import { attackAction } from "../actions/attack";
-import { moveAction } from "../actions/move";
-import { queueAction } from "../actions/queue";
-import { state } from "../states/state";
 import { UnitEx } from "../UnitEx";
 import { forEachHero, forEachPlayer } from "../util";
+import { processShortcut } from "./commands/registry";
+import { KeyboardShortcut, MouseShortcut } from "./commands/types";
 import { keyboards, mice } from "./data";
 
-const queueMove = (playerId: number) => {
-	if (state.state !== "grind") return;
-
-	const hero = state.heroes[playerId];
-	queueAction(playerId, moveAction(hero));
+const osKeyToStringMap = (key: oskeytype) => {
+	switch (key) {
+		case OSKEY_A:
+			return "a";
+		case OSKEY_B:
+			return "b";
+		case OSKEY_C:
+			return "c";
+		case OSKEY_D:
+			return "d";
+		case OSKEY_E:
+			return "e";
+		case OSKEY_F:
+			return "f";
+		case OSKEY_G:
+			return "g";
+		case OSKEY_H:
+			return "h";
+		case OSKEY_I:
+			return "i";
+		case OSKEY_J:
+			return "j";
+		case OSKEY_K:
+			return "k";
+		case OSKEY_L:
+			return "l";
+		case OSKEY_M:
+			return "m";
+		case OSKEY_N:
+			return "n";
+		case OSKEY_O:
+			return "o";
+		case OSKEY_P:
+			return "p";
+		case OSKEY_Q:
+			return "q";
+		case OSKEY_R:
+			return "r";
+		case OSKEY_S:
+			return "s";
+		case OSKEY_T:
+			return "t";
+		case OSKEY_U:
+			return "u";
+		case OSKEY_V:
+			return "v";
+		case OSKEY_W:
+			return "w";
+		case OSKEY_X:
+			return "x";
+		case OSKEY_Y:
+			return "y";
+		case OSKEY_Z:
+			return "z";
+		case OSKEY_LSHIFT:
+			return "shift";
+	}
 };
+const executeCommands = (playerId: number) => {
+	const playerMouse = mice[playerId];
+	const playerKeyborad = keyboards[playerId];
 
-const queueLeftAction = (playerId: number, target?: UnitEx) => {
-	if (state.state !== "grind") return;
+	const mouse: MouseShortcut[] = [];
+	if (playerMouse.leftDown) mouse.push("left");
 
-	const hero = state.heroes[playerId];
+	const keyboard = Object.entries(playerKeyborad)
+		.filter(([, value]) => value)
+		.map(([key]) => key) as KeyboardShortcut[];
 
-	// Only attack enemies!
-	if (target && hero.unit.isAlly(target.unit.owner))
-		return queueMove(playerId);
+	const shortcut = { mouse, keyboard };
 
-	queueAction(playerId, attackAction(hero, target));
+	processShortcut(playerId, shortcut);
 };
 
 const mouseDownTrigger = new Trigger();
@@ -56,12 +109,11 @@ const onMouseDown = () => {
 		x: BlzGetTriggerPlayerMouseX(),
 		y: BlzGetTriggerPlayerMouseY(),
 		targetLock: target,
+		target,
+		moved: false,
 	};
 
-	if (button === MOUSE_BUTTON_TYPE_LEFT)
-		if (target) queueLeftAction(playerId, target);
-		else if (keyboards[playerId].shiftDown) queueLeftAction(playerId);
-		else queueMove(playerId);
+	executeCommands(playerId);
 
 	return false;
 };
@@ -80,6 +132,8 @@ const onMouseUp = () => {
 		x: BlzGetTriggerPlayerMouseX(),
 		y: BlzGetTriggerPlayerMouseY(),
 		targetLock: null,
+		target: UnitEx.fromHandle(BlzGetMouseFocusUnit()),
+		moved: false,
 	};
 	return false;
 };
@@ -93,6 +147,8 @@ const onMouseMove = () => {
 		x: BlzGetTriggerPlayerMouseX(),
 		y: BlzGetTriggerPlayerMouseY(),
 		targetLock: mice[playerId].targetLock,
+		target: UnitEx.fromHandle(BlzGetMouseFocusUnit()),
+		moved: true,
 	};
 	return false;
 };
@@ -100,16 +156,17 @@ const onMouseMove = () => {
 const keyDownTrigger = new Trigger();
 const onKeyDown = () => {
 	const playerId = MapPlayer.fromEvent().id;
-	keyboards[playerId].shiftDown = true;
-	if (mice[playerId].leftDown) queueLeftAction(playerId);
+	const key = osKeyToStringMap(BlzGetTriggerPlayerKey());
+	if (key) keyboards[playerId][key] = true;
+	executeCommands(playerId);
 	return false;
 };
 
 const keyUpTrigger = new Trigger();
 const onKeyUp = () => {
 	const playerId = MapPlayer.fromEvent().id;
-	keyboards[playerId].shiftDown = false;
-	if (mice[playerId].leftDown) queueMove(playerId);
+	const key = osKeyToStringMap(BlzGetTriggerPlayerKey());
+	if (key) keyboards[playerId][key] = false;
 	return false;
 };
 
@@ -117,7 +174,11 @@ const ticker = new Timer();
 const tick = () => {
 	forEachHero((hero) => {
 		const pid = hero.owner.id;
-		if (mice[pid].leftDown && !mice[pid].targetLock) queueMove(pid);
+		const mouse = mice[pid];
+		if ((mouse.leftDown || mouse.rightDown) && mouse.moved) {
+			executeCommands(pid);
+			mouse.moved = false;
+		}
 	});
 };
 
@@ -134,6 +195,37 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
 		);
 		keyDownTrigger.registerPlayerKeyEvent(player, OSKEY_LSHIFT, 1, true);
 		keyUpTrigger.registerPlayerKeyEvent(player, OSKEY_LSHIFT, 0, false);
+		[
+			OSKEY_A,
+			OSKEY_B,
+			OSKEY_C,
+			OSKEY_D,
+			OSKEY_E,
+			OSKEY_F,
+			OSKEY_G,
+			OSKEY_H,
+			OSKEY_I,
+			OSKEY_J,
+			OSKEY_K,
+			OSKEY_L,
+			OSKEY_M,
+			OSKEY_N,
+			OSKEY_O,
+			OSKEY_P,
+			OSKEY_Q,
+			OSKEY_R,
+			OSKEY_S,
+			OSKEY_T,
+			OSKEY_U,
+			OSKEY_V,
+			OSKEY_W,
+			OSKEY_X,
+			OSKEY_Y,
+			OSKEY_Z,
+		].forEach((key) => {
+			keyDownTrigger.registerPlayerKeyEvent(player, key, 0, true);
+			keyUpTrigger.registerPlayerKeyEvent(player, key, 0, false);
+		});
 	});
 
 	mouseDownTrigger.addCondition(onMouseDown);

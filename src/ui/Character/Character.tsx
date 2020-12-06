@@ -5,7 +5,7 @@ import { LargeText } from "../Text";
 import { Row } from "./Row";
 import { WIDTH } from "./shared";
 
-export const Attributes = ({
+export const Character = ({
 	hero,
 	visible,
 }: {

@@ -1,14 +1,28 @@
 import * as React from "../../node_modules/w3ts-jsx/dist/src/index";
 import { MapPlayer } from "../../node_modules/w3ts/index";
-import { Attributes } from "./Attributes/Attributes";
+import { registerCommand } from "../input/commands/registry";
+import { log } from "../util";
 import { BottomBar } from "./BottomBar/BottomBar";
+import { Character } from "./Character/Character";
 import { HeroSelection } from "./HeroSelection";
 import { useGlobalState } from "./hooks/useGlobalState";
 import { Statuses } from "./Statuses/Statuses";
 
 export const App = (): React.Node => {
 	const state = useGlobalState();
-	const [attributesVisibile, setAttributesVisible] = React.useState(false);
+	const [characterVisible, setCharacterVisible] = React.useState(false);
+
+	React.useEffect(() => {
+		registerCommand({
+			name: "Toggle character",
+			shortcuts: [{ keyboard: "o" }],
+			fn: (playerId) => {
+				if (playerId === MapPlayer.fromLocal().id)
+					setCharacterVisible((v) => !v);
+				return true;
+			},
+		});
+	});
 
 	return (
 		<container
@@ -28,13 +42,16 @@ export const App = (): React.Node => {
 			{state.state === "hero-selection" && <HeroSelection />}
 			{state.state !== "hero-selection" && state.state !== "initial" && (
 				<>
-					<Attributes
+					<Character
 						hero={state.heroes[MapPlayer.fromLocal().id]}
-						visible={attributesVisibile}
+						visible={characterVisible}
 					/>
 					<BottomBar
 						toggleAttributesVisibile={() =>
-							setAttributesVisible(!attributesVisibile)
+							setCharacterVisible((v) => {
+								log("was", v);
+								return !v;
+							})
 						}
 					/>
 					<Statuses hero={state.heroes[MapPlayer.fromLocal().id]} />

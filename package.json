@@ -8,8 +8,9 @@
   "main": "src/main.ts",
   "scripts": {
     "build:defs": "ts-node scripts/dev",
-    "build": "ts-node --ignore \"node_modules/(?!mdx-m3-viewer).*\" scripts/build.ts",
+    "build": "ts-node scripts/build.ts",
     "dev": "npm-watch",
+    "postinstall": "tsc --outDir null -p node_modules/mdx-m3-viewer/tsconfig.json",
     "jest": "jest",
     "test": "ts-node scripts/test.ts"
   },
