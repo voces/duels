@@ -65,15 +65,23 @@ const spawnHeroOptions = () => {
 			x: distance * CosBJ(angle),
 			y: distance * SinBJ(angle),
 			facing: angle + 180,
+			level: -1,
 		});
 		u.unit.setScale(1.25, 1.25, 1.25);
+		u.unit.moveSpeed = 0;
 		tempUnits.push(u);
 	}
 };
 
 const spawnWisps = () => {
 	forEachPlayer((player) => {
-		const u = new UnitEx({ owner: player, unit: "e000", x: 0, y: 0 });
+		const u = new UnitEx({
+			owner: player,
+			unit: "e000",
+			x: 0,
+			y: 0,
+			level: -1,
+		});
 		u.x = 0;
 		u.y = 0;
 		tempUnits.push(u);

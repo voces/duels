@@ -4,23 +4,30 @@ import { dummyGroup, log } from "./util";
 
 const map = new Map<unit, UnitEx>();
 
-export class UnitEx {
-	unit: Unit;
-	maxHealth: number;
-	health: number;
+export interface UnitExProps {
+	unit: number | string;
+	owner: MapPlayer | number;
+	x: number;
+	y: number;
+	facing?: number;
+	maxHealth?: number;
+	weapon?: Weapon;
+	level: number;
+}
 
-	weapon: Weapon;
+export class UnitEx {
+	readonly unit: Unit;
+	private _maxHealth!: number;
+	private _health!: number;
+	private _weapon!: Weapon;
+	private _mana = 0;
+	private _maxMana = 0;
+	protected _level!: number;
+
+	private listeners: (() => void)[] = [];
 
 	constructor(props: { unit: Unit });
-	constructor(props: {
-		unit: number | string;
-		owner: MapPlayer | number;
-		x: number;
-		y: number;
-		facing?: number;
-		maxHealth?: number;
-		weapon?: Weapon;
-	});
+	constructor(props: UnitExProps);
 	constructor({
 		unit,
 		owner,
@@ -32,6 +39,7 @@ export class UnitEx {
 			minimumDamage: { physical: 1 },
 			maximumDamage: { physical: 1 },
 		},
+		level,
 	}: {
 		unit: Unit | number | string;
 		owner?: MapPlayer | number;
@@ -40,6 +48,7 @@ export class UnitEx {
 		facing?: number;
 		maxHealth?: number;
 		weapon?: Weapon;
+		level?: number;
 	}) {
 		if (typeof unit === "number" || typeof unit === "string")
 			if (owner == null) throw "Expected owner when passing in unit type";
@@ -62,12 +71,68 @@ export class UnitEx {
 		this.health = maxHealth;
 		this.weapon = weapon;
 
-		if (x) unit.x = x;
-		if (y) unit.y = y;
+		if (x && y) unit.setPosition(x, y);
+
+		if (typeof level !== "number")
+			throw `Expected a level for ${unit.typeId} (${
+				typeof owner === "number" ? owner : owner && owner.name
+			})`;
+		this._level = level;
 	}
 
 	public isAlly(whichPlayer: MapPlayer): boolean {
 		return IsUnitAlly(this.unit.handle, whichPlayer.handle);
+	}
+
+	protected emitChange(): void {
+		for (const fn of this.listeners) fn();
+	}
+
+	addEventListener(fn: () => void): void {
+		this.listeners.push(fn);
+	}
+
+	removeEventListener(fn: () => void): void {
+		const index = this.listeners.indexOf(fn);
+		if (index >= 0) this.listeners.splice(index);
+	}
+
+	get health(): number {
+		return this._health;
+	}
+	set health(value: number) {
+		this._health = value;
+		this.emitChange();
+	}
+
+	get maxHealth(): number {
+		return this._maxHealth;
+	}
+	set maxHealth(value: number) {
+		this._maxHealth = value;
+		this.emitChange();
+	}
+
+	get mana(): number {
+		return this._mana;
+	}
+	set mana(value: number) {
+		this._mana = value;
+	}
+
+	get maxMana(): number {
+		return this._maxMana;
+	}
+	set maxMana(value: number) {
+		this._maxMana = value;
+	}
+
+	get weapon(): Weapon {
+		return this._weapon;
+	}
+	set weapon(value: Weapon) {
+		this._weapon = value;
+		this.emitChange();
 	}
 
 	// https://web.archive.org/web/20070808072323/http://strategy.diabloii.net/news.php?id=551
@@ -89,6 +154,7 @@ export class UnitEx {
 
 	set facing(degrees: number) {
 		this.unit.facing = degrees;
+		this.emitChange();
 	}
 
 	setAnimation(whichAnimation: string | number): void {
@@ -101,6 +167,7 @@ export class UnitEx {
 
 	set x(value: number) {
 		this.unit.x = value;
+		this.emitChange();
 	}
 
 	get y(): number {
@@ -109,6 +176,7 @@ export class UnitEx {
 
 	set y(value: number) {
 		this.unit.y = value;
+		this.emitChange();
 	}
 
 	get handle(): unit {
@@ -138,7 +206,6 @@ export class UnitEx {
 			const damageFromType = damage[damageType];
 			if (typeof damageFromType !== "number") continue;
 			target.health -= damageFromType;
-			log(damageType, damageFromType, target.health, target.maxHealth);
 		}
 
 		if (target.health <= 0) target.unit.kill();
@@ -157,10 +224,11 @@ export class UnitEx {
 			y,
 			128,
 			Filter((): boolean => {
+				if (foundAUnit) return false;
+
 				const u = UnitEx.fromFilter()!;
 
-				if (u.isAlly(this.unit.owner) || u.health < 0 || foundAUnit)
-					return false;
+				if (u.isAlly(this.unit.owner) || u.health <= 0) return false;
 				foundAUnit = true;
 
 				this.damage(u, damage);
@@ -206,5 +274,9 @@ export class UnitEx {
 		const u = GetTriggerUnit();
 		if (!u) return null;
 		return this.fromHandle(u);
+	}
+
+	get level(): number {
+		return this._level;
 	}
 }

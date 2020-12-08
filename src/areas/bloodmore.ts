@@ -29,18 +29,49 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
 			x = Math.random() * xRange + xMin;
 			y = Math.random() * yRange + yMin;
 		}
+
 		return { x, y };
 	};
 
-	const max = GetRandomInt(1, 4);
-
+	const maxZombies = GetRandomInt(1, 4);
+	const maxZombieDistance = GetRandomReal(128, 768);
 	const zombieSpawns: Spawn[] = times(GetRandomInt(15, 25), () => ({
-		unit: "n005",
-		initial: GetRandomInt(1, Math.min(3, max)),
+		initial: GetRandomInt(1, maxZombies),
 		frequency: GetRandomInt(30, 45),
-		max,
+		max: maxZombies,
+		maxDistance: maxZombieDistance,
+		minDistance: GetRandomReal(128, maxZombieDistance),
 		...randomSpawn(),
+		unitData: {
+			unit: "n005",
+			level: 1,
+			maxHealth: () => GetRandomInt(7, 12),
+			weapon: {
+				minimumDamage: { physical: 1 },
+				maximumDamage: { physical: 3 },
+			},
+		},
 	}));
 
-	new Zone(region, [...zombieSpawns]);
+	const maxQuilbeasts = GetRandomInt(1, 2);
+	const maxQuilbeastDistance = GetRandomReal(256, 768);
+	const quilbeastSpawns: Spawn[] = times(GetRandomInt(20, 35), () => ({
+		initial: GetRandomInt(1, maxQuilbeasts),
+		frequency: GetRandomInt(20, 45),
+		max: maxQuilbeasts,
+		maxDistance: maxQuilbeastDistance,
+		minDistance: GetRandomReal(256, maxQuilbeastDistance),
+		...randomSpawn(),
+		unitData: {
+			unit: "n006",
+			level: 1,
+			maxHealth: () => GetRandomInt(1, 5),
+			weapon: {
+				minimumDamage: { physical: 0.5 },
+				maximumDamage: { physical: 1.5 },
+			},
+		},
+	}));
+
+	new Zone(region, [...zombieSpawns, ...quilbeastSpawns]);
 });

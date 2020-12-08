@@ -8,18 +8,26 @@ import {
 	W3TS_HOOK,
 } from "../../node_modules/w3ts/index";
 import { isHeroType } from "../types";
-import { UnitEx } from "../UnitEx";
+import { UnitEx, UnitExProps } from "../UnitEx";
 import { startTimeout } from "../util";
+
+type InnerSpawnUnitProps = Omit<UnitExProps, "x" | "y" | "owner">;
+
+type SpawnUnitProps = {
+	[key in keyof Omit<UnitExProps, "x" | "y" | "owner">]:
+		| UnitExProps[key]
+		| (() => UnitExProps[key]);
+};
 
 export interface Spawn {
 	x: number;
 	y: number;
-	unit: number | string;
 	initial: number;
 	frequency: number;
 	max: number;
 	minDistance?: number;
 	maxDistance?: number;
+	unitData: SpawnUnitProps;
 }
 
 interface InternalSpawn extends Spawn {
@@ -86,11 +94,22 @@ export class Zone {
 		const x = spawn.x + distance * Math.cos(angle);
 		const y = spawn.y + distance * Math.sin(angle);
 		const owner = randomHostile();
+
+		const data = { ...spawn.unitData };
+		let prop: keyof typeof data;
+		for (prop in data) {
+			const value = data[prop];
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			if (typeof value === "function") data[prop] = value() as any;
+		}
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const builtData: InnerSpawnUnitProps = data as any;
+
 		const u = new UnitEx({
-			unit: spawn.unit,
 			owner,
 			x,
 			y,
+			...builtData,
 		});
 		spawn.units.addUnit(u.unit);
 		spawn.last = time;

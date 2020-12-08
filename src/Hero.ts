@@ -1,5 +1,7 @@
 import { MapPlayer } from "../node_modules/w3ts/index";
+import { Damage } from "./damage";
 import { UnitEx } from "./UnitEx";
+import { log } from "./util";
 
 export const _levelToExperience = (
 	level: number,
@@ -39,25 +41,24 @@ export const expierenceToLevel = (expierence: number): number => {
 };
 
 export class Hero extends UnitEx {
-	strength: number;
-	dexterity: number;
-	vitality: number;
-	energy: number;
-	maxStamina: number;
-	maxMana: number;
-	stamina: number;
-	mana: number;
+	private _strength!: number;
+	private _dexterity!: number;
+	private _vitality!: number;
+	private _energy!: number;
 
-	healthPerLevel: number;
-	staminaPerLevel: number;
-	manaPerLevel: number;
+	private _maxStamina = 0;
+	private _stamina = 0;
 
-	healthPerVitality: number;
-	staminaPerVitality: number;
-	manaPerEnergy: number;
+	healthPerLevel!: number;
+	staminaPerLevel!: number;
+	manaPerLevel!: number;
 
-	expierence = 0;
-	unasignedStatPoints = 0;
+	healthPerVitality!: number;
+	staminaPerVitality!: number;
+	manaPerEnergy!: number;
+
+	private _expierence = 0;
+	private _unasignedStatPoints = 0;
 
 	constructor({
 		unit,
@@ -107,27 +108,148 @@ export class Hero extends UnitEx {
 				minimumDamage: { physical: 1 },
 				maximumDamage: { physical: 1 },
 			},
+			// Use expierence instead
+			level: -1,
 		});
-		this.strength = strength;
-		this.dexterity = dexterity;
-		this.vitality = vitality;
-		this.energy = energy;
-		this.maxStamina = maxStamina;
-		this.stamina = maxStamina;
-		this.maxMana = maxMana;
-		this.mana = maxMana;
-		this.healthPerLevel = healthPerLevel;
-		this.staminaPerLevel = staminaPerLevel;
-		this.manaPerLevel = manaPerLevel;
-		this.healthPerVitality = healthPerVitality;
-		this.staminaPerVitality = staminaPerVitality;
-		this.manaPerEnergy = manaPerEnergy;
 
-		// Disable auto-attack
-		this.unit.addType(UNIT_TYPE_PEON);
+		try {
+			// Attribute setters will use these, so set them first
+			this.healthPerVitality = healthPerVitality;
+			this.staminaPerVitality = staminaPerVitality;
+			this.manaPerEnergy = manaPerEnergy;
+
+			// Then attributes, since they modify other stats we'll want to rewrite
+			this.strength = strength;
+			this.dexterity = dexterity;
+			this.vitality = vitality;
+			this.energy = energy;
+
+			this.maxHealth = maxHealth;
+			this.health = maxHealth;
+			this.maxStamina = maxStamina;
+			this.stamina = maxStamina;
+			this.maxMana = maxMana;
+			this.mana = maxMana;
+
+			this.healthPerLevel = healthPerLevel;
+			this.staminaPerLevel = staminaPerLevel;
+			this.manaPerLevel = manaPerLevel;
+
+			// Disable auto-attack
+			this.unit.addType(UNIT_TYPE_PEON);
+		} catch (err) {
+			log(err);
+		}
+	}
+
+	get strength(): number {
+		return this._strength;
+	}
+	set strength(value: number) {
+		this._strength = value;
+		this.emitChange();
+	}
+
+	get dexterity(): number {
+		return this._dexterity;
+	}
+	set dexterity(value: number) {
+		this._dexterity = value;
+		this.emitChange();
+	}
+
+	get vitality(): number {
+		return this._vitality;
+	}
+	set vitality(value: number) {
+		const oldVitality = this._vitality ?? 0;
+
+		this._vitality = value;
+
+		const diff = this._vitality - oldVitality;
+
+		const healthChange = diff * this.healthPerVitality;
+		this.health += healthChange;
+		this.maxHealth += healthChange;
+
+		const staminaChange = diff * this.staminaPerVitality;
+		this.stamina += staminaChange;
+		this.maxStamina += staminaChange;
+
+		this.emitChange();
+	}
+
+	get energy(): number {
+		return this._energy;
+	}
+	set energy(value: number) {
+		const oldEnergy = this._energy ?? 0;
+
+		this._energy = value;
+
+		const diff = this._energy - oldEnergy;
+		const manaChange = diff * this.manaPerEnergy;
+		this.mana += manaChange;
+		this.maxMana += manaChange;
+
+		this.emitChange();
+	}
+
+	get maxStamina(): number {
+		return this._maxStamina;
+	}
+	set maxStamina(value: number) {
+		this._maxStamina = value;
+		this.emitChange();
+	}
+
+	get stamina(): number {
+		return this._stamina;
+	}
+	set stamina(value: number) {
+		this._stamina = value;
+		this.emitChange();
+	}
+
+	get expierence(): number {
+		return this._expierence;
+	}
+	set expierence(value: number) {
+		const prevLevel = this.level;
+		this._expierence = value;
+		const nextLevel = this.level;
+		const gains = nextLevel - prevLevel;
+		if (gains > 0) {
+			this.health = this.maxHealth += gains * this.healthPerLevel;
+			this.stamina = this.maxStamina += gains * this.staminaPerLevel;
+			this.mana = this.maxMana += gains * this.manaPerLevel;
+			this.unasignedStatPoints += gains * 5;
+		}
+		this.emitChange();
+	}
+
+	get unasignedStatPoints(): number {
+		return this._unasignedStatPoints;
+	}
+	set unasignedStatPoints(value: number) {
+		this._unasignedStatPoints = value;
+		this.emitChange();
+	}
+
+	damage(target: UnitEx, damage: Damage): void {
+		super.damage(target, damage);
+		if (target.health > 0) return;
+
+		const rawReward = (target.level * 8 + 15) ** 1.2;
+		const levelDiff = Math.abs(target.level - this.level);
+		const factor = 1 / Math.exp(Math.max(0, levelDiff - 3) / 4);
+		const reward = rawReward * factor;
+
+		this.expierence += reward;
 	}
 
 	get level(): number {
+		if (this._level > 0) return this._level;
 		return expierenceToLevel(this.expierence);
 	}
 }

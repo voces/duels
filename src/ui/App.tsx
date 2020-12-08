@@ -1,7 +1,6 @@
 import * as React from "../../node_modules/w3ts-jsx/dist/src/index";
 import { MapPlayer } from "../../node_modules/w3ts/index";
 import { registerCommand } from "../input/commands/registry";
-import { log } from "../util";
 import { BottomBar } from "./BottomBar/BottomBar";
 import { Character } from "./Character/Character";
 import { HeroSelection } from "./HeroSelection";
@@ -25,20 +24,7 @@ export const App = (): React.Node => {
 	});
 
 	return (
-		<container
-			absPosition={[
-				{
-					point: FRAMEPOINT_TOPLEFT,
-					x: 0,
-					y: 1200,
-				},
-				{
-					point: FRAMEPOINT_BOTTOMRIGHT,
-					x: 1600,
-					y: 0,
-				},
-			]}
-		>
+		<container>
 			{state.state === "hero-selection" && <HeroSelection />}
 			{state.state !== "hero-selection" && state.state !== "initial" && (
 				<>
@@ -48,10 +34,7 @@ export const App = (): React.Node => {
 					/>
 					<BottomBar
 						toggleAttributesVisibile={() =>
-							setCharacterVisible((v) => {
-								log("was", v);
-								return !v;
-							})
+							setCharacterVisible((v) => !v)
 						}
 					/>
 					<Statuses hero={state.heroes[MapPlayer.fromLocal().id]} />

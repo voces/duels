@@ -31,7 +31,9 @@ const StatusBar = ({
 				texture="assets/img/HP_bar_mini_frame"
 			/>
 			<SmallText
-				text={`${value}/${max} (${Math.round((value / max) * 100)})%`}
+				text={`${Math.round(value)}/${max} (${Math.round(
+					(value / max) * 100,
+				)})%`}
 				position={center()}
 			/>
 		</container>
@@ -77,8 +79,8 @@ export const Status = ({
 			<StatusBar
 				position={topDown({ y: -4 })}
 				size={{ width: 250, height: 32 }}
-				value={unit.health}
-				max={unit.maxHealth}
+				value={unit.mana}
+				max={unit.maxMana}
 				barTexture="assets/img/Mp_mini_line"
 			/>
 		</container>
