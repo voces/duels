@@ -75,6 +75,7 @@ const executeCommands = (playerId: number) => {
 
 	const mouse: MouseShortcut[] = [];
 	if (playerMouse.leftDown) mouse.push("left");
+	if (playerMouse.rightDown) mouse.push("right");
 
 	const keyboard = Object.entries(playerKeyborad)
 		.filter(([, value]) => value)

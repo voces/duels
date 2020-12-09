@@ -1,6 +1,8 @@
 import { MapPlayer, Unit } from "../node_modules/w3ts/index";
 import { Damage, damageTypes, Weapon } from "./damage";
-import { dummyGroup, log } from "./util";
+import { registerCommand } from "./input/commands/registry";
+import { Skill } from "./skills/types";
+import { dummyGroup } from "./util";
 
 const map = new Map<unit, UnitEx>();
 
@@ -23,6 +25,7 @@ export class UnitEx {
 	private _mana = 0;
 	private _maxMana = 0;
 	protected _level!: number;
+	private _skills: Skill[] = [];
 
 	private listeners: (() => void)[] = [];
 
@@ -67,17 +70,16 @@ export class UnitEx {
 		if (map.has(unit.handle)) throw "Duplicate UnitEx " + unit.typeId;
 		map.set(unit.handle, this);
 		this.unit = unit;
-		this.maxHealth = maxHealth;
-		this.health = maxHealth;
-		this.weapon = weapon;
+
+		if (maxHealth) {
+			this.maxHealth = maxHealth;
+			this.health = maxHealth;
+		}
+		if (weapon) this.weapon = weapon;
 
 		if (x && y) unit.setPosition(x, y);
 
-		if (typeof level !== "number")
-			throw `Expected a level for ${unit.typeId} (${
-				typeof owner === "number" ? owner : owner && owner.name
-			})`;
-		this._level = level;
+		if (level) this._level = level;
 	}
 
 	public isAlly(whichPlayer: MapPlayer): boolean {
@@ -243,6 +245,18 @@ export class UnitEx {
 		return Math.sqrt(
 			(this.unit.y - target.unit.y) ** 2 +
 				(this.unit.x - target.unit.x) ** 2,
+		);
+	}
+
+	addSkill(skill: Skill): void {
+		this._skills.push(skill);
+		registerCommand(
+			{
+				name: skill.name,
+				shortcuts: [{ mouse: "right" }],
+				fn: skill.perform,
+			},
+			this.owner.id,
 		);
 	}
 

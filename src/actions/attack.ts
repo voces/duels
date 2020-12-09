@@ -7,6 +7,7 @@ import { Hero } from "../Hero";
 import { mice } from "../input/data";
 import { UnitEx } from "../UnitEx";
 import { startTimeout } from "../util";
+import { Vector2Ex } from "../util/Vector2";
 import { Done, Perform } from "./queue";
 
 interface AttackAction {
@@ -35,7 +36,7 @@ const doAttack = (hero: Hero, done: Done, target?: UnitEx | null) => {
 		else hero.doMeleeAttack();
 
 		// Takes another 490ms to finish backswing
-		startTimeout(0.49, () => done());
+		startTimeout(0.49, done);
 	});
 };
 
@@ -51,7 +52,9 @@ export const attackAction = (
 		// otherwise queue a move then attack
 		if (target) {
 			hero.unit.issueTargetOrder("attackonce", target.unit);
-			done();
+			if (Vector2Ex.distanceBetweenVectors(hero, target) < 128)
+				startTimeout(1, done);
+			else done();
 		}
 		// If no target, just attack from where we are standing
 		else doAttack(hero, done);

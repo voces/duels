@@ -19,7 +19,7 @@ interface Mouse {
 	 */
 	y: number;
 	/**
-	 * The target unit when the left mouse button was pressed.
+	 * The target unit when either mouse button was pressed.
 	 */
 	targetLock: UnitEx | null;
 	/**

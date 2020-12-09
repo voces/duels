@@ -6,6 +6,7 @@ import {
 	W3TS_HOOK,
 } from "../../node_modules/w3ts/index";
 import { Hero } from "../Hero";
+import { fireboltSkill } from "../skills/sorceress/fire/firebolt";
 import { heroData, heroDataArr } from "../types";
 import { UnitEx } from "../UnitEx";
 import { forEachPlayer } from "../util";
@@ -39,6 +40,8 @@ const advanceFromHeroSelection = () => {
 		// Disables moving the camera and auto-follows the hero
 		if (player.handle === GetLocalPlayer())
 			Camera.setTargetController(hero.handle, 0, 128, false);
+
+		if (heroType === "sorceress") hero.addSkill(fireboltSkill());
 	});
 
 	// Reset camera

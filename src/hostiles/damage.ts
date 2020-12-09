@@ -3,7 +3,9 @@ import {
 	Trigger,
 	W3TS_HOOK,
 } from "../../node_modules/w3ts/index";
+import { spawnProjectile } from "../systems/Projectile";
 import { UnitEx } from "../UnitEx";
+import { Vector2Ex } from "../util/Vector2";
 
 addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
 	const t = new Trigger();
@@ -11,7 +13,46 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
 	t.addCondition(() => {
 		const source = UnitEx.fromHandle(GetEventDamageSource());
 		const target = UnitEx.fromHandle(BlzGetEventDamageTarget());
-		source.damage(target, source.randomDamage());
+
+		const range = BlzGetUnitWeaponRealField(
+			source.unit.handle,
+			UNIT_WEAPON_RF_ATTACK_RANGE,
+			0,
+		);
+
+		if (range < 128) source.damage(target, source.randomDamage());
+
+		return false;
+	});
+
+	const t2 = new Trigger();
+	t2.registerAnyUnitEvent(EVENT_PLAYER_UNIT_ATTACKED);
+	t2.addCondition(() => {
+		const source = UnitEx.fromHandle(GetAttacker());
+		const target = UnitEx.fromEvent();
+
+		const range = BlzGetUnitWeaponRealField(
+			source.unit.handle,
+			UNIT_WEAPON_RF_ATTACK_RANGE,
+			0,
+		);
+
+		if (range >= 128 && target) {
+			const angle = Vector2Ex.angleBetweenVectors(source, target);
+
+			spawnProjectile({
+				angle,
+				damage: source.randomDamage(),
+				duration: 2.5,
+				model:
+					"Abilities/Weapons/BristleBackMissile/BristleBackMissile.mdl",
+				owner: source,
+				radius: 96,
+				speed: 700,
+				x: source.x,
+				y: source.y,
+			});
+		}
 		return false;
 	});
 });
