@@ -1,4 +1,4 @@
-import { MapPlayer, Unit } from "../node_modules/w3ts/index";
+import { getElapsedTime, MapPlayer, Unit } from "../node_modules/w3ts/index";
 import { queueAction } from "./actions/queue";
 import { Damage, damageTypes, randomDamage, Weapon } from "./damage";
 import { registerCommand } from "./input/commands/registry";
@@ -22,7 +22,7 @@ export interface UnitExProps {
 export class UnitEx {
 	readonly unit: Unit;
 	private _maxHealth!: number;
-	private _health!: number;
+	private _health = 1;
 	private _weapon!: Weapon;
 	private _mana = 0;
 	private _maxMana = 0;
@@ -30,6 +30,7 @@ export class UnitEx {
 	private _skills: Skill[] = [];
 
 	private listeners: (() => void)[] = [];
+	private lastHealthLoss = 0;
 
 	constructor(props: { unit: Unit });
 	constructor(props: UnitExProps);
@@ -105,30 +106,49 @@ export class UnitEx {
 		return this._health;
 	}
 	set health(value: number) {
+		const oldValue = this._health;
+		if (value < this._health) this.lastHealthLoss = getElapsedTime();
 		this._health = value;
-		this.emitChange();
+		// Only re-render and unit changes
+		if (Math.floor(value) !== Math.floor(oldValue)) this.emitChange();
 	}
 
 	get maxHealth(): number {
 		return this._maxHealth;
 	}
 	set maxHealth(value: number) {
-		this._maxHealth = value;
+		const delta = value - this._maxHealth;
+		this._maxHealth += delta;
+		this._health += delta;
 		this.emitChange();
+	}
+
+	get healthRegen(): number {
+		return this.lastHealthLoss + 5 > getElapsedTime() ? 1 : 0;
 	}
 
 	get mana(): number {
 		return this._mana;
 	}
 	set mana(value: number) {
+		const oldValue = this._mana;
 		this._mana = value;
+		// Only re-render and unit changes
+		if (Math.floor(value) !== Math.floor(oldValue)) this.emitChange();
 	}
 
 	get maxMana(): number {
 		return this._maxMana;
 	}
 	set maxMana(value: number) {
-		this._maxMana = value;
+		const delta = value - this._maxMana;
+		this._maxMana += delta;
+		this._mana += delta;
+		this.emitChange();
+	}
+
+	get manaRegen(): number {
+		return this.maxMana / 120;
 	}
 
 	get weapon(): Weapon {

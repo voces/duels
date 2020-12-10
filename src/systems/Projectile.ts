@@ -46,7 +46,7 @@ export const spawnProjectile = (projectile: Projectile): void => {
 	projectiles.add(p);
 };
 
-addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
+addScriptHook(W3TS_HOOK.MAIN_AFTER, () =>
 	new Timer().start(0.03, true, () => {
 		const time = getElapsedTime();
 		for (const projectile of projectiles.values()) {
@@ -85,5 +85,5 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
 				projectiles.delete(projectile);
 			}
 		}
-	});
-});
+	}),
+);

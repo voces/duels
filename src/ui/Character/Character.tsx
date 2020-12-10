@@ -120,7 +120,9 @@ export const Character = ({
 			/>
 			<Row
 				name="Mana"
-				value={`${hero.mana.toString()}/${hero.maxMana.toString()}`}
+				value={`${Math.round(
+					hero.mana,
+				).toString()}/${hero.maxMana.toString()}`}
 			/>
 
 			<Row name="Fire resistance" value={"0"} gap />
