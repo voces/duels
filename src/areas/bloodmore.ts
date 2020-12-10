@@ -46,10 +46,7 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
 			unit: "n005",
 			level: 1,
 			maxHealth: () => GetRandomInt(7, 12),
-			weapon: {
-				minimumDamage: { physical: 1 },
-				maximumDamage: { physical: 3 },
-			},
+			weapon: { min: { physical: 1 }, max: { physical: 3 } },
 		},
 	}));
 
@@ -66,10 +63,7 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
 			unit: "n006",
 			level: 1,
 			maxHealth: () => GetRandomInt(1, 5),
-			weapon: {
-				minimumDamage: { physical: 0.5 },
-				maximumDamage: { physical: 1.5 },
-			},
+			weapon: { min: { physical: 0.5 }, max: { physical: 1.5 } },
 		},
 	}));
 

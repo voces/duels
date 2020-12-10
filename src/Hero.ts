@@ -104,10 +104,7 @@ export class Hero extends UnitEx {
 			y,
 			maxHealth,
 			// Unarmed
-			weapon: {
-				minimumDamage: { physical: 1 },
-				maximumDamage: { physical: 1 },
-			},
+			weapon: { min: { physical: 1 }, max: { physical: 1 } },
 			// Use expierence instead
 			level: -1,
 		});

@@ -12,6 +12,7 @@ export const Row = ({
 	first = false,
 	header = false,
 	gap = false,
+	visible = true,
 }: {
 	name: string;
 	value: string;
@@ -20,6 +21,7 @@ export const Row = ({
 	first?: boolean;
 	header?: boolean;
 	gap?: boolean;
+	visible?: boolean;
 }): React.Node => {
 	const buttonRef = useRefState<framehandle | null>(null);
 	return (
@@ -39,6 +41,7 @@ export const Row = ({
 					  }
 			}
 			size={{ width: WIDTH, height: header ? 40 : 20 }}
+			visible={visible}
 		>
 			{header && (
 				<backdrop

@@ -1,6 +1,13 @@
 import * as React from "../../../node_modules/w3ts-jsx/dist/src/index";
+import { DamageType, damageTypes } from "../../damage";
 import { Hero } from "../../Hero";
+import {
+	primaryCommands,
+	secondaryCommands,
+} from "../../input/commands/registry";
+import { Command } from "../../input/commands/types";
 import { heroTypeMap } from "../../types";
+import { colorize } from "../../util/colorize";
 import { useUnitListener } from "../hooks/useUnitListener";
 import { LargeText } from "../Text";
 import { Row } from "./Row";
@@ -15,6 +22,33 @@ const incStat = (
 	hero[stat]++;
 };
 
+const damageRangeToString = (damage: Command["damage"]) => {
+	if (!damage) return "";
+	if (typeof damage === "function") damage = damage(0);
+	if (!damage) return "";
+
+	let minSum = 0;
+	let maxSum = 0;
+	let mainDamageType: DamageType = "physical";
+	let mainDamageAmount = 0;
+
+	for (const damageType of damageTypes) {
+		const minDamage = damage.min[damageType];
+		if (minDamage) minSum += minDamage;
+
+		const maxDamage = damage.max[damageType];
+		if (maxDamage) {
+			maxSum += maxDamage;
+			if (maxDamage > mainDamageAmount) {
+				mainDamageType = damageType;
+				mainDamageAmount = maxDamage;
+			}
+		}
+	}
+
+	return colorize[mainDamageType](`${minSum}-${maxSum}`);
+};
+
 export const Character = ({
 	hero,
 	visible,
@@ -23,6 +57,8 @@ export const Character = ({
 	visible: boolean;
 }): React.Node => {
 	useUnitListener(hero);
+	const primary = primaryCommands[hero.owner.id];
+	const secondary = secondaryCommands[hero.owner.id];
 	return (
 		<container
 			size={{ width: WIDTH, height: WIDTH * 2 }}
@@ -79,8 +115,22 @@ export const Character = ({
 				onIncrement={() => incStat(hero, "strength")}
 				header
 			/>
-			<Row name="Attack damage (Strike)" value={"1-6"} />
-			<Row name="Attack damage (Jab)" value={"1-5"} />
+			<Row
+				visible={!!primary}
+				name={`Attack damage (${primary?.name})`}
+				value={
+					primary?.damage ? damageRangeToString(primary.damage) : ""
+				}
+			/>
+			<Row
+				visible={!!secondary}
+				name={`Attack damage (${secondary!.name})`}
+				value={
+					secondary?.damage
+						? damageRangeToString(secondary.damage)
+						: ""
+				}
+			/>
 
 			<Row
 				name="Dexterity"

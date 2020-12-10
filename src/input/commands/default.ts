@@ -1,3 +1,5 @@
+import { MapPlayer } from "w3ts";
+
 import { attackAction } from "../../actions/attack";
 import { moveAction } from "../../actions/move";
 import { queueAction } from "../../actions/queue";
@@ -9,6 +11,13 @@ registerCommand({
 	name: "Attack in place",
 	shortcuts: [{ mouse: "left", keyboard: "shift" }],
 	priority: 3,
+	damage: (playerId) => {
+		if (state.state !== "grind") return;
+
+		const hero = state.heroes[playerId];
+
+		return hero.weapon;
+	},
 	fn: (playerId) => {
 		if (state.state !== "grind") return false;
 

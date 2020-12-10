@@ -7,6 +7,16 @@ export const playersCommands: CommandInternal[][] = times(
 	() => [],
 );
 
+export const primaryCommands: (CommandInternal | null)[] = times(
+	bj_MAX_PLAYER_SLOTS,
+	() => null,
+);
+
+export const secondaryCommands: (CommandInternal | null)[] = times(
+	bj_MAX_PLAYER_SLOTS,
+	() => null,
+);
+
 const normalizeShortcut = (shortcut: Shortcut): ShortcutInternal => ({
 	mouse:
 		typeof shortcut.mouse === "string"
@@ -18,13 +28,13 @@ const normalizeShortcut = (shortcut: Shortcut): ShortcutInternal => ({
 			: shortcut.keyboard ?? [],
 });
 
-const normalizeCommand = (command: Command): CommandInternal => ({
-	description: command.description,
-	fn: command.fn,
-	name: command.name,
-	priority: command.priority ?? 0,
-	shortcuts: (command.shortcuts ?? []).map((s) => normalizeShortcut(s)),
-});
+const normalizeCommand = (command: Command): CommandInternal => {
+	command.priority = command.priority ?? 0;
+	command.shortcuts = (command.shortcuts ?? []).map((s) =>
+		normalizeShortcut(s),
+	);
+	return command as CommandInternal;
+};
 
 const isShortcutSubset = (
 	subset: ShortcutInternal,
@@ -66,6 +76,23 @@ const registerCommandForPlayer = (command: Command, playerId: number): void => {
 					conflicts.push(existingCommand);
 
 	setSubtract(playerCommands, conflicts);
+
+	const primaryShortcut = normalizedCommand.shortcuts.find(
+		(s) =>
+			s.keyboard.length === 1 &&
+			s.keyboard[0] === "shift" &&
+			s.mouse.length === 1 &&
+			s.mouse[0] === "left",
+	);
+	if (primaryShortcut) primaryCommands[playerId] = normalizedCommand;
+
+	const secondaryShortcut = normalizedCommand.shortcuts.find(
+		(s) =>
+			s.keyboard.length === 0 &&
+			s.mouse.length === 1 &&
+			s.mouse[0] === "right",
+	);
+	if (secondaryShortcut) secondaryCommands[playerId] = normalizedCommand;
 
 	playerCommands.push(normalizedCommand);
 };

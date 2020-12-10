@@ -4,7 +4,7 @@ export interface Damage {
 	fire?: number;
 	lightning?: number;
 	poison?: number;
-	ice?: number;
+	cold?: number;
 }
 
 export const damageTypes = [
@@ -13,12 +13,14 @@ export const damageTypes = [
 	"fire",
 	"lightning",
 	"poison",
-	"ice",
+	"cold",
 ] as const;
 
+export type DamageType = typeof damageTypes[number];
+
 export interface Weapon {
-	minimumDamage: Damage;
-	maximumDamage: Damage;
+	min: Damage;
+	max: Damage;
 }
 
 export const randomDamage = (min: Damage, max: Damage): Damage => {

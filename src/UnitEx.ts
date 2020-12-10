@@ -21,8 +21,8 @@ export interface UnitExProps {
 
 export class UnitEx {
 	readonly unit: Unit;
-	private _maxHealth!: number;
-	private _health = 1;
+	private _maxHealth = 0;
+	private _health = 0;
 	private _weapon!: Weapon;
 	private _mana = 0;
 	private _maxMana = 0;
@@ -41,10 +41,7 @@ export class UnitEx {
 		y,
 		facing,
 		maxHealth = 1,
-		weapon = {
-			minimumDamage: { physical: 1 },
-			maximumDamage: { physical: 1 },
-		},
+		weapon = { min: { physical: 1 }, max: { physical: 1 } },
 		level,
 	}: {
 		unit: Unit | number | string;
@@ -160,12 +157,12 @@ export class UnitEx {
 	}
 
 	// https://web.archive.org/web/20070808072323/http://strategy.diabloii.net/news.php?id=551
-	get minimumDamage(): Damage {
-		return this.weapon.minimumDamage;
+	get min(): Damage {
+		return this.weapon.min;
 	}
 
-	get maximumDamage(): Damage {
-		return this.weapon.maximumDamage;
+	get max(): Damage {
+		return this.weapon.max;
 	}
 
 	get owner(): MapPlayer {
@@ -208,7 +205,7 @@ export class UnitEx {
 	}
 
 	randomDamage(): Damage {
-		return randomDamage(this.minimumDamage, this.maximumDamage);
+		return randomDamage(this.min, this.max);
 	}
 
 	damage(target: UnitEx, damage: Damage): void {
@@ -262,6 +259,7 @@ export class UnitEx {
 			{
 				name: skill.name,
 				shortcuts: [{ mouse: "right" }],
+				damage: skill.damage,
 				fn: (playerId) => {
 					if (!skill.validate(playerId)) return false;
 					queueAction(playerId, {
