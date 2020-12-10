@@ -22,9 +22,7 @@ const doAttack = (hero: Hero, done: Done, target?: UnitEx | null) => {
 	hero.unit.issueImmediateOrder("stop");
 
 	// Face where we're attacking
-	const pos = target ? target.unit : mice[hero.owner.id];
-	const facing = Math.atan2(pos.y - hero.y, pos.x - hero.x);
-	hero.facing = Rad2Deg(facing);
+	hero.faceTarget(target ?? mice[hero.owner.id]);
 
 	// Play attack animation
 	hero.setAnimation("attack");

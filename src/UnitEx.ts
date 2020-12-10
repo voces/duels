@@ -1,8 +1,10 @@
 import { MapPlayer, Unit } from "../node_modules/w3ts/index";
-import { Damage, damageTypes, Weapon } from "./damage";
+import { queueAction } from "./actions/queue";
+import { Damage, damageTypes, randomDamage, Weapon } from "./damage";
 import { registerCommand } from "./input/commands/registry";
 import { Skill } from "./skills/types";
 import { dummyGroup } from "./util";
+import { Vector2, Vector2Ex } from "./util/Vector2";
 
 const map = new Map<unit, UnitEx>();
 
@@ -186,21 +188,7 @@ export class UnitEx {
 	}
 
 	randomDamage(): Damage {
-		const min = this.minimumDamage;
-		const max = this.maximumDamage;
-
-		const damage: Damage = {};
-
-		for (const damageType of damageTypes) {
-			if (typeof max[damageType] !== "number") continue;
-			const lMin = min[damageType] ?? 0;
-			const lMax = max[damageType] ?? 0;
-			const range = lMax - lMin;
-
-			damage[damageType] = range * Math.random() + lMin;
-		}
-
-		return damage;
+		return randomDamage(this.minimumDamage, this.maximumDamage);
 	}
 
 	damage(target: UnitEx, damage: Damage): void {
@@ -254,10 +242,22 @@ export class UnitEx {
 			{
 				name: skill.name,
 				shortcuts: [{ mouse: "right" }],
-				fn: skill.perform,
+				fn: (playerId) => {
+					if (!skill.validate(playerId)) return false;
+					queueAction(playerId, {
+						perform: (done) => skill.perform(playerId, done),
+						interruptable: false,
+					});
+					return true;
+				},
 			},
 			this.owner.id,
 		);
+	}
+
+	faceTarget(target: Vector2): void {
+		const angle = Rad2Deg(Vector2Ex.angleBetweenVectors(this, target));
+		this.unit.facing = angle;
 	}
 
 	public static fromHandle(unit: unit): UnitEx;
