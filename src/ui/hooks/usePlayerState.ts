@@ -1,4 +1,4 @@
-import { useState } from "../../../node_modules/w3ts-jsx/dist/src/index";
+import { useState } from "w3ts-jsx";
 import { times } from "../../util";
 
 type UsePlayerStateReturn<T> = [

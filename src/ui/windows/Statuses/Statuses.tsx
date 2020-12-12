@@ -1,4 +1,5 @@
-import * as React from "../../../../node_modules/w3ts-jsx/dist/src/index";
+import * as React from "w3ts-jsx";
+
 import { Hero } from "../../../units/Hero";
 import { useUnitListener } from "../../hooks/useUnitListener";
 import { Status } from "./Status";

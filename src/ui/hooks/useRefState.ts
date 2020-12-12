@@ -1,4 +1,4 @@
-import * as React from "../../../node_modules/w3ts-jsx/dist/src/index";
+import * as React from "w3ts-jsx";
 
 /**
  * Similar to useRef, except internally uses state to queue a re-render when

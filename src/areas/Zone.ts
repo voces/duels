@@ -6,7 +6,8 @@ import {
 	Timer,
 	Trigger,
 	W3TS_HOOK,
-} from "../../node_modules/w3ts/index";
+} from "w3ts";
+
 import { isHeroType } from "../units/heroTypes";
 import { UnitEx, UnitExProps } from "../units/UnitEx";
 import { startTimeout } from "../util";

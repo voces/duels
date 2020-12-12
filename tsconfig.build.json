@@ -1,16 +1,12 @@
 {
-    "extends": "./tsconfig.json",
-    "include": [
+	"extends": "./tsconfig.json",
+	"include": [
 		"src",
 		"node_modules/w3ts",
 		"node_modules/w3ts-jsx/dist",
-		"node_modules/w3ts-jsx/dist/node_modules/basic-pragma",
+		"node_modules/w3ts-jsx/dist/node_modules/basic-pragma"
 	],
-	"exclude": [
-		"**/*.test.ts",
-		"**/*.test.tsx",
-		"**/test"
-	],
+	"exclude": ["**/*.test.ts", "**/*.test.tsx", "**/test", "**/tests"],
 	"tstl": {
 		"luaTarget": "5.3",
 		"noHeader": true,
@@ -23,6 +19,10 @@
 				"name": "tstl-jsx",
 				"import": "JsxTransformer"
 			},
+			{
+				"name": "./scripts/moduleTransformer.ts",
+				"import": "ModuleTransformer"
+			}
 		]
 	}
 }

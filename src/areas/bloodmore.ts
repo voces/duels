@@ -1,9 +1,5 @@
-import {
-	addScriptHook,
-	Rectangle,
-	Region,
-	W3TS_HOOK,
-} from "../../node_modules/w3ts/index";
+import { addScriptHook, Rectangle, Region, W3TS_HOOK } from "w3ts";
+
 import { times } from "../util";
 import { WeatherEffect } from "./weather";
 import { Spawn, Zone } from "./Zone";

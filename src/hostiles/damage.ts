@@ -1,8 +1,5 @@
-import {
-	addScriptHook,
-	Trigger,
-	W3TS_HOOK,
-} from "../../node_modules/w3ts/index";
+import { addScriptHook, Trigger, W3TS_HOOK } from "w3ts";
+
 import { spawnProjectile } from "../systems/Projectile";
 import { UnitEx } from "../units/UnitEx";
 import { Vector2Ex } from "../util/Vector2";

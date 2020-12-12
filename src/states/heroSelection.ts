@@ -1,10 +1,5 @@
-import {
-	addScriptHook,
-	Camera,
-	Timer,
-	TimerDialog,
-	W3TS_HOOK,
-} from "../../node_modules/w3ts/index";
+import { addScriptHook, Camera, Timer, TimerDialog, W3TS_HOOK } from "w3ts";
+
 import { fireboltSkill } from "../skills/sorceress/fire/firebolt";
 import { Hero } from "../units/Hero";
 import { heroData, heroDataArr } from "../units/heroTypes";

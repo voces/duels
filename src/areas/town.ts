@@ -6,7 +6,8 @@ import {
 	Trigger,
 	Unit,
 	W3TS_HOOK,
-} from "../../node_modules/w3ts/index";
+} from "w3ts";
+
 import { UnitEx } from "../units/UnitEx";
 import { colorize } from "../util/colorize";
 import { WeatherEffect } from "./weather";

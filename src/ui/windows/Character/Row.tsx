@@ -1,4 +1,5 @@
-import * as React from "../../../../node_modules/w3ts-jsx/dist/src/index";
+import * as React from "w3ts-jsx";
+
 import { Tooltip } from "../../components/Tooltip";
 import { useRefState } from "../../hooks/useRefState";
 import { bottomRight, topLeft, topRight } from "../../util/pos";

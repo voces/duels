@@ -1,4 +1,5 @@
-import { Group, MapPlayer, Timer } from "../node_modules/w3ts/index";
+import { Group, MapPlayer, Timer } from "w3ts";
+
 import { state } from "./states/state";
 import { Hero } from "./units/Hero";
 

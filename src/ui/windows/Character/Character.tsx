@@ -1,4 +1,5 @@
-import * as React from "../../../../node_modules/w3ts-jsx/dist/src/index";
+import * as React from "w3ts-jsx";
+
 import { DamageType, damageTypes } from "../../../damage";
 import {
 	primaryCommands,

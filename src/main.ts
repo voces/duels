@@ -7,11 +7,7 @@ import "./states/heroSelection";
 import "./ui/setup";
 import "./systems/Regeneration";
 
-import {
-	addScriptHook,
-	MapPlayer,
-	W3TS_HOOK,
-} from "../node_modules/w3ts/index";
+import { addScriptHook, MapPlayer, W3TS_HOOK } from "w3ts";
 
 const isHuman = (player: MapPlayer) => player.id < 16;
 const isNPC = (player: MapPlayer) => player.id === PLAYER_NEUTRAL_PASSIVE;

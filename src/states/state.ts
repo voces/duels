@@ -1,4 +1,5 @@
-import { Timer, TimerDialog } from "../../node_modules/w3ts/index";
+import { Timer, TimerDialog } from "w3ts";
+
 import { Hero } from "../units/Hero";
 import { HeroType } from "../units/heroTypes";
 

@@ -1,9 +1,5 @@
-import {
-	addScriptHook,
-	getElapsedTime,
-	Timer,
-	W3TS_HOOK,
-} from "../../node_modules/w3ts/index";
+import { addScriptHook, getElapsedTime, Timer, W3TS_HOOK } from "w3ts";
+
 import { forEachHero } from "../util";
 
 let last = 0;

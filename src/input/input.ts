@@ -1,10 +1,5 @@
-import {
-	addScriptHook,
-	MapPlayer,
-	Timer,
-	Trigger,
-	W3TS_HOOK,
-} from "../../node_modules/w3ts/index";
+import { addScriptHook, MapPlayer, Timer, Trigger, W3TS_HOOK } from "w3ts";
+
 import { UnitEx } from "../units/UnitEx";
 import { forEachHero, forEachPlayer } from "../util";
 import { processShortcut } from "./commands/registry";

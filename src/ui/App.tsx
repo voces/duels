@@ -1,5 +1,6 @@
-import * as React from "../../node_modules/w3ts-jsx/dist/src/index";
-import { MapPlayer } from "../../node_modules/w3ts/index";
+import { MapPlayer } from "w3ts";
+import * as React from "w3ts-jsx";
+
 import { registerCommand } from "../input/commands/registry";
 import { HeroSelection } from "./HeroSelection";
 import { useGlobalState } from "./hooks/useGlobalState";

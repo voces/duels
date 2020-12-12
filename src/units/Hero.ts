@@ -1,4 +1,5 @@
-import { MapPlayer } from "../../node_modules/w3ts/index";
+import { MapPlayer } from "w3ts";
+
 import { Damage } from "../damage";
 import { colorize } from "../util/colorize";
 import { UnitEx } from "./UnitEx";

@@ -1,4 +1,5 @@
-import { getElapsedTime, MapPlayer, Unit } from "../../node_modules/w3ts/index";
+import { getElapsedTime, MapPlayer, Unit } from "w3ts";
+
 import { queueAction } from "../actions/queue";
 import { Damage, damageTypes, randomDamage, Weapon } from "../damage";
 import { registerCommand } from "../input/commands/registry";

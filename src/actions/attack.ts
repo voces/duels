@@ -1,8 +1,5 @@
-import {
-	addScriptHook,
-	Trigger,
-	W3TS_HOOK,
-} from "../../node_modules/w3ts/index";
+import { addScriptHook, Trigger, W3TS_HOOK } from "w3ts";
+
 import { mice } from "../input/data";
 import { Hero } from "../units/Hero";
 import { UnitEx } from "../units/UnitEx";

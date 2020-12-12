@@ -5,7 +5,8 @@ import {
 	Point,
 	Timer,
 	W3TS_HOOK,
-} from "../../node_modules/w3ts/index";
+} from "w3ts";
+
 import { Damage } from "../damage";
 import { UnitEx } from "../units/UnitEx";
 import { dummyGroup } from "../util";
