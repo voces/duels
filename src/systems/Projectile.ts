@@ -28,6 +28,7 @@ interface InnerProjectile extends Projectile {
 	effect: Effect;
 	spawnTime: number;
 	maxTargets: number;
+	height: number;
 }
 
 const projectiles = new Set<InnerProjectile>();
@@ -46,6 +47,7 @@ export const spawnProjectile = (projectile: Projectile): void => {
 		maxTargets: projectile.maxTargets ?? 1,
 		spawnTime: getElapsedTime(),
 		speed: projectile.speed,
+		height: point.z + 64,
 	};
 
 	projectiles.add(p);
@@ -64,6 +66,7 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () =>
 				projectile.y +
 				delta * projectile.speed * Math.sin(projectile.angle);
 			projectile.effect.y = y;
+			projectile.effect.z = projectile.height;
 
 			dummyGroup.enumUnitsInRange(
 				x,

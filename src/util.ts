@@ -3,12 +3,6 @@ import { Group, MapPlayer, Timer } from "w3ts";
 import { state } from "./states/state";
 import { Hero } from "./units/Hero";
 
-export const iflt = (fn: () => void): void => {
-	if (GetTriggerPlayer() === GetLocalPlayer()) fn();
-};
-
-export const ifltw = (fn: () => void): (() => void) => () => iflt(fn);
-
 export const times = <T>(count: number, fn: (i: number) => T): T[] => {
 	const arr = [];
 	for (let i = 0; i < count; i++) arr.push(fn(i));

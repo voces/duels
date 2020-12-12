@@ -49,7 +49,11 @@ export class Zone {
 	activated = false;
 	spawns: InternalSpawn[];
 
-	constructor(readonly region: Region, spawns: Spawn[]) {
+	constructor(
+		readonly name: string,
+		readonly region: Region,
+		spawns: Spawn[],
+	) {
 		const last = getElapsedTime();
 		this.spawns = spawns.map((spawn) => ({
 			...spawn,
@@ -66,6 +70,7 @@ export class Zone {
 		t.registerEnterRegion(
 			region.handle,
 			Filter(() => {
+				print(`Entering ${this.name}`);
 				if (UnitEx.fromFilter()!.owner.id >= 16) return false;
 
 				this.players++;

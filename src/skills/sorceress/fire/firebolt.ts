@@ -3,7 +3,7 @@ import { randomDamage } from "../../../damage";
 import { mice } from "../../../input/data";
 import { state } from "../../../states/state";
 import { spawnProjectile } from "../../../systems/Projectile";
-import { log, startTimeout } from "../../../util";
+import { startTimeout } from "../../../util";
 import { Vector2Ex } from "../../../util/Vector2";
 import { Skill } from "../../types";
 
@@ -24,7 +24,6 @@ export const fireboltSkill = (): Skill => ({
 		const target = mouse.targetLock ?? mouse.target ?? mouse;
 		if (target === hero) return false;
 
-		log("not in town");
 		return hero.mana >= 3;
 	},
 	perform(playerId, done) {

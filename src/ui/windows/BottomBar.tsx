@@ -1,9 +1,8 @@
-// spellareaofeffect_basic
 import * as React from "w3ts-jsx";
 
-import { Tooltip } from "../../components/Tooltip";
-import { useRefState } from "../../hooks/useRefState";
-import { leftToRight, topLeft } from "../../util/pos";
+import { Tooltip } from "../components/Tooltip";
+import { useRefState } from "../hooks/useRefState";
+import { leftToRight, topLeft } from "../util/pos";
 
 const ICON_SIZE = 48;
 

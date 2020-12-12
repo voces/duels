@@ -70,5 +70,5 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
 		},
 	}));
 
-	new Zone(region, [...zombieSpawns, ...quilbeastSpawns]);
+	new Zone("Blood Moor", region, [...zombieSpawns, ...quilbeastSpawns]);
 });

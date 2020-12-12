@@ -4,7 +4,7 @@ import { transformSourceFileNode } from "typescript-to-lua/dist/transformation/v
 
 /**
  * This transformer replaces non-relative imports with absolute paths.
- * E.g., "w3ts" => "mnt/c/User/verit/duels/node_modules/w3ts/index"
+ * E.g., "w3ts" => "home/verit/duels/node_modules/w3ts/index"
  */
 
 function transformSourceFile(

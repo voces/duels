@@ -1,6 +1,6 @@
 import { addScriptHook, Timer, W3TS_HOOK } from "w3ts";
-
 import * as React from "w3ts-jsx";
+
 import { App } from "./App";
 
 addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {

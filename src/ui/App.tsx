@@ -4,7 +4,7 @@ import * as React from "w3ts-jsx";
 import { registerCommand } from "../input/commands/registry";
 import { HeroSelection } from "./HeroSelection";
 import { useGlobalState } from "./hooks/useGlobalState";
-import { BottomBar } from "./windows/BottomBar/BottomBar";
+import { BottomBar } from "./windows/BottomBar";
 import { Character } from "./windows/Character/Character";
 import { EnemyStatus } from "./windows/EnemyStatus";
 import { Statuses } from "./windows/Statuses/Statuses";

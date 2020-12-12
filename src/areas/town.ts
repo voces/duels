@@ -12,7 +12,7 @@ import { UnitEx } from "../units/UnitEx";
 import { colorize } from "../util/colorize";
 import { WeatherEffect } from "./weather";
 
-const town = new Region();
+let town: Region;
 
 export const isInTown = (unit: UnitEx): boolean => town.containsUnit(unit.unit);
 
@@ -23,6 +23,7 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
 			true,
 		);
 
+		town = new Region();
 		const trigger = new Trigger();
 		const rect = Rectangle.fromHandle(gg_rct_camp);
 		town.addRect(rect);
@@ -30,6 +31,7 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
 		trigger.registerEnterRegion(
 			town.handle,
 			Filter(() => {
+				print("Entering Town");
 				UnitEx.fromFilter()!.unit.invulnerable = true;
 				return false;
 			}),
