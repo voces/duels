@@ -1,12 +1,12 @@
 import * as React from "../../node_modules/w3ts-jsx/dist/src/index";
 import { MapPlayer } from "../../node_modules/w3ts/index";
 import { registerCommand } from "../input/commands/registry";
-import { BottomBar } from "./BottomBar/BottomBar";
-import { Character } from "./Character/Character";
-import { EnemyStatus } from "./EnemyStatus";
 import { HeroSelection } from "./HeroSelection";
 import { useGlobalState } from "./hooks/useGlobalState";
-import { Statuses } from "./Statuses/Statuses";
+import { BottomBar } from "./windows/BottomBar/BottomBar";
+import { Character } from "./windows/Character/Character";
+import { EnemyStatus } from "./windows/EnemyStatus";
+import { Statuses } from "./windows/Statuses/Statuses";
 
 export const App = (): React.Node => {
 	const state = useGlobalState();

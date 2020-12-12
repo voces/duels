@@ -1,8 +1,8 @@
 // spellareaofeffect_basic
-import * as React from "../../../node_modules/w3ts-jsx/dist/src/index";
-import { useRefState } from "../hooks/useRefState";
-import { Tooltip } from "../Tooltip";
-import { leftToRight, topLeft } from "../util/pos";
+import * as React from "../../../../node_modules/w3ts-jsx/dist/src/index";
+import { Tooltip } from "../../components/Tooltip";
+import { useRefState } from "../../hooks/useRefState";
+import { leftToRight, topLeft } from "../../util/pos";
 
 const ICON_SIZE = 48;
 
@@ -67,7 +67,9 @@ export const BottomBar = ({
 		<ButtonIcon
 			icon="assets/img/Bag2_eq_icon_r"
 			tooltip="Inventory"
-			onClick={() => {}}
+			onClick={() => {
+				/* do nothing */
+			}}
 		/>
 		<backdrop texture="asdf" position="parent" alpha={10} />
 	</container>

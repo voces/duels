@@ -3,9 +3,9 @@ import {
 	Trigger,
 	W3TS_HOOK,
 } from "../../node_modules/w3ts/index";
-import { Hero } from "../Hero";
 import { mice } from "../input/data";
-import { UnitEx } from "../UnitEx";
+import { Hero } from "../units/Hero";
+import { UnitEx } from "../units/UnitEx";
 import { startTimeout } from "../util";
 import { Vector2Ex } from "../util/Vector2";
 import { Done, Perform } from "./queue";

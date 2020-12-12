@@ -7,7 +7,7 @@ import {
 	W3TS_HOOK,
 } from "../../node_modules/w3ts/index";
 import { Damage } from "../damage";
-import { UnitEx } from "../UnitEx";
+import { UnitEx } from "../units/UnitEx";
 import { dummyGroup } from "../util";
 
 export interface Projectile {

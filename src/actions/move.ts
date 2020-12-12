@@ -1,5 +1,5 @@
-import { Hero } from "../Hero";
 import { mice } from "../input/data";
+import { Hero } from "../units/Hero";
 import { startInterval, startTimeout } from "../util";
 import { Perform } from "./queue";
 

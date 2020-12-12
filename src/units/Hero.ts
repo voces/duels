@@ -1,7 +1,7 @@
-import { MapPlayer } from "../node_modules/w3ts/index";
-import { Damage } from "./damage";
+import { MapPlayer } from "../../node_modules/w3ts/index";
+import { Damage } from "../damage";
+import { colorize } from "../util/colorize";
 import { UnitEx } from "./UnitEx";
-import { colorize } from "./util/colorize";
 
 export const _levelToExperience = (
 	level: number,

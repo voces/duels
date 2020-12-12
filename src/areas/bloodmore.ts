@@ -5,15 +5,22 @@ import {
 	W3TS_HOOK,
 } from "../../node_modules/w3ts/index";
 import { times } from "../util";
+import { WeatherEffect } from "./weather";
 import { Spawn, Zone } from "./Zone";
 
 addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
 	const region = new Region();
-	const rects = [
-		gg_rct_bloodmore1,
-		gg_rct_bloodmore2,
-		gg_rct_bloodmore3,
-	].map((h) => Rectangle.fromHandle(h));
+	const rects = [gg_rct_bloodmore1, gg_rct_bloodmore2, gg_rct_bloodmore3].map(
+		(h) => {
+			EnableWeatherEffect(
+				AddWeatherEffect(h, WeatherEffect.ashenvaleHeavyRain),
+				true,
+			);
+
+			return Rectangle.fromHandle(h);
+		},
+	);
+
 	const xMin = Math.min(...rects.map((r) => r.minX));
 	const xMax = Math.max(...rects.map((r) => r.maxX));
 	const yMin = Math.min(...rects.map((r) => r.minY));

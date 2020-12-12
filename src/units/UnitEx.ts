@@ -1,10 +1,10 @@
-import { getElapsedTime, MapPlayer, Unit } from "../node_modules/w3ts/index";
-import { queueAction } from "./actions/queue";
-import { Damage, damageTypes, randomDamage, Weapon } from "./damage";
-import { registerCommand } from "./input/commands/registry";
-import { Skill } from "./skills/types";
-import { dummyGroup } from "./util";
-import { Vector2, Vector2Ex } from "./util/Vector2";
+import { getElapsedTime, MapPlayer, Unit } from "../../node_modules/w3ts/index";
+import { queueAction } from "../actions/queue";
+import { Damage, damageTypes, randomDamage, Weapon } from "../damage";
+import { registerCommand } from "../input/commands/registry";
+import { Skill } from "../skills/types";
+import { dummyGroup } from "../util";
+import { Vector2, Vector2Ex } from "../util/Vector2";
 
 const map = new Map<unit, UnitEx>();
 
@@ -106,7 +106,7 @@ export class UnitEx {
 		const oldValue = this._health;
 		if (value < this._health) this.lastHealthLoss = getElapsedTime();
 		this._health = value;
-		// Only re-render and unit changes
+		// Only re-render on displayable changes
 		if (Math.floor(value) !== Math.floor(oldValue)) this.emitChange();
 	}
 
@@ -130,7 +130,7 @@ export class UnitEx {
 	set mana(value: number) {
 		const oldValue = this._mana;
 		this._mana = value;
-		// Only re-render and unit changes
+		// Only re-render on displayable changes
 		if (Math.floor(value) !== Math.floor(oldValue)) this.emitChange();
 	}
 

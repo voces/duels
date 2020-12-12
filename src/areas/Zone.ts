@@ -7,8 +7,8 @@ import {
 	Trigger,
 	W3TS_HOOK,
 } from "../../node_modules/w3ts/index";
-import { isHeroType } from "../types";
-import { UnitEx, UnitExProps } from "../UnitEx";
+import { isHeroType } from "../units/heroTypes";
+import { UnitEx, UnitExProps } from "../units/UnitEx";
 import { startTimeout } from "../util";
 
 type InnerSpawnUnitProps = Omit<UnitExProps, "x" | "y" | "owner">;

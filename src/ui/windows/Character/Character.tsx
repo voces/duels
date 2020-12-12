@@ -1,15 +1,15 @@
-import * as React from "../../../node_modules/w3ts-jsx/dist/src/index";
-import { DamageType, damageTypes } from "../../damage";
-import { Hero } from "../../Hero";
+import * as React from "../../../../node_modules/w3ts-jsx/dist/src/index";
+import { DamageType, damageTypes } from "../../../damage";
 import {
 	primaryCommands,
 	secondaryCommands,
-} from "../../input/commands/registry";
-import { Command } from "../../input/commands/types";
-import { heroTypeMap } from "../../types";
-import { colorize } from "../../util/colorize";
-import { useUnitListener } from "../hooks/useUnitListener";
-import { LargeText } from "../Text";
+} from "../../../input/commands/registry";
+import { Command } from "../../../input/commands/types";
+import { Hero } from "../../../units/Hero";
+import { heroTypeMap } from "../../../units/heroTypes";
+import { colorize } from "../../../util/colorize";
+import { LargeText } from "../../components/Text";
+import { useUnitListener } from "../../hooks/useUnitListener";
 import { Row } from "./Row";
 import { WIDTH } from "./shared";
 

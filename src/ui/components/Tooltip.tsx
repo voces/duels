@@ -1,4 +1,4 @@
-import * as React from "../../node_modules/w3ts-jsx/dist/src/index";
+import * as React from "../../../node_modules/w3ts-jsx/dist/src/index";
 
 const TooltipFrame = ({
 	children,

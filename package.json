@@ -13,6 +13,7 @@
     "dev": "npm-watch",
     "postinstall": "tsc --outDir null -p node_modules/mdx-m3-viewer/tsconfig.json",
     "jest": "jest",
+    "lint": "eslint . --fix",
     "test": "ts-node scripts/test.ts"
   },
   "dependencies": {

@@ -1,10 +1,10 @@
 import * as React from "../../node_modules/w3ts-jsx/dist/src/index";
 import { setGlobalState } from "../states/state";
-import { heroData, HeroType } from "../types";
+import { heroData, HeroType } from "../units/heroTypes";
 import { everyPlayer } from "../util";
+import { ExtraLargeText, LargeText } from "./components/Text";
+import { Tooltip } from "./components/Tooltip";
 import { useGlobalState } from "./hooks/useGlobalState";
-import { ExtraLargeText, LargeText } from "./Text";
-import { Tooltip } from "./Tooltip";
 
 const HeroPane = ({
 	tooltip,

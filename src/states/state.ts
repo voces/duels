@@ -1,6 +1,6 @@
 import { Timer, TimerDialog } from "../../node_modules/w3ts/index";
-import { Hero } from "../Hero";
-import { HeroType } from "../types";
+import { Hero } from "../units/Hero";
+import { HeroType } from "../units/heroTypes";
 
 interface InitialState {
 	state: "initial";

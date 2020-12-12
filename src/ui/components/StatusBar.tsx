@@ -1,6 +1,6 @@
 import * as React from "../../../node_modules/w3ts-jsx/dist/src/index";
+import { SmallText } from "../components/Text";
 import { useRefState } from "../hooks/useRefState";
-import { SmallText } from "../Text";
 import { center, parent } from "../util/pos";
 
 export const StatusBar = ({

@@ -5,7 +5,7 @@ import {
 	Trigger,
 	W3TS_HOOK,
 } from "../../node_modules/w3ts/index";
-import { UnitEx } from "../UnitEx";
+import { UnitEx } from "../units/UnitEx";
 import { forEachHero, forEachPlayer } from "../util";
 import { processShortcut } from "./commands/registry";
 import { KeyboardShortcut, MouseShortcut } from "./commands/types";

@@ -4,7 +4,7 @@ import {
 	W3TS_HOOK,
 } from "../../node_modules/w3ts/index";
 import { spawnProjectile } from "../systems/Projectile";
-import { UnitEx } from "../UnitEx";
+import { UnitEx } from "../units/UnitEx";
 import { Vector2Ex } from "../util/Vector2";
 
 addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {

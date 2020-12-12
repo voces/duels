@@ -1,5 +1,5 @@
 import { Timer, TimerDialog } from "../../node_modules/w3ts/index";
-import { Hero } from "../Hero";
+import { Hero } from "../units/Hero";
 import { setGlobalState, state } from "./state";
 
 export const advanceToGrindState = (heroes: Hero[]): void => {

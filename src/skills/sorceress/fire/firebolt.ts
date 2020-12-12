@@ -17,7 +17,13 @@ export const fireboltSkill = (): Skill => ({
 	validate: (playerId) => {
 		if (!("heroes" in state)) return false;
 		const hero = state.heroes[playerId];
+
 		if (isInTown(hero)) return false;
+
+		const mouse = mice[playerId];
+		const target = mouse.targetLock ?? mouse.target ?? mouse;
+		if (target === hero) return false;
+
 		log("not in town");
 		return hero.mana >= 3;
 	},

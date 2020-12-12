@@ -1,4 +1,4 @@
-import * as React from "../../node_modules/w3ts-jsx/dist/src/index";
+import * as React from "../../../node_modules/w3ts-jsx/dist/src/index";
 
 export const SmallText = (props: TextProps): React.Node => (
 	<frame name="SmallText" {...props} />

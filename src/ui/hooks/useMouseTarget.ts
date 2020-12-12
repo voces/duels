@@ -1,6 +1,6 @@
 import * as React from "../../../node_modules/w3ts-jsx/dist/src/index";
 import { EffectiveTargetChangeEvent, input, mice } from "../../input/data";
-import { UnitEx } from "../../UnitEx";
+import { UnitEx } from "../../units/UnitEx";
 import { usePlayerState } from "./usePlayerState";
 
 export const useMouseTarget = (): UnitEx | null => {

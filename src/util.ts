@@ -1,6 +1,6 @@
 import { Group, MapPlayer, Timer } from "../node_modules/w3ts/index";
-import { Hero } from "./Hero";
 import { state } from "./states/state";
+import { Hero } from "./units/Hero";
 
 export const iflt = (fn: () => void): void => {
 	if (GetTriggerPlayer() === GetLocalPlayer()) fn();

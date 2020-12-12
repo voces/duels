@@ -1,8 +1,8 @@
-import * as React from "../../node_modules/w3ts-jsx/dist/src/index";
-import { StatusBar } from "./components/StatusBar";
-import { useMouseTarget } from "./hooks/useMouseTarget";
-import { useUnitListener } from "./hooks/useUnitListener";
-import { topDown, topLeft, topRight } from "./util/pos";
+import * as React from "../../../node_modules/w3ts-jsx/dist/src/index";
+import { StatusBar } from "../components/StatusBar";
+import { useMouseTarget } from "../hooks/useMouseTarget";
+import { useUnitListener } from "../hooks/useUnitListener";
+import { top, topDown, topLeft } from "../util/pos";
 
 export const EnemyStatus = (): React.Node => {
 	const target = useMouseTarget();
@@ -23,12 +23,12 @@ export const EnemyStatus = (): React.Node => {
 			<container position={topLeft()} size={{ width: 200, height: 16 }}>
 				<text
 					text={target ? target.unit.name : ""}
-					position={[topLeft(), topRight()]}
+					position={[top()]}
 				/>
 			</container>
 			<StatusBar
 				position={topDown({ y: -4 })}
-				size={{ width: 250, height: 32 }}
+				size={{ width: 200, height: 32 }}
 				text=""
 				value={target ? target.health : 1}
 				max={target ? target.maxHealth : 1}

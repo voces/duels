@@ -1,7 +1,7 @@
-import * as React from "../../../node_modules/w3ts-jsx/dist/src/index";
-import { UnitEx } from "../../UnitEx";
-import { StatusBar } from "../components/StatusBar";
-import { leftToRight, topDown, topLeft } from "../util/pos";
+import * as React from "../../../../node_modules/w3ts-jsx/dist/src/index";
+import { UnitEx } from "../../../units/UnitEx";
+import { StatusBar } from "../../components/StatusBar";
+import { leftToRight, topDown, topLeft } from "../../util/pos";
 
 export const Status = ({
 	unit,

@@ -1,4 +1,4 @@
-import { UnitEx } from "../UnitEx";
+import { UnitEx } from "../units/UnitEx";
 import { times } from "../util";
 import { emitter } from "../util/emitter";
 

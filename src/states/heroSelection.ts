@@ -5,10 +5,10 @@ import {
 	TimerDialog,
 	W3TS_HOOK,
 } from "../../node_modules/w3ts/index";
-import { Hero } from "../Hero";
 import { fireboltSkill } from "../skills/sorceress/fire/firebolt";
-import { heroData, heroDataArr } from "../types";
-import { UnitEx } from "../UnitEx";
+import { Hero } from "../units/Hero";
+import { heroData, heroDataArr } from "../units/heroTypes";
+import { UnitEx } from "../units/UnitEx";
 import { forEachPlayer } from "../util";
 import { advanceToGrindState } from "./grind";
 import { setGlobalState, state } from "./state";
