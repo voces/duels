@@ -51,7 +51,7 @@ export const forEachHero = (fn: (hero: Hero) => void): void => {
 };
 
 export { log } from "../node_modules/w3ts-jsx/dist/node_modules/basic-pragma/src/utils/log";
-export { colorize } from "../node_modules/w3ts-jsx/dist/node_modules/basic-pragma/src/utils/colorize";
+// export { colorize } from "../node_modules/w3ts-jsx/dist/node_modules/basic-pragma/src/utils/colorize";
 
 const timerPool: Timer[] = [];
 

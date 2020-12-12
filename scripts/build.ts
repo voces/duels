@@ -3,6 +3,7 @@ import War3Map from "mdx-m3-viewer/src/parsers/w3x/map";
 import * as path from "path";
 
 import {
+	cloneToWindows,
 	compileMap,
 	getFilesInDirectory,
 	IProjectConfig,
@@ -60,12 +61,7 @@ export function createMapFromDir(output: string, dir: string): void {
 
 	fs.writeFileSync(output, new Uint8Array(result));
 
-	logger.info("Cloning to Windows...");
-
-	fs.writeFile(
-		"/mnt/c/Users/verit/Documents/Warcraft III/Maps/dev/duels.w3x",
-		new Uint8Array(result),
-	);
+	cloneToWindows(result);
 
 	logger.info("Finished!");
 }

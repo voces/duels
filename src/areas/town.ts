@@ -9,20 +9,23 @@ import {
 } from "../../node_modules/w3ts/index";
 import { UnitEx } from "../UnitEx";
 
+const town = new Region();
+
+export const isInTown = (unit: UnitEx): boolean => town.containsUnit(unit.unit);
+
 addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
 	const trigger = new Trigger();
 	const rect = Rectangle.fromHandle(gg_rct_camp);
-	const region = new Region();
-	region.addRect(rect);
+	town.addRect(rect);
 	trigger.registerEnterRegion(
-		region.handle,
+		town.handle,
 		Filter(() => {
 			UnitEx.fromFilter()!.unit.invulnerable = true;
 			return false;
 		}),
 	);
 	trigger.registerLeaveRegion(
-		region.handle,
+		town.handle,
 		Filter(() => {
 			UnitEx.fromFilter()!.unit.invulnerable = false;
 			return false;

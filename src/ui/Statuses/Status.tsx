@@ -1,44 +1,7 @@
 import * as React from "../../../node_modules/w3ts-jsx/dist/src/index";
 import { UnitEx } from "../../UnitEx";
-import { useRefState } from "../hooks/useRefState";
-import { SmallText } from "../Text";
-import { center, leftToRight, parent, topDown, topLeft } from "../util/pos";
-
-const StatusBar = ({
-	barTexture,
-	max,
-	value,
-	...rest
-}: ContainerProps & {
-	barTexture?: SimpleStatusBarProps["texture"];
-	max: number;
-	value: number;
-}) => {
-	const containerRef = useRefState<framehandle | null>(null);
-	return (
-		<container {...rest} ref={containerRef}>
-			<simple-frame
-				name="SimpleStatusBar"
-				position={parent({
-					relative: containerRef.current ?? "parent",
-				})}
-				size={{ width: 250, height: 32 }}
-				value={(value / max) * 100}
-				texture={barTexture}
-			/>
-			<backdrop
-				position="parent"
-				texture="assets/img/HP_bar_mini_frame"
-			/>
-			<SmallText
-				text={`${Math.round(value)}/${max} (${Math.round(
-					(value / max) * 100,
-				)})%`}
-				position={center()}
-			/>
-		</container>
-	);
-};
+import { StatusBar } from "../components/StatusBar";
+import { leftToRight, topDown, topLeft } from "../util/pos";
 
 export const Status = ({
 	unit,

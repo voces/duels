@@ -1,7 +1,7 @@
 import { MapPlayer } from "../node_modules/w3ts/index";
 import { Damage } from "./damage";
 import { UnitEx } from "./UnitEx";
-import { log } from "./util";
+import { colorize } from "./util/colorize";
 
 export const _levelToExperience = (
 	level: number,
@@ -135,7 +135,7 @@ export class Hero extends UnitEx {
 			// Disable auto-attack
 			this.unit.addType(UNIT_TYPE_PEON);
 		} catch (err) {
-			log(err);
+			print(colorize.error(err));
 		}
 	}
 

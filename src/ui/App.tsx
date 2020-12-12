@@ -3,6 +3,7 @@ import { MapPlayer } from "../../node_modules/w3ts/index";
 import { registerCommand } from "../input/commands/registry";
 import { BottomBar } from "./BottomBar/BottomBar";
 import { Character } from "./Character/Character";
+import { EnemyStatus } from "./EnemyStatus";
 import { HeroSelection } from "./HeroSelection";
 import { useGlobalState } from "./hooks/useGlobalState";
 import { Statuses } from "./Statuses/Statuses";
@@ -15,6 +16,8 @@ export const App = (): React.Node => {
 		registerCommand({
 			name: "Toggle character",
 			shortcuts: [{ keyboard: "o" }],
+			// More than move, allowing toggling while running
+			priority: 2,
 			fn: (playerId) => {
 				if (playerId === MapPlayer.fromLocal().id)
 					setCharacterVisible((v) => !v);
@@ -38,6 +41,7 @@ export const App = (): React.Node => {
 						}
 					/>
 					<Statuses hero={state.heroes[MapPlayer.fromLocal().id]} />
+					<EnemyStatus />
 				</>
 			)}
 		</container>

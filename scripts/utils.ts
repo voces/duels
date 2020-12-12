@@ -160,3 +160,12 @@ export const logger = createLogger({
 		}),
 	],
 });
+
+export const cloneToWindows = (file: ArrayBuffer): void => {
+	logger.info("Cloning to Windows...");
+
+	fs.writeFile(
+		"/mnt/c/Users/verit/Documents/Warcraft III/Maps/dev/duels.w3x",
+		new Uint8Array(file),
+	);
+};

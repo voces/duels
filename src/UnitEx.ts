@@ -26,7 +26,7 @@ export class UnitEx {
 	private _weapon!: Weapon;
 	private _mana = 0;
 	private _maxMana = 0;
-	protected _level!: number;
+	protected _level = 0;
 	private _skills: Skill[] = [];
 
 	private listeners: (() => void)[] = [];
@@ -156,15 +156,6 @@ export class UnitEx {
 		this.emitChange();
 	}
 
-	// https://web.archive.org/web/20070808072323/http://strategy.diabloii.net/news.php?id=551
-	get min(): Damage {
-		return this.weapon.min;
-	}
-
-	get max(): Damage {
-		return this.weapon.max;
-	}
-
 	get owner(): MapPlayer {
 		return this.unit.owner;
 	}
@@ -205,7 +196,7 @@ export class UnitEx {
 	}
 
 	randomDamage(): Damage {
-		return randomDamage(this.min, this.max);
+		return randomDamage(this.weapon.min, this.weapon.max);
 	}
 
 	damage(target: UnitEx, damage: Damage): void {

@@ -28,6 +28,13 @@ export const topRight = (pos: Partial<PosObj> = {}): Pos => ({
 	...pos,
 });
 
+export const top = (pos: Partial<PosObj> = {}): Pos => ({
+	point: FRAMEPOINT_TOP,
+	relative: "parent",
+	relativePoint: FRAMEPOINT_TOP,
+	...pos,
+});
+
 export const bottomRight = (pos: Partial<PosObj> = {}): Pos => ({
 	point: FRAMEPOINT_BOTTOMRIGHT,
 	relative: "parent",

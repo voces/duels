@@ -1,12 +1,12 @@
 // Let's try to keep the magic to a minimum!
 
-import { colorize } from "./util";
+import { colorize } from "./util/colorize";
 
 const wrapAndPrint = <T>(fn: () => T, fallback: T) => () => {
 	try {
 		return fn();
 	} catch (err) {
-		print(colorize.red(err));
+		print(colorize.error(err));
 	}
 	return fallback;
 };

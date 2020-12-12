@@ -2,6 +2,7 @@ import {
 	addScriptHook,
 	Effect,
 	getElapsedTime,
+	Point,
 	Timer,
 	W3TS_HOOK,
 } from "../../node_modules/w3ts/index";
@@ -30,9 +31,12 @@ interface InnerProjectile extends Projectile {
 
 const projectiles = new Set<InnerProjectile>();
 
+const point = new Point(0, 0);
+
 export const spawnProjectile = (projectile: Projectile): void => {
 	const effect = new Effect(projectile.model, projectile.x, projectile.y);
-	effect.setHeight(300);
+	point.setPosition(projectile.x, projectile.y);
+	effect.z = point.z + 64;
 	effect.setYaw(projectile.angle);
 
 	const p: InnerProjectile = {

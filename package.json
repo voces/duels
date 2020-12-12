@@ -9,6 +9,7 @@
   "scripts": {
     "build:defs": "ts-node scripts/dev",
     "build": "ts-node scripts/build.ts",
+    "build-windows": "ts-node scripts/cloneToWindows.ts",
     "dev": "npm-watch",
     "postinstall": "tsc --outDir null -p node_modules/mdx-m3-viewer/tsconfig.json",
     "jest": "jest",

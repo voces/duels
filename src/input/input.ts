@@ -9,7 +9,7 @@ import { UnitEx } from "../UnitEx";
 import { forEachHero, forEachPlayer } from "../util";
 import { processShortcut } from "./commands/registry";
 import { KeyboardShortcut, MouseShortcut } from "./commands/types";
-import { keyboards, mice } from "./data";
+import { keyboards, mice, NONE, updateMouse } from "./data";
 
 const osKeyToStringMap = (key: oskeytype) => {
 	switch (key) {
@@ -100,7 +100,7 @@ const onMouseDown = () => {
 	const button = BlzGetTriggerPlayerMouseButton();
 	const target = UnitEx.fromHandle(targetHandle);
 
-	mice[playerId] = {
+	updateMouse(playerId, {
 		leftDown:
 			button === MOUSE_BUTTON_TYPE_LEFT ? true : mice[playerId].leftDown,
 		rightDown:
@@ -109,10 +109,10 @@ const onMouseDown = () => {
 				: mice[playerId].rightDown,
 		x: BlzGetTriggerPlayerMouseX(),
 		y: BlzGetTriggerPlayerMouseY(),
-		targetLock: target,
-		target,
+		targetLock: target ?? NONE,
+		target: target ?? NONE,
 		moved: false,
-	};
+	});
 
 	executeCommands(playerId);
 
@@ -123,7 +123,8 @@ const mouseUpTrigger = new Trigger();
 const onMouseUp = () => {
 	const playerId = MapPlayer.fromEvent().id;
 	const button = BlzGetTriggerPlayerMouseButton();
-	mice[playerId] = mice[playerId] = {
+
+	updateMouse(playerId, {
 		leftDown:
 			button === MOUSE_BUTTON_TYPE_LEFT ? false : mice[playerId].leftDown,
 		rightDown:
@@ -132,25 +133,25 @@ const onMouseUp = () => {
 				: mice[playerId].rightDown,
 		x: BlzGetTriggerPlayerMouseX(),
 		y: BlzGetTriggerPlayerMouseY(),
-		targetLock: null,
-		target: UnitEx.fromHandle(BlzGetMouseFocusUnit()),
+		targetLock: NONE,
+		target: UnitEx.fromHandle(BlzGetMouseFocusUnit()) ?? NONE,
 		moved: false,
-	};
+	});
+
 	return false;
 };
 
 const mouseMoveTrigger = new Trigger();
 const onMouseMove = () => {
 	const playerId = MapPlayer.fromEvent().id;
-	mice[playerId] = mice[playerId] = {
-		leftDown: mice[playerId].leftDown,
-		rightDown: mice[playerId].rightDown,
+
+	updateMouse(playerId, {
 		x: BlzGetTriggerPlayerMouseX(),
 		y: BlzGetTriggerPlayerMouseY(),
-		targetLock: mice[playerId].targetLock,
-		target: UnitEx.fromHandle(BlzGetMouseFocusUnit()),
+		target: UnitEx.fromHandle(BlzGetMouseFocusUnit()) ?? NONE,
 		moved: true,
-	};
+	});
+
 	return false;
 };
 
@@ -178,7 +179,7 @@ const tick = () => {
 		const mouse = mice[pid];
 		if ((mouse.leftDown || mouse.rightDown) && mouse.moved) {
 			executeCommands(pid);
-			mouse.moved = false;
+			updateMouse(pid, { moved: false });
 		}
 	});
 };

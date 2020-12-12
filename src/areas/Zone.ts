@@ -142,11 +142,11 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
 	t.registerAnyUnitEvent(EVENT_PLAYER_UNIT_DEATH);
 	t.addCondition(() => {
 		const u = UnitEx.fromEvent()!;
-		if (!isHeroType(u))
+		const group = unitSpawnMap.get(u);
+		if (!isHeroType(u) && group)
 			startTimeout(90, () => {
 				u.unit.destroy();
-				const group = unitSpawnMap.get(u);
-				group?.removeUnit(u.unit);
+				group.removeUnit(u.unit);
 			});
 		return false;
 	});

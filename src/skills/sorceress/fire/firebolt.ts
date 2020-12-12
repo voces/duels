@@ -1,8 +1,9 @@
+import { isInTown } from "../../../areas/town";
 import { randomDamage } from "../../../damage";
 import { mice } from "../../../input/data";
 import { state } from "../../../states/state";
 import { spawnProjectile } from "../../../systems/Projectile";
-import { startTimeout } from "../../../util";
+import { log, startTimeout } from "../../../util";
 import { Vector2Ex } from "../../../util/Vector2";
 import { Skill } from "../../types";
 
@@ -16,6 +17,8 @@ export const fireboltSkill = (): Skill => ({
 	validate: (playerId) => {
 		if (!("heroes" in state)) return false;
 		const hero = state.heroes[playerId];
+		if (isInTown(hero)) return false;
+		log("not in town");
 		return hero.mana >= 3;
 	},
 	perform(playerId, done) {
