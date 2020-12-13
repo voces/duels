@@ -70,8 +70,14 @@ export class Zone {
 		t.registerEnterRegion(
 			region.handle,
 			Filter(() => {
-				print(`Entering ${this.name}`);
-				if (UnitEx.fromFilter()!.owner.id >= 16) return false;
+				const unit = UnitEx.fromFilter()!;
+				if (unit.owner.id >= 16) return false;
+				DisplayTextToPlayer(
+					unit.owner.handle,
+					0,
+					0,
+					`Entering ${this.name}`,
+				);
 
 				this.players++;
 				if (this.players === 1 && !this.activated) this.activate();

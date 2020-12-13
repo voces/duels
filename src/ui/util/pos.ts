@@ -56,13 +56,56 @@ export const topDown = (pos: Partial<PosObj> = {}): Pos => ({
 	...pos,
 });
 
-export const parent = (
-	{
-		relative = "parent",
-	}: {
-		relative: PosObj["relative"];
-	} = { relative: "parent" },
-): Pos[] => [topLeft({ relative }), bottomRight({ relative })];
+type Padding =
+	| number
+	| {
+			top?: number;
+			left?: number;
+			right?: number;
+			bottom?: number;
+			vertical?: number;
+			horizontal?: number;
+	  };
+
+export const parent = ({
+	relative = "parent",
+	padding = 0,
+}: {
+	relative?: PosObj["relative"];
+	padding?: Padding;
+} = {}): Pos[] => {
+	const normalizedPadding = {
+		top:
+			typeof padding === "number"
+				? padding
+				: padding.top ?? padding.vertical ?? 0,
+		bottom:
+			typeof padding === "number"
+				? padding
+				: padding.bottom ?? padding.vertical ?? 0,
+		left:
+			typeof padding === "number"
+				? padding
+				: padding.left ?? padding.horizontal ?? 0,
+		right:
+			typeof padding === "number"
+				? padding
+				: padding.right ?? padding.horizontal ?? 0,
+	};
+
+	return [
+		topLeft({
+			relative,
+			x: normalizedPadding.left,
+			y: -normalizedPadding.top,
+		}),
+		bottomRight({
+			relative,
+			x: -normalizedPadding.right,
+			y: normalizedPadding.bottom,
+		}),
+	];
+};
 
 export const center = (pos: Partial<PosObj> = {}): Pos => ({
 	point: FRAMEPOINT_CENTER,

@@ -122,7 +122,7 @@ export class UnitEx {
 	}
 
 	get healthRegen(): number {
-		return this.lastHealthLoss + 5 > getElapsedTime() ? 1 : 0;
+		return this.lastHealthLoss + 5 > getElapsedTime() ? 0 : 1;
 	}
 
 	get mana(): number {

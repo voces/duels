@@ -33,7 +33,7 @@ export const EnemyStatus = (): React.Node => {
 				text=""
 				value={target ? target.health : 1}
 				max={target ? target.maxHealth : 1}
-				visible={!!target}
+				barTexture="assets/img/HP_bar_mini_line"
 			/>
 		</container>
 	);

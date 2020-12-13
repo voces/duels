@@ -37,6 +37,7 @@ export const App = (): React.Node => {
 						visible={characterVisible}
 					/>
 					<BottomBar
+						hero={state.heroes[MapPlayer.fromLocal().id]}
 						toggleAttributesVisibile={() =>
 							setCharacterVisible((v) => !v)
 						}

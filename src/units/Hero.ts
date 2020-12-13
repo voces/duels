@@ -20,19 +20,19 @@ export const _levelToExperience = (
 };
 
 /**
- * Calculate the amount of expierence to reach a level.
- * @param level Level for which we're calculating the require expierence to
+ * Calculate the amount of experience to reach a level.
+ * @param level Level for which we're calculating the require experience to
  * reach. Starts at 1.
  */
 export const levelToExperience = (level: number): number =>
 	_levelToExperience(level, 0, 0, 0);
 
-export const expierenceToLevel = (expierence: number): number => {
+export const experienceToLevel = (experience: number): number => {
 	let curLevel = 1;
 	let curExpierence = 100;
 	let curExpierenceJump = 200;
 
-	while (curExpierence <= expierence) {
+	while (curExpierence <= experience) {
 		curExpierence += curExpierenceJump;
 		curExpierenceJump += 100;
 		curLevel += 1;
@@ -58,7 +58,7 @@ export class Hero extends UnitEx {
 	staminaPerVitality!: number;
 	manaPerEnergy!: number;
 
-	private _expierence = 0;
+	private _experience = 0;
 	private _unasignedStatPoints = 0;
 
 	constructor({
@@ -106,7 +106,7 @@ export class Hero extends UnitEx {
 			maxHealth,
 			// Unarmed
 			weapon: { min: { physical: 1 }, max: { physical: 1 } },
-			// Use expierence instead
+			// Use experience instead
 			level: -1,
 		});
 
@@ -209,12 +209,12 @@ export class Hero extends UnitEx {
 		this.emitChange();
 	}
 
-	get expierence(): number {
-		return this._expierence;
+	get experience(): number {
+		return this._experience;
 	}
-	set expierence(value: number) {
+	set experience(value: number) {
 		const prevLevel = this.level;
-		this._expierence = value;
+		this._experience = value;
 		const nextLevel = this.level;
 		const gains = nextLevel - prevLevel;
 		if (gains > 0) {
@@ -243,11 +243,11 @@ export class Hero extends UnitEx {
 		const factor = 1 / Math.exp(Math.max(0, levelDiff - 3) / 4);
 		const reward = rawReward * factor;
 
-		this.expierence += reward;
+		this.experience += reward;
 	}
 
 	get level(): number {
 		if (this._level > 0) return this._level;
-		return expierenceToLevel(this.expierence);
+		return experienceToLevel(this.experience);
 	}
 }

@@ -102,7 +102,7 @@ export const Character = ({
 			<Row name="Level" value={hero.level.toString()} />
 			<Row
 				name="Experience"
-				value={Math.round(hero.expierence).toString()}
+				value={Math.round(hero.experience).toString()}
 			/>
 			<Row
 				name="Unassigned stat points"

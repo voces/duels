@@ -39,6 +39,7 @@ export const Status = ({
 				size={{ width: 250, height: 32 }}
 				value={unit.health}
 				max={unit.maxHealth}
+				barTexture="assets/img/HP_bar_mini_line"
 			/>
 			<StatusBar
 				position={topDown({ y: -4 })}

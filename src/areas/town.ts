@@ -31,8 +31,18 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
 		trigger.registerEnterRegion(
 			town.handle,
 			Filter(() => {
-				print("Entering Town");
+				const unit = UnitEx.fromFilter()!;
+
 				UnitEx.fromFilter()!.unit.invulnerable = true;
+
+				if (unit.owner.id < 16 && unit.unit.typeId !== FourCC("e000"))
+					DisplayTextToPlayer(
+						unit.owner.handle,
+						0,
+						0,
+						"Entering Town",
+					);
+
 				return false;
 			}),
 		);
