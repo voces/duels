@@ -70,5 +70,51 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
 		},
 	}));
 
-	new Zone("Blood Moor", region, [...zombieSpawns, ...quilbeastSpawns]);
+	const gnollCampSpawns: Spawn[] = times(GetRandomInt(5, 10), () => {
+		const maxGnoll = GetRandomInt(5, 12);
+		const maxGnollDistance = GetRandomReal(512, 1024);
+		const maxGnollShaman = GetRandomInt(1, 3);
+		const maxGnollShamanDistance = GetRandomReal(256, 512);
+		return [
+			{
+				initial: GetRandomInt(1, maxGnoll),
+				frequency: GetRandomInt(15, 40),
+				max: maxGnoll,
+				maxDistance: maxGnollDistance,
+				minDistance: GetRandomReal(256, maxGnollDistance),
+				...randomSpawn(),
+				unitData: {
+					unit: "n007", // Gnoll
+					level: 1,
+					maxHealth: () => GetRandomInt(1, 4),
+					weapon: { min: { physical: 1 }, max: { physical: 2 } },
+				},
+			},
+			{
+				initial: GetRandomInt(1, maxGnollShaman),
+				frequency: GetRandomInt(30, 60),
+				max: maxGnollShaman,
+				maxDistance: maxGnollShamanDistance,
+				minDistance: GetRandomReal(256, maxGnollShamanDistance),
+				...randomSpawn(),
+				unitData: {
+					unit: "n008", // Kobold Geomancer
+					level: 2,
+					maxHealth: () => GetRandomInt(5, 9),
+					weapon: {
+						min: { fire: 1 },
+						max: { fire: 3 },
+						projectile:
+							"Abilities/Weapons/FireBallMissile/FireBallMissile.mdl",
+					},
+				},
+			},
+		];
+	}).flat();
+
+	new Zone("Blood Moor", region, [
+		...zombieSpawns,
+		...quilbeastSpawns,
+		...gnollCampSpawns,
+	]);
 });

@@ -21,6 +21,8 @@ export type DamageType = typeof damageTypes[number];
 export interface Weapon {
 	min: Damage;
 	max: Damage;
+	projectile?: string;
+	projectileSpeed?: number;
 }
 
 export const randomDamage = (min: Damage, max: Damage): Damage => {

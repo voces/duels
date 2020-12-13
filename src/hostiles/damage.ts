@@ -42,10 +42,11 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
 				damage: source.randomDamage(),
 				duration: 2.5,
 				model:
+					source.weapon.projectile ??
 					"Abilities/Weapons/BristleBackMissile/BristleBackMissile.mdl",
 				owner: source,
 				radius: 96,
-				speed: 700,
+				speed: source.weapon.projectileSpeed ?? 700,
 				x: source.x,
 				y: source.y,
 			});

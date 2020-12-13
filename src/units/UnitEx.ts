@@ -205,6 +205,16 @@ export class UnitEx {
 			const damageFromType = damage[damageType];
 			if (typeof damageFromType !== "number") continue;
 			target.health -= damageFromType;
+			// this.unit.damageTarget(
+			// 	target.unit.handle,
+			// 	1,
+			// 	0,
+			// 	true,
+			// 	true,
+			// 	ATTACK_TYPE_NORMAL,
+			// 	DAMAGE_TYPE_UNKNOWN,
+			// 	WEAPON_TYPE_WHOKNOWS,
+			// );
 		}
 
 		if (target.health <= 0) target.unit.kill();
