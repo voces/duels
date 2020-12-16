@@ -1,5 +1,6 @@
 import { addScriptHook, Trigger, W3TS_HOOK } from "w3ts";
 
+import { isDamageSystemOn } from "../damage";
 import { spawnProjectile } from "../systems/Projectile";
 import { UnitEx } from "../units/UnitEx";
 import { Vector2Ex } from "../util/Vector2";
@@ -8,6 +9,8 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
 	const t = new Trigger();
 	t.registerAnyUnitEvent(EVENT_PLAYER_UNIT_DAMAGED);
 	t.addCondition(() => {
+		if (!isDamageSystemOn()) return false;
+
 		const source = UnitEx.fromHandle(GetEventDamageSource());
 		const target = UnitEx.fromHandle(BlzGetEventDamageTarget());
 
@@ -34,7 +37,7 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
 			0,
 		);
 
-		if (range >= 128 && target) {
+		if (range >= 128 && target && source.owner.id >= 16) {
 			const angle = Vector2Ex.angleBetweenVectors(source, target);
 
 			spawnProjectile({

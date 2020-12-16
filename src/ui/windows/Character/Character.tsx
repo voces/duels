@@ -118,14 +118,14 @@ export const Character = ({
 			/>
 			<Row
 				visible={!!primary}
-				name={`Attack damage (${primary?.name})`}
+				name={`Attack damage (${primary ? primary.name : ""})`}
 				value={
 					primary?.damage ? damageRangeToString(primary.damage) : ""
 				}
 			/>
 			<Row
 				visible={!!secondary}
-				name={`Attack damage (${secondary!.name})`}
+				name={`Attack damage (${secondary ? secondary.name : ""})`}
 				value={
 					secondary?.damage
 						? damageRangeToString(secondary.damage)

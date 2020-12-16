@@ -5,6 +5,7 @@ export interface Damage {
 	lightning?: number;
 	poison?: number;
 	cold?: number;
+	holy?: number;
 }
 
 export const damageTypes = [
@@ -14,6 +15,7 @@ export const damageTypes = [
 	"lightning",
 	"poison",
 	"cold",
+	"holy",
 ] as const;
 
 export type DamageType = typeof damageTypes[number];
@@ -39,3 +41,14 @@ export const randomDamage = (min: Damage, max: Damage): Damage => {
 
 	return damage;
 };
+
+let damageSystemOn = true;
+
+export const withDamageSystemOff = (fn: () => void): void => {
+	const prev = damageSystemOn;
+	damageSystemOn = false;
+	fn();
+	damageSystemOn = prev;
+};
+
+export const isDamageSystemOn = (): boolean => damageSystemOn;

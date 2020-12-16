@@ -1,6 +1,9 @@
 import { MapPlayer } from "w3ts";
 
 import { Damage } from "../damage";
+import { equipItem, unequipItem } from "../items/equipping";
+import { Item } from "../items/Item";
+import { times } from "../util";
 import { colorize } from "../util/colorize";
 import { UnitEx } from "./UnitEx";
 
@@ -41,6 +44,19 @@ export const experienceToLevel = (experience: number): number => {
 	return curLevel;
 };
 
+interface Items {
+	leftHand?: Item;
+	rightHand?: Item;
+	inventory: {
+		items: { item: Item; x: number; y: number }[];
+		occupancy: boolean[][];
+	};
+}
+
+type UnitItemSlot = Exclude<keyof Items, "inventory">;
+
+const unitItemSlots: UnitItemSlot[] = ["leftHand", "rightHand"];
+
 export class Hero extends UnitEx {
 	private _strength!: number;
 	private _dexterity!: number;
@@ -60,6 +76,13 @@ export class Hero extends UnitEx {
 
 	private _experience = 0;
 	private _unasignedStatPoints = 0;
+
+	private items: Items = {
+		inventory: {
+			items: [],
+			occupancy: times(4, () => times(10, () => false)),
+		},
+	};
 
 	constructor({
 		unit,
@@ -249,5 +272,82 @@ export class Hero extends UnitEx {
 	get level(): number {
 		if (this._level > 0) return this._level;
 		return experienceToLevel(this.experience);
+	}
+
+	removeItemFromInventory(item: Item): void {
+		const slot = this.items.inventory.items.find((s) => s.item === item);
+		if (!slot) return;
+
+		this.items.inventory.items.splice(
+			this.items.inventory.items.indexOf(slot),
+			1,
+		);
+		for (let y = slot.y; y < slot.y + item.slotSize.width; y++)
+			for (let x = slot.x; x < slot.x + item.slotSize.height; x++)
+				this.items.inventory.occupancy[y][x] = false;
+	}
+
+	addItemToInventory(item: Item): boolean {
+		const slot = this.items.inventory.items.find((s) => s.item === item);
+		if (slot) return false;
+
+		let y = 0;
+		let x = 0;
+		for (y = 0; y < 4; y++)
+			for (x = 0; x < 10; x++)
+				if (this.items.inventory.occupancy[y][x] === false)
+					for (let y2 = y; y2 < y + item.slotSize.width; y2++)
+						for (let x2 = x; x2 < x + item.slotSize.height; x2++)
+							if (this.items.inventory.occupancy[y2][x]) {
+								x2 = x + item.slotSize.height - 1;
+								y2 = y + item.slotSize.width - 1;
+							}
+
+		if (y === 4) return false;
+
+		this.items.inventory.items.push({ item, x, y });
+		for (let y2 = y; y2 < y + item.slotSize.width; y2++)
+			for (let x2 = x; x2 < x + item.slotSize.height; x2++)
+				this.items.inventory.occupancy[y2][x2] = true;
+
+		return true;
+	}
+
+	unequip(item: Item): boolean {
+		const equippedSlot = unitItemSlots.find((s) => this.items[s] === item);
+		if (!equippedSlot) return false;
+
+		const slot = this.items.inventory.items.find((s) => s.item === item);
+		if (slot) return false;
+
+		if (!this.addItemToInventory(item)) return false;
+
+		this.items[equippedSlot] = undefined;
+		unequipItem(item, this);
+		return true;
+	}
+
+	equip(item: Item): boolean {
+		const unequipSlots: UnitItemSlot[] =
+			item.slot === "hands" ? ["leftHand", "rightHand"] : [item.slot];
+		const equipSlot = item.slot === "hands" ? "leftHand" : item.slot;
+
+		const removedFromInventory = this.items.inventory.items.some(
+			(s) => s.item === item,
+		);
+		if (removedFromInventory) this.removeItemFromInventory(item);
+
+		const unequippedItems = unequipSlots
+			.map((s) => this.items[s])
+			.filter((v: Item | undefined): v is Item => !!v);
+		for (let i = 0; i < unequippedItems.length; i++)
+			if (!this.unequip(unequippedItems[i])) {
+				for (let n = 0; n < i; n++) this.equip(unequippedItems[i]);
+				return false;
+			}
+
+		this.items[equipSlot] = item;
+		equipItem(item, this);
+		return true;
 	}
 }

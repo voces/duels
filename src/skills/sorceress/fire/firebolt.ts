@@ -1,18 +1,35 @@
-import { isInTown } from "../../../areas/town";
+import { isInTown } from "../../../areas/town2";
 import { randomDamage } from "../../../damage";
 import { mice } from "../../../input/data";
 import { state } from "../../../states/state";
-import { spawnProjectile } from "../../../systems/Projectile";
+import { spawnProjectile as spawnProjectileType } from "../../../systems/Projectile";
 import { startTimeout } from "../../../util";
 import { Vector2Ex } from "../../../util/Vector2";
 import { Skill } from "../../types";
 
+let spawnProjectile: typeof spawnProjectileType;
+
 export const fireboltSkill = (): Skill => ({
 	name: "Firebolt",
-	level: 1,
+	level: 0,
 	damage: {
-		min: { fire: 3 },
-		max: { fire: 5 },
+		min: { fire: 0 },
+		max: { fire: 0 },
+	},
+	setLevel(newLevel: number) {
+		this.level = newLevel;
+		this.damage!.min.fire = Math.round(
+			1.735 +
+				1.342 * this.level -
+				0.006 * this.level ** 2 +
+				0.002 * this.level ** 3,
+		);
+		this.damage!.max.fire = Math.round(
+			-0.002 * this.level ** 3 +
+				0.153 * this.level ** 2 +
+				0.174 * this.level +
+				6.506,
+		);
 	},
 	validate: (playerId) => {
 		if (!("heroes" in state)) return false;
@@ -38,6 +55,9 @@ export const fireboltSkill = (): Skill => ({
 		hero.unit.issueImmediateOrder("stop");
 		hero.faceTarget(target);
 		hero.setAnimation("spell");
+
+		if (!spawnProjectile)
+			spawnProjectile = require("src.systems.Projectile").spawnProjectile;
 
 		startTimeout(0.51, () => {
 			spawnProjectile({

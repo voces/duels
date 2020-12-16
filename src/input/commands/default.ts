@@ -1,7 +1,7 @@
 import { attackAction } from "../../actions/attack";
 import { moveAction } from "../../actions/move";
 import { queueAction } from "../../actions/queue";
-import { isInTown } from "../../areas/town";
+import { isInTown } from "../../areas/town2";
 import { state } from "../../states/state";
 import { mice } from "../data";
 import { registerCommand } from "./registry";

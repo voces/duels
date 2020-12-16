@@ -5,6 +5,7 @@ export const colors = {
 	magic: "24206B",
 	lightning: "FDF996",
 	poison: "08C106",
+	holy: "FF00FF",
 
 	error: "ff0303",
 };

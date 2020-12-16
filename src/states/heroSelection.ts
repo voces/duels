@@ -1,6 +1,7 @@
 import { addScriptHook, Camera, Timer, TimerDialog, W3TS_HOOK } from "w3ts";
 
-import { fireboltSkill } from "../skills/sorceress/fire/firebolt";
+import { buildOfFireBolt } from "../items/affixes/suffixes/skills";
+import { buildShortStaff } from "../items/base/staves/shortStaff";
 import { Hero } from "../units/Hero";
 import { heroData, heroDataArr } from "../units/heroTypes";
 import { UnitEx } from "../units/UnitEx";
@@ -36,7 +37,16 @@ const advanceFromHeroSelection = () => {
 		if (player.handle === GetLocalPlayer())
 			Camera.setTargetController(hero.handle, 0, 128, false);
 
-		if (heroType === "sorceress") hero.addSkill(fireboltSkill());
+		try {
+			if (heroType === "sorceress")
+				hero.equip(
+					buildShortStaff({
+						affixes: [buildOfFireBolt({ effect: { levels: 1 } })],
+					}),
+				);
+		} catch (err) {
+			print(err);
+		}
 	});
 
 	// Reset camera

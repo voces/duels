@@ -1,8 +1,15 @@
 import { getElapsedTime, MapPlayer, Unit } from "w3ts";
 
 import { queueAction } from "../actions/queue";
-import { Damage, damageTypes, randomDamage, Weapon } from "../damage";
+import {
+	Damage,
+	damageTypes,
+	randomDamage,
+	Weapon,
+	withDamageSystemOff,
+} from "../damage";
 import { registerCommand } from "../input/commands/registry";
+import { skillMap, SkillName } from "../skills/map";
 import { Skill } from "../skills/types";
 import { dummyGroup } from "../util";
 import { Vector2, Vector2Ex } from "../util/Vector2";
@@ -29,6 +36,7 @@ export class UnitEx {
 	private _maxMana = 0;
 	protected _level = 0;
 	private _skills: Skill[] = [];
+	private _skillMap: Record<string, Skill> = {};
 
 	private listeners: (() => void)[] = [];
 	private lastHealthLoss = 0;
@@ -205,16 +213,17 @@ export class UnitEx {
 			const damageFromType = damage[damageType];
 			if (typeof damageFromType !== "number") continue;
 			target.health -= damageFromType;
-			// this.unit.damageTarget(
-			// 	target.unit.handle,
-			// 	1,
-			// 	0,
-			// 	true,
-			// 	true,
-			// 	ATTACK_TYPE_NORMAL,
-			// 	DAMAGE_TYPE_UNKNOWN,
-			// 	WEAPON_TYPE_WHOKNOWS,
-			// );
+			withDamageSystemOff(() => {
+				this.unit.damageTarget(
+					target.unit.handle,
+					25,
+					true,
+					false,
+					ATTACK_TYPE_NORMAL,
+					DAMAGE_TYPE_NORMAL,
+					WEAPON_TYPE_WHOKNOWS,
+				);
+			});
 		}
 
 		if (target.health <= 0) target.unit.kill();
@@ -257,6 +266,7 @@ export class UnitEx {
 
 	addSkill(skill: Skill): void {
 		this._skills.push(skill);
+		this._skillMap[skill.name] = skill;
 		registerCommand(
 			{
 				name: skill.name,
@@ -273,6 +283,14 @@ export class UnitEx {
 			},
 			this.owner.id,
 		);
+	}
+
+	incSkillLevel(skillName: SkillName, levels?: number): void {
+		const hasSkill = !!this._skillMap[skillName];
+		if (!hasSkill) this.addSkill(skillMap[skillName]());
+
+		const skill = this._skillMap[skillName];
+		skill.setLevel(skill.level + (levels ?? 1));
 	}
 
 	faceTarget(target: Vector2): void {

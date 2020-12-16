@@ -38,8 +38,6 @@ interface InternalSpawn extends Spawn {
 	last: number;
 }
 
-const randomHostile = () => 16 + Math.floor(Math.random() * 8);
-
 const zones: Zone[] = [];
 
 const unitSpawnMap = new Map<UnitEx, Group>();
@@ -105,7 +103,6 @@ export class Zone {
 		const angle = Math.random() * Math.PI * 2;
 		const x = spawn.x + distance * Math.cos(angle);
 		const y = spawn.y + distance * Math.sin(angle);
-		const owner = randomHostile();
 
 		const data = { ...spawn.unitData };
 		let prop: keyof typeof data;
@@ -118,7 +115,10 @@ export class Zone {
 		const builtData: InnerSpawnUnitProps = data as any;
 
 		const u = new UnitEx({
-			owner,
+			// Ideally we'd use players 16-23 for this, but that wasn't working
+			// If units stall out, may need to make teams with players 16-23
+			// computers
+			owner: PLAYER_NEUTRAL_AGGRESSIVE,
 			x,
 			y,
 			...builtData,
