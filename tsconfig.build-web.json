@@ -1,0 +1,16 @@
+{
+	"extends": "./tsconfig.json",
+	"include": [
+		"src",
+		"node_modules/w3api/dist",
+		"node_modules/w3ts",
+		"node_modules/w3ts-jsx/dist",
+		"node_modules/w3ts-jsx/dist/node_modules/basic-pragma"
+	],
+	"exclude": ["**/*.test.ts", "**/*.test.tsx", "**/test", "**/tests"],
+	"compilerOptions": {
+		"outDir": "public",
+		"lib": ["DOM", "ES2020"],
+		"allowJs": true
+	}
+}

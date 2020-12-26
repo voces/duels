@@ -7,16 +7,19 @@
   "private": true,
   "main": "src/main.ts",
   "scripts": {
+    "build-web": "tsc --project tsconfig.build-web.json",
+    "build-windows": "ts-node scripts/cloneToWindows.ts",
     "build:defs": "ts-node scripts/dev",
     "build": "ts-node scripts/build.ts",
-    "build-windows": "ts-node scripts/cloneToWindows.ts",
+    "dev-web": "tsc --project tsconfig.build-web.json --watch",
     "dev": "npm-watch",
-    "postinstall": "tsc --outDir null -p node_modules/mdx-m3-viewer/tsconfig.json",
     "jest": "jest",
     "lint": "eslint . --fix",
+    "postinstall": "tsc --outDir null -p node_modules/mdx-m3-viewer/tsconfig.json",
     "test": "ts-node scripts/test.ts"
   },
   "dependencies": {
+    "@web/dev-server": "^0.1.2",
     "w3ts": "^2.2.0",
     "w3ts-jsx": "^2.5.1"
   },

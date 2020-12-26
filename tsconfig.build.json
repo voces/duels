@@ -6,7 +6,7 @@
 		"node_modules/w3ts-jsx/dist",
 		"node_modules/w3ts-jsx/dist/node_modules/basic-pragma"
 	],
-	"exclude": ["**/*.test.ts", "**/*.test.tsx", "**/test", "**/tests"],
+	"exclude": ["**/*.test.ts", "**/*.test.tsx", "**/test", "**/tests", "**/*.web.ts"],
 	"tstl": {
 		"luaTarget": "5.3",
 		"noHeader": true,

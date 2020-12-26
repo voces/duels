@@ -26,7 +26,7 @@ export const App = (): React.Node => {
 			},
 		});
 	});
-
+	console.log("App#render", state);
 	return (
 		<container>
 			{state.state === "hero-selection" && <HeroSelection />}

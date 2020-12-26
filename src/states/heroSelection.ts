@@ -106,6 +106,7 @@ const spawnWisps = () => {
 };
 
 const advanceToHeroSelection = () => {
+	console.log("advanceToHeroSelection");
 	spawnHeroOptions();
 	spawnWisps();
 	const timer = new Timer();
@@ -127,7 +128,9 @@ const advanceToHeroSelection = () => {
 };
 
 addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
+	console.log("heroSelection hook", 1);
 	new Timer().start(0.25, false, () => {
+		console.log("heroSelection hook", 2);
 		Timer.fromExpired().destroy();
 		advanceToHeroSelection();
 	});

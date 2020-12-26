@@ -1,3 +1,5 @@
+import "w3api/dist/lua/polyfill";
+
 import * as w3api from "w3api/dist/api";
 import * as w3ts from "w3api/dist/w3ts";
 
