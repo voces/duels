@@ -55,7 +55,7 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
 		g.enumUnitsInRect(
 			rect,
 			Filter(() => {
-				const unit = Unit.fromHandle(GetEnumUnit());
+				const unit = Unit.fromEnum();
 				unit.invulnerable = true;
 				unit.acquireRange = 0;
 				new UnitEx({ unit });

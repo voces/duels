@@ -15,7 +15,7 @@
     "dev": "npm-watch",
     "jest": "jest",
     "lint": "eslint . --fix",
-    "postinstall": "tsc --outDir null -p node_modules/mdx-m3-viewer/tsconfig.json",
+    "postinstall": "tsc -p node_modules/mdx-m3-viewer/tsconfig.json --declaration --module ES6",
     "test": "ts-node scripts/test.ts"
   },
   "dependencies": {
@@ -48,7 +48,7 @@
     "typescript": "^4.1.2",
     "typescript-to-lua": "^0.36.0",
     "w3api": "^2.2.0",
-    "w3xdata": "^2.1.3",
+    "w3xdata": "^2.2.0",
     "war3-transformer": "^1.1.0",
     "war3-types": "^1.0.2",
     "war3tstlhelper": "^1.0.1",

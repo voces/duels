@@ -71,7 +71,7 @@ export const HeroSelection = (): React.Node => {
 	console.log("render HeroSelection");
 	const globalState = useGlobalState();
 
-	const triggerPlayerId = GetPlayerId(GetTriggerPlayer());
+	const triggerPlayerId = GetPlayerId(GetTriggerPlayer()!);
 
 	const selected =
 		globalState.state === "hero-selection"

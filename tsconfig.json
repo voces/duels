@@ -3,11 +3,7 @@
 		"outDir": ".",
 		"strict": true,
 		"allowJs": false,
-		"alwaysStrict": true,
-		"noImplicitAny": true,
-		"noImplicitThis": true,
 		"skipLibCheck": true,
-		"strictNullChecks": true,
 		"jsx": "react",
 		"target": "es6",
 		"lib": ["es2020"],
@@ -43,6 +39,6 @@
 		],
 		"esModuleInterop": true
 	},
-	"include": [ "src", "scripts" ],
+	"include": ["src", "scripts"],
 	"exclude": ["node_modules"]
 }

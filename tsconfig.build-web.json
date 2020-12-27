@@ -3,14 +3,32 @@
 	"include": [
 		"src",
 		"node_modules/w3api/dist",
+		"node_modules/w3xdata/dist",
+		"node_modules/wc3data/dist",
 		"node_modules/w3ts",
 		"node_modules/w3ts-jsx/dist",
+		"node_modules/mdx-m3-viewer/dist",
 		"node_modules/w3ts-jsx/dist/node_modules/basic-pragma"
 	],
 	"exclude": ["**/*.test.ts", "**/*.test.tsx", "**/test", "**/tests"],
 	"compilerOptions": {
 		"outDir": "public",
 		"lib": ["DOM", "ES2020"],
-		"allowJs": true
+		"allowJs": true,
+		"skipLibCheck": true,
+		"paths": {
+			"*": [
+				"./node_modules/*/dist/index",
+				"./node_modules/*/lib/index",
+				"./node_modules/*/index",
+				"./node_modules/*",
+				"./node_modules/*/src/index"
+			]
+		},
+		"types": [
+			"w3api/dist/api/types",
+			"mdx-m3-viewer/src/types",
+			"w3ts-jsx/dist/src/types"
+		]
 	}
 }
