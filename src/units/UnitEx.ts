@@ -62,6 +62,9 @@ export class UnitEx {
 		weapon?: Weapon;
 		level?: number;
 	}) {
+		const creatingUnit =
+			typeof unit === "number" || typeof unit === "string";
+
 		if (typeof unit === "number" || typeof unit === "string")
 			if (owner == null) throw "Expected owner when passing in unit type";
 			else if (x == null) throw "Expected x when passing in unit type";
@@ -76,7 +79,9 @@ export class UnitEx {
 					facing ?? Math.random() * 360,
 				);
 
-		if (map.has(unit.handle)) throw "Duplicate UnitEx " + unit.typeId;
+		if (!creatingUnit && map.has(unit.handle))
+			throw "Duplicate UnitEx " + unit.typeId;
+
 		map.set(unit.handle, this);
 		this.unit = unit;
 

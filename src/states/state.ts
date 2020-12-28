@@ -2,6 +2,7 @@ import { Timer, TimerDialog } from "w3ts";
 
 import { Hero } from "../units/Hero";
 import { HeroType } from "../units/heroTypes";
+import { colorize } from "../util/colorize";
 
 interface InitialState {
 	state: "initial";
@@ -42,8 +43,13 @@ export const setGlobalState = (newState: State): void => {
 	for (prop in state) delete (state as any)[prop];
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	for (prop in newState) (state as any)[prop] = newState[prop];
-
-	subs.forEach((sub) => sub(state));
+	subs.forEach((sub) => {
+		try {
+			sub(state);
+		} catch (err) {
+			print(colorize.error(err));
+		}
+	});
 };
 
 export const subStateChange = (fn: (newState: State) => void): void => {

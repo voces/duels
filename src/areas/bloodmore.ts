@@ -28,7 +28,8 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
 	const randomSpawn = () => {
 		let x = 0;
 		let y = 0;
-		while (!region.containsCoords(x, y)) {
+		let tries = 100;
+		while (!region.containsCoords(x, y) && tries--) {
 			x = Math.random() * xRange + xMin;
 			y = Math.random() * yRange + yMin;
 		}

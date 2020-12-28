@@ -68,14 +68,13 @@ const druidTooltip = `Druid
 Specializes in elemental, shape shifting, and summoning spells.`;
 
 export const HeroSelection = (): React.Node => {
-	console.log("render HeroSelection");
 	const globalState = useGlobalState();
 
 	const triggerPlayerId = GetPlayerId(GetTriggerPlayer()!);
 
 	const selected =
 		globalState.state === "hero-selection"
-			? globalState.heroSelection.selections[triggerPlayerId]
+			? globalState.heroSelection.selections[triggerPlayerId] ?? "amazon"
 			: "amazon";
 	const setSelected = (hero: HeroType) => {
 		if (globalState.state !== "hero-selection") return;

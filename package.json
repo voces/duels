@@ -12,12 +12,12 @@
     "build:defs": "ts-node scripts/dev",
     "build": "ts-node scripts/build.ts",
     "dev-web": "tsc --project tsconfig.build-web.json --watch",
-	"dev": "npm-watch build",
-	"web-host": "web-dev-server --node-resolve",
+    "dev": "npm-watch build",
     "jest": "jest",
     "lint": "eslint . --fix",
     "postinstall": "tsc -p node_modules/mdx-m3-viewer/tsconfig.json --declaration --module ES6",
-    "test": "ts-node scripts/test.ts"
+    "test": "ts-node scripts/test.ts",
+    "web-server": "web-dev-server --node-resolve --watch"
   },
   "dependencies": {
     "@web/dev-server": "^0.1.2",
