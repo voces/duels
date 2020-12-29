@@ -22,7 +22,7 @@
   "dependencies": {
     "@web/dev-server": "^0.1.2",
     "w3ts": "^2.2.0",
-    "w3ts-jsx": "^2.5.1"
+    "w3ts-jsx": "^2.5.2"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.11.5",
