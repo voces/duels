@@ -1,97 +1,101 @@
 import {
-	addScriptHook,
-	Effect,
-	getElapsedTime,
-	Point,
-	Timer,
-	W3TS_HOOK,
-} from "w3ts";
+  addScriptHook,
+  Effect,
+  getElapsedTime,
+  Point,
+  Timer,
+  W3TS_HOOK,
+} from "@voces/w3ts";
 
-import { Damage } from "../damage";
-import { UnitEx } from "../units/UnitEx";
+import type { Damage } from "../damage";
+import type { UnitEx as UnitExType } from "../units/UnitEx";
 import { dummyGroup } from "../util";
+import { asyncRequire } from "../util/asyncRequire";
 
 export interface Projectile {
-	angle: number;
-	damage: Damage;
-	duration: number;
-	maxTargets?: number;
-	model: string;
-	owner: UnitEx;
-	radius: number;
-	speed: number;
-	x: number;
-	y: number;
+  angle: number;
+  damage: Damage;
+  duration: number;
+  maxTargets?: number;
+  model: string;
+  owner: UnitExType;
+  radius: number;
+  speed: number;
+  x: number;
+  y: number;
 }
 
 interface InnerProjectile extends Projectile {
-	effect: Effect;
-	spawnTime: number;
-	maxTargets: number;
-	height: number;
+  effect: Effect;
+  spawnTime: number;
+  maxTargets: number;
+  height: number;
 }
 
 const projectiles = new Set<InnerProjectile>();
 
 const point = new Point(0, 0);
 
+const UnitEx = asyncRequire<
+  typeof import("../units/UnitEx")
+>("units.UnitEx");
+
 export const spawnProjectile = (projectile: Projectile): void => {
-	const effect = new Effect(projectile.model, projectile.x, projectile.y);
-	point.setPosition(projectile.x, projectile.y);
-	effect.z = point.z + 64;
-	effect.setYaw(projectile.angle);
+  const effect = new Effect(projectile.model, projectile.x, projectile.y);
+  point.setPosition(projectile.x, projectile.y);
+  effect.z = point.z + 64;
+  effect.setYaw(projectile.angle);
 
-	const p: InnerProjectile = {
-		...projectile,
-		effect,
-		maxTargets: projectile.maxTargets ?? 1,
-		spawnTime: getElapsedTime(),
-		speed: projectile.speed,
-		height: point.z + 64,
-	};
+  const p: InnerProjectile = {
+    ...projectile,
+    effect,
+    maxTargets: projectile.maxTargets ?? 1,
+    spawnTime: getElapsedTime(),
+    speed: projectile.speed,
+    height: point.z + 64,
+  };
 
-	projectiles.add(p);
+  projectiles.add(p);
 };
 
-addScriptHook(W3TS_HOOK.MAIN_AFTER, () =>
-	new Timer().start(0.03, true, () => {
-		const time = getElapsedTime();
-		for (const projectile of projectiles.values()) {
-			const delta = time - projectile.spawnTime;
-			const x =
-				projectile.x +
-				delta * projectile.speed * Math.cos(projectile.angle);
-			projectile.effect.x = x;
-			const y =
-				projectile.y +
-				delta * projectile.speed * Math.sin(projectile.angle);
-			projectile.effect.y = y;
-			projectile.effect.z = projectile.height;
+addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
+  new Timer().start(0.03, true, () => {
+    const time = getElapsedTime();
+    for (const projectile of projectiles.values()) {
+      const delta = time - projectile.spawnTime;
+      const x = projectile.x +
+        delta * projectile.speed * Math.cos(projectile.angle);
+      projectile.effect.x = x;
+      const y = projectile.y +
+        delta * projectile.speed * Math.sin(projectile.angle);
+      projectile.effect.y = y;
+      projectile.effect.z = projectile.height;
 
-			dummyGroup.enumUnitsInRange(
-				x,
-				y,
-				projectile.radius,
-				Filter((): boolean => {
-					if (projectile.maxTargets === 0) return false;
+      dummyGroup.enumUnitsInRange(
+        x,
+        y,
+        projectile.radius,
+        Filter((): boolean => {
+          if (projectile.maxTargets === 0) return false;
 
-					const u = UnitEx.fromFilter()!;
+          const u = UnitEx.UnitEx.fromFilter()!;
 
-					if (u.isAlly(projectile.owner.owner) || u.health <= 0)
-						return false;
-					projectile.maxTargets--;
+          if (u.isAlly(projectile.owner.owner) || u.health <= 0) {
+            return false;
+          }
+          projectile.maxTargets--;
 
-					projectile.owner.damage(u, projectile.damage);
+          projectile.owner.damage(u, projectile.damage);
 
-					return false;
-				}),
-			);
-			dummyGroup.clear();
+          return false;
+        }),
+      );
+      dummyGroup.clear();
 
-			if (projectile.maxTargets === 0 || delta > projectile.duration) {
-				projectile.effect.destroy();
-				projectiles.delete(projectile);
-			}
-		}
-	}),
-);
+      if (projectile.maxTargets === 0 || delta > projectile.duration) {
+        projectile.effect.destroy();
+        projectiles.delete(projectile);
+      }
+    }
+  });
+});

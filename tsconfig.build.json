@@ -1,28 +1,34 @@
 {
-	"extends": "./tsconfig.json",
-	"include": [
-		"src",
-		"node_modules/w3ts",
-		"node_modules/w3ts-jsx/dist",
-		"node_modules/w3ts-jsx/dist/node_modules/basic-pragma"
-	],
-	"exclude": ["**/*.test.ts", "**/*.test.tsx", "**/test", "**/tests"],
-	"tstl": {
-		"luaTarget": "5.3",
-		"noHeader": true,
-		"luaLibImport": "require",
-		"noImplicitSelf": true,
-		"luaBundle": "dist/tstl_output.lua",
-		"luaBundleEntry": "./src/main.ts",
-		"luaPlugins": [
-			{
-				"name": "tstl-jsx",
-				"import": "JsxTransformer"
-			},
-			{
-				"name": "./scripts/moduleTransformer.ts",
-				"import": "ModuleTransformer"
-			}
-		]
-	}
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": [
+      "lua-types/5.3",
+      "war3-types-strict/1.32.10"
+    ]
+  },
+  "include": [
+    "./src/main.ts",
+    "./src/types.d.ts",
+    "./src/damage.ts",
+    "./src/war3map.d.ts",
+    "./src/util",
+    "./src/actions",
+    "./src/areas",
+    "./src/effects",
+    "./src/hostiles",
+    "./src/input",
+    "./src/items",
+    "./src/skills",
+    "./src/states",
+    "./src/systems",
+    "./src/units",
+    "./src/ui"
+  ],
+  "exclude": ["**/*.test.ts", "**/*.test.tsx"],
+  "tstl": {
+    "noImplicitSelf": true,
+    "luaBundleEntry": "./src/main.ts",
+    "luaBundle": "out.lua",
+    "luaTarget": "5.3"
+  }
 }

@@ -1,63 +1,20 @@
 {
   "name": "duels",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "author": "verit",
   "license": "MIT",
   "private": true,
-  "main": "src/main.ts",
   "scripts": {
-    "build:defs": "ts-node scripts/dev",
-    "build": "ts-node scripts/build.ts",
-    "build-windows": "ts-node scripts/cloneToWindows.ts",
-    "dev": "npm-watch",
-    "postinstall": "tsc --outDir null -p node_modules/mdx-m3-viewer/tsconfig.json",
-    "jest": "jest",
-    "lint": "eslint . --fix",
-    "test": "ts-node scripts/test.ts"
-  },
-  "dependencies": {
-    "w3ts": "^2.2.0",
-    "w3ts-jsx": "^2.5.1"
+    "clean": "rm -rf ./temp",
+    "append": "ts-node scripts/append.ts",
+    "build-lua": "tstl --project tsconfig.build.json",
+    "build": "npm run clean && npm run build-lua && npm run append"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.11.5",
-    "@babel/preset-typescript": "^7.10.4",
-    "@types/fs-extra": "^9.0.1",
-    "@types/jest": "^26.0.14",
-    "@types/node": "^14.11.5",
-    "@types/pako": "^1.0.1",
-    "@typescript-eslint/eslint-plugin": "^4.4.0",
-    "eslint": "^7.10.0",
-    "eslint-config-verit": "^3.3.0",
-    "eslint-plugin-prettier": "^3.3.0",
-    "fs-extra": "^9.0.1",
-    "jest": "^26.5.2",
-    "lua-types": "^2.8.0",
-    "luamin": "^1.0.4",
-    "mdx-m3-viewer": "^5.0.12",
-    "npm-watch": "^0.7.0",
-    "prettier": "^2.2.1",
-    "ts-jest": "^26.4.1",
-    "ts-node": "^9.0.0",
-    "tsconfig-paths": "^3.9.0",
-    "tsutils": "^3.17.1",
-    "typescript": "^4.1.2",
-    "typescript-to-lua": "^0.36.0",
-    "w3api": "^2.2.0",
-    "w3xdata": "^2.1.3",
-    "war3-transformer": "^1.1.0",
-    "war3-types": "^1.0.2",
-    "war3tstlhelper": "^1.0.1",
-    "winston": "^3.3.3"
-  },
-  "watch": {
-    "build:defs": {
-      "patterns": [
-        "./maps/*"
-      ],
-      "extensions": "lua",
-      "legacyWatch": true
-    }
+    "@voces/w3ts": "^3.0.1",
+    "basic-pragma": "^4.4.0",
+    "typescript-to-lua": "^1.9.0",
+    "w3ts-jsx": "^2.5.2"
   }
 }

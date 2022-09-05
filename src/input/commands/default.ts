@@ -7,56 +7,56 @@ import { mice } from "../data";
 import { registerCommand } from "./registry";
 
 registerCommand({
-	name: "Attack in place",
-	shortcuts: [{ mouse: "left", keyboard: "shift" }],
-	priority: 3,
-	damage: (playerId) => {
-		if (state.state !== "grind") return;
+  name: "Attack in place",
+  shortcuts: [{ mouse: "left", keyboard: "shift" }],
+  priority: 3,
+  damage: (playerId) => {
+    if (state.state !== "grind") return;
 
-		const hero = state.heroes[playerId];
+    const hero = state.heroes[playerId];
 
-		return hero.weapon;
-	},
-	fn: (playerId) => {
-		if (state.state !== "grind") return false;
+    return hero.weapon;
+  },
+  fn: (playerId) => {
+    if (state.state !== "grind") return false;
 
-		const hero = state.heroes[playerId];
-		if (isInTown(hero)) return false;
+    const hero = state.heroes[playerId];
+    if (isInTown(hero)) return false;
 
-		queueAction(playerId, attackAction(hero));
-		return true;
-	},
+    queueAction(playerId, attackAction(hero));
+    return true;
+  },
 });
 
 registerCommand({
-	name: "Attack",
-	shortcuts: [{ mouse: "left" }],
-	priority: 2,
-	fn: (playerId) => {
-		if (state.state !== "grind") return false;
+  name: "Attack",
+  shortcuts: [{ mouse: "left" }],
+  priority: 2,
+  fn: (playerId) => {
+    if (state.state !== "grind") return false;
 
-		const mouse = mice[playerId];
-		const target = mouse.targetLock ?? mouse.target;
-		if (!target) return false;
+    const mouse = mice[playerId];
+    const target = mouse.targetLock ?? mouse.target;
+    if (!target) return false;
 
-		const hero = state.heroes[playerId];
-		if (isInTown(hero)) return false;
+    const hero = state.heroes[playerId];
+    if (isInTown(hero)) return false;
 
-		queueAction(playerId, attackAction(hero, target));
-		return true;
-	},
+    queueAction(playerId, attackAction(hero, target));
+    return true;
+  },
 });
 
 registerCommand({
-	name: "Move",
-	shortcuts: [{ mouse: "left" }],
-	priority: 1,
-	fn: (playerId) => {
-		if (state.state !== "grind") return false;
+  name: "Move",
+  shortcuts: [{ mouse: "left" }],
+  priority: 1,
+  fn: (playerId) => {
+    if (state.state !== "grind") return false;
 
-		const hero = state.heroes[playerId];
+    const hero = state.heroes[playerId];
 
-		queueAction(playerId, moveAction(hero));
-		return true;
-	},
+    queueAction(playerId, moveAction(hero));
+    return true;
+  },
 });
