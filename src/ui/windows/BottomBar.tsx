@@ -25,15 +25,15 @@ const ButtonIcon = ({
       size={{ width: ICON_SIZE, height: ICON_SIZE }}
       ref={buttonRef}
       onClick={onClick}
-      tooltip={tooltip && (
+      tooltip={tooltip && buttonRef.current && (
         <Tooltip>
           <text
             text={tooltip}
             position={{
-              point: FRAMEPOINT_BOTTOM,
-              relative: buttonRef.current ?? "parent",
-              relativePoint: FRAMEPOINT_TOP,
-              y: 24,
+              point: FRAMEPOINT_TOP,
+              relative: buttonRef.current,
+              relativePoint: FRAMEPOINT_BOTTOM,
+              y: -24,
             }}
           />
         </Tooltip>
@@ -46,14 +46,16 @@ const ButtonIcon = ({
 
 const Menu = ({
   toggleAttributesVisibile,
+  toggleInventoryVisible,
 }: {
   toggleAttributesVisibile: () => void;
+  toggleInventoryVisible: () => void;
 }) => (
   <container
     absPosition={{
-      point: FRAMEPOINT_TOPLEFT,
-      x: 1200,
-      y: ICON_SIZE,
+      point: FRAMEPOINT_TOPRIGHT,
+      x: 1600,
+      y: 1200 - 32,
     }}
     size={{ height: ICON_SIZE, width: 300 }}
   >
@@ -66,11 +68,8 @@ const Menu = ({
     <ButtonIcon
       icon="assets/img/Bag2_eq_icon_r"
       tooltip="Inventory"
-      onClick={() => {
-        /* do nothing */
-      }}
+      onClick={toggleInventoryVisible}
     />
-    <backdrop texture="asdf" position="parent" alpha={10} />
   </container>
 );
 
@@ -80,17 +79,20 @@ const ExperienceBar = ({ hero }: { hero: Hero }) => {
   const experienceToNextLevel = levelToExperience(hero.level + 1);
   const value = hero.experience - experienceToCurrentLevel;
   const max = experienceToNextLevel - experienceToCurrentLevel;
+  const containerRef = useRefState<framehandle | null>(null);
   return (
     <container
       absPosition={{ point: FRAMEPOINT_BOTTOMLEFT, x: 400 }}
       size={{ height: 29, width: 800 }}
-      tooltip={
+      ref={containerRef}
+      tooltip={containerRef.current && (
         <Tooltip>
           <text
-            absPosition={{
-              point: FRAMEPOINT_BOTTOMLEFT,
-              x: 700,
-              y: 53, // 29 (bar height) + 24 (tooltip border)
+            position={{
+              point: FRAMEPOINT_BOTTOM,
+              relative: containerRef.current,
+              relativePoint: FRAMEPOINT_TOP,
+              y: 24,
             }}
             text={`${Math.round(value)}/${
               Math.round(
@@ -99,7 +101,7 @@ const ExperienceBar = ({ hero }: { hero: Hero }) => {
             } (${Math.round((value / max) * 100)}%)`}
           />
         </Tooltip>
-      }
+      )}
     >
       <container
         position={parent({
@@ -123,13 +125,18 @@ const ExperienceBar = ({ hero }: { hero: Hero }) => {
 
 export const BottomBar = ({
   toggleAttributesVisibile,
+  toggleInventoryVisible,
   hero,
 }: {
   toggleAttributesVisibile: () => void;
+  toggleInventoryVisible: () => void;
   hero: Hero;
 }) => (
   <>
     <ExperienceBar hero={hero} />
-    <Menu toggleAttributesVisibile={toggleAttributesVisibile} />
+    <Menu
+      toggleAttributesVisibile={toggleAttributesVisibile}
+      toggleInventoryVisible={toggleInventoryVisible}
+    />
   </>
 );

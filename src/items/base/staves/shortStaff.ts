@@ -12,7 +12,7 @@ export const buildShortStaff = (overrides?: Partial<Item>): Item => ({
   effects: overrides?.effects ?? [
     buildWeaponDamageMultiplierEffect({
       damageType: "holy",
-      multipler: 1.5,
+      multipler: 0.5,
     }),
   ],
   affixes: overrides?.affixes ?? [],

@@ -19,7 +19,7 @@ const incStat = (
 ) => {
   if (hero.unasignedStatPoints <= 0) return;
   hero.unasignedStatPoints--;
-  hero[stat]++;
+  hero["base" + stat[0].toUpperCase() + stat.slice(1)]++;
 };
 
 const damageRangeToString = (damage: Command["damage"]) => {
@@ -62,7 +62,7 @@ export const Character = ({
   return (
     <container
       size={{ width: WIDTH, height: WIDTH * 2 }}
-      absPosition={{ point: FRAMEPOINT_TOPLEFT, x: 128, y: 1200 - 350 }}
+      absPosition={{ point: FRAMEPOINT_TOPLEFT, x: 48, y: 1200 - 350 }}
       visible={visible}
     >
       <backdrop

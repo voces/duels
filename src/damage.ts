@@ -1,4 +1,6 @@
-export interface Damage {
+import { BonusField } from "./units/heroTypes";
+
+export type Damage = {
   physical?: number;
   magic?: number;
   fire?: number;
@@ -6,7 +8,7 @@ export interface Damage {
   poison?: number;
   cold?: number;
   holy?: number;
-}
+};
 
 export const damageTypes = [
   "physical",
@@ -20,9 +22,16 @@ export const damageTypes = [
 
 export type DamageType = typeof damageTypes[number];
 
-export interface Weapon {
+export interface WeaponInput {
   min: Damage;
   max: Damage;
+  projectile?: string;
+  projectileSpeed?: number;
+}
+
+export interface Weapon {
+  min: BonusField<Damage>;
+  max: BonusField<Damage>;
   projectile?: string;
   projectileSpeed?: number;
 }

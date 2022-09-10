@@ -1,4 +1,5 @@
 import type { DamageType } from "../damage";
+import type { EffectHook } from "./types";
 
 export interface WeaponDamageMultiplierEffect {
   type: "weaponDamageMultiplier";
@@ -15,12 +16,31 @@ export const buildWeaponDamageMultiplierEffect = (
   ...overrides,
 });
 
-// effects are part of weapon damage calculator
-export const weaponDamageMultiplierHooks = {
-  apply: (...args: any[]): void => {
-    // do nothing
+const map = new WeakMap<
+  WeaponDamageMultiplierEffect,
+  { min: number; max: number }
+>();
+
+export const weaponDamageMultiplierHooks: EffectHook<
+  WeaponDamageMultiplierEffect
+> = {
+  apply: (effect, hero): void => {
+    const min = (hero.weapon.min[effect.damageType] ?? 0) +
+      (hero.weapon.min.physical ?? 0) * effect.multipler;
+    const max = (hero.weapon.max[effect.damageType] ?? 0) +
+      (hero.weapon.min.physical ?? 0) * effect.multipler;
+
+    hero.adjustWeaponMinBonus(effect.damageType, min);
+    hero.adjustWeaponMaxBonus(effect.damageType, max);
+
+    map.set(effect, { min, max });
   },
-  unapply: (): void => {
-    // do nothing
+  unapply: (effect, hero): void => {
+    const { min, max } = map.get(effect);
+
+    hero.adjustWeaponMinBonus(effect.damageType, -min);
+    hero.adjustWeaponMaxBonus(effect.damageType, -max);
+
+    map.delete(effect);
   },
 };

@@ -27,6 +27,7 @@ const doAttack = (hero: Hero, done: Done, target?: UnitEx | null) => {
   // Takes 510ms for damage to land
   startTimeout(0.51, () => {
     // Do damage
+    // TODO: simulate defense
     if (target) hero.damage(target, hero.randomDamage());
     else hero.doMeleeAttack();
 

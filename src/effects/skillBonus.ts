@@ -1,5 +1,5 @@
 import type { SkillName } from "../skills/map";
-import type { Hero } from "../units/Hero";
+import type { EffectHook } from "./types";
 
 export interface SkillBonusEffect {
   type: "skillBonus";
@@ -7,11 +7,7 @@ export interface SkillBonusEffect {
   levels: number;
 }
 
-export const skillBonusHooks = {
-  apply: (effect: SkillBonusEffect, hero: Hero): void => {
-    hero.incSkillLevel(effect.skill, effect.levels);
-  },
-  unapply: (effect: SkillBonusEffect, hero: Hero): void => {
-    hero.incSkillLevel(effect.skill, -effect.levels);
-  },
+export const skillBonusHooks: EffectHook<SkillBonusEffect> = {
+  apply: (effect, hero) => hero.incSkillLevel(effect.skill, effect.levels),
+  unapply: (effect, hero) => hero.incSkillLevel(effect.skill, -effect.levels),
 };

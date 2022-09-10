@@ -1,7 +1,7 @@
 import { getElapsedTime, MapPlayer, TextTag, Unit } from "@voces/w3ts";
 
 import { queueAction } from "../actions/queue";
-import type { Damage, Weapon } from "../damage";
+import type { Damage, DamageType, Weapon, WeaponInput } from "../damage";
 import { damageTypes, randomDamage, withDamageSystemOff } from "../damage";
 import { registerCommand } from "../input/commands/registry";
 import type { SkillName } from "../skills/map";
@@ -12,6 +12,7 @@ import { colorize } from "../util/colorize";
 import { formatNumber } from "../util/formatNumber";
 import type { Vector2 } from "../util/Vector2";
 import { Vector2Ex } from "../util/Vector2";
+import { BonusField } from "./heroTypes";
 
 const map = new Map<unit, UnitEx>();
 
@@ -22,17 +23,21 @@ export interface UnitExProps {
   y: number;
   facing?: number;
   maxHealth?: number;
-  weapon?: Weapon;
+  weapon?: WeaponInput;
+  resistances?: Damage;
+  defense?: number;
   level: number;
 }
 
 export class UnitEx {
   readonly unit: Unit;
-  private _maxHealth = 0;
+  private _maxHealth = new BonusField<number>(0);
   private _health = 0;
-  private _weapon!: Weapon;
+  private _weapon: Weapon;
+  private _resistances!: BonusField<Damage>;
+  private _defense = 0;
   private _mana = 0;
-  private _maxMana = 0;
+  private _maxMana = new BonusField<number>(0);
   protected _level = 0;
   private _skills: Skill[] = [];
   private _skillMap: Record<string, Skill> = {};
@@ -50,6 +55,8 @@ export class UnitEx {
     facing,
     maxHealth = 1,
     weapon = { min: { physical: 1 }, max: { physical: 1 } },
+    resistances = { holy: 1 },
+    defense = 0,
     level,
   }: {
     unit: Unit | number | string;
@@ -58,7 +65,9 @@ export class UnitEx {
     y?: number;
     facing?: number;
     maxHealth?: number;
-    weapon?: Weapon;
+    weapon?: WeaponInput;
+    resistances?: Damage;
+    defense?: number;
     level?: number;
   }) {
     if (typeof unit === "number" || typeof unit === "string") {
@@ -81,11 +90,16 @@ export class UnitEx {
     map.set(unit.handle, this);
     this.unit = unit;
 
-    if (maxHealth) {
-      this.maxHealth = maxHealth;
-      this.health = maxHealth;
-    }
-    if (weapon) this.weapon = weapon;
+    if (maxHealth) this.maxBaseHealth = maxHealth;
+
+    this._weapon = {
+      min: new BonusField(weapon.min),
+      max: new BonusField(weapon.max),
+      projectile: weapon.projectile,
+      projectileSpeed: weapon.projectileSpeed,
+    };
+    this._resistances = new BonusField(resistances);
+    this.defense = defense;
 
     if (x && y) unit.setPosition(x, y);
 
@@ -121,12 +135,30 @@ export class UnitEx {
   }
 
   get maxHealth(): number {
-    return this._maxHealth;
+    return this._maxHealth.total;
   }
-  set maxHealth(value: number) {
-    const delta = value - this._maxHealth;
-    this._maxHealth += delta;
-    this._health += delta;
+  get maxBaseHealth(): number {
+    return this._maxHealth.base;
+  }
+  set maxBaseHealth(value: number) {
+    const curHealthPercent = this._maxHealth.total === 0
+      ? 1
+      : this._health / this._maxHealth.total;
+    const healthChange = (value - this._maxHealth.base) * curHealthPercent;
+    this._maxHealth.base = value;
+    this._health += healthChange;
+    this.emitChange();
+  }
+  get maxBonusHealth(): number {
+    return this._maxHealth.bonus;
+  }
+  set maxBonusHealth(value: number) {
+    const curHealthPercent = this._maxHealth.total === 0
+      ? 1
+      : this._health / this._maxHealth.total;
+    const healthChange = (value - this._maxHealth.bonus) * curHealthPercent;
+    this._maxHealth.bonus = value;
+    this._health += healthChange;
     this.emitChange();
   }
 
@@ -145,12 +177,30 @@ export class UnitEx {
   }
 
   get maxMana(): number {
-    return this._maxMana;
+    return this._maxMana.total;
   }
-  set maxMana(value: number) {
-    const delta = value - this._maxMana;
-    this._maxMana += delta;
-    this._mana += delta;
+  get maxBaseMana(): number {
+    return this._maxMana.base;
+  }
+  set maxBaseMana(value: number) {
+    const curManaPercent = this._maxMana.total === 0
+      ? 1
+      : this._mana / this._maxMana.total;
+    const manaChange = (value - this._maxMana.base) * curManaPercent;
+    this._maxMana.base = value;
+    this._mana += manaChange;
+    this.emitChange();
+  }
+  get maxBonusMana(): number {
+    return this._maxMana.bonus;
+  }
+  set maxBonusMana(value: number) {
+    const curManaPercent = this._maxMana.total === 0
+      ? 1
+      : this._mana / this._maxMana.total;
+    const manaChange = (value - this._maxMana.bonus) * curManaPercent;
+    this._maxMana.bonus = value;
+    this._mana += manaChange;
     this.emitChange();
   }
 
@@ -158,11 +208,54 @@ export class UnitEx {
     return this.maxMana / 120;
   }
 
-  get weapon(): Weapon {
-    return this._weapon;
+  get weapon(): WeaponInput {
+    return {
+      min: this._weapon.min.total,
+      max: this._weapon.max.total,
+      projectile: this._weapon.projectile,
+      projectileSpeed: this._weapon.projectileSpeed,
+    };
   }
-  set weapon(value: Weapon) {
-    this._weapon = value;
+  get weaponMinBonus() {
+    return this._weapon.min.bonus;
+  }
+  set weaponMinBonus(value: Damage) {
+    this._weapon.min.bonus = value;
+    this.emitChange();
+  }
+  setWeaponMinBonus(type: DamageType, value: number) {
+    this._weapon.min.bonus[type] = value;
+    this.emitChange();
+  }
+  adjustWeaponMinBonus(type: DamageType, value: number) {
+    this._weapon.min.bonus[type] = (this._weapon.min.bonus[type] ?? 0) + value;
+    this.emitChange();
+  }
+  get weaponMaxBonus() {
+    return this._weapon.max.bonus;
+  }
+  set weaponMaxBonus(value: Damage) {
+    this._weapon.max.bonus = value;
+    this.emitChange();
+  }
+  setWeaponMaxBonus(type: DamageType, value: number) {
+    this._weapon.max.bonus[type] = value;
+    this.emitChange();
+  }
+  adjustWeaponMaxBonus(type: DamageType, value: number) {
+    this._weapon.max.bonus[type] = (this._weapon.max.bonus[type] ?? 0) + value;
+    this.emitChange();
+  }
+
+  get resistances(): Damage {
+    return this._resistances.total;
+  }
+
+  get defense(): number {
+    return this._defense;
+  }
+  set defense(value: number) {
+    this._defense = value;
     this.emitChange();
   }
 
@@ -211,21 +304,29 @@ export class UnitEx {
 
   damage(target: UnitEx, damage: Damage): void {
     for (const damageType of damageTypes) {
-      const damageFromType = damage[damageType];
-      if (typeof damageFromType !== "number") continue;
-      target.health -= damageFromType;
-      const tt = new TextTag();
-      tt.setText(colorize[damageType](formatNumber(damageFromType)), 0.03);
-      const angle = Math.random() * Math.PI;
-      const xOffset = Math.cos(angle) * 32;
-      const yOffset = Math.sin(angle) * 32;
-      tt.setPos(target.x + xOffset, target.y + yOffset, 20);
-      tt.setColor(255, 0, 0, 255);
-      tt.setVelocity(xOffset / 1024, yOffset / 1024);
-      tt.setVisible(true);
-      tt.setFadepoint(0.5);
-      tt.setLifespan(2);
-      tt.setPermanent(false);
+      const rawDamageFromType = damage[damageType];
+      if (typeof rawDamageFromType !== "number") continue;
+
+      const damageFromType = rawDamageFromType *
+        (1 - (target._resistances[damageType] ?? 0));
+
+      target.health = Math.max(0, target.health - damageFromType);
+
+      if (damageFromType >= 0.05) {
+        const tt = new TextTag();
+        tt.setText(colorize[damageType](formatNumber(damageFromType)), 0.03);
+        const angle = Math.random() * Math.PI;
+        const xOffset = Math.cos(angle) * 32;
+        const yOffset = Math.sin(angle) * 32;
+        tt.setPos(target.x + xOffset, target.y + yOffset, 20);
+        tt.setColor(255, 0, 0, 255);
+        tt.setVelocity(xOffset / 1024, yOffset / 1024);
+        tt.setVisible(true);
+        tt.setFadepoint(0.5);
+        tt.setLifespan(2);
+        tt.setPermanent(false);
+      }
+
       withDamageSystemOff(() => {
         this.unit.damageTarget(
           target.unit.handle,
@@ -262,6 +363,7 @@ export class UnitEx {
         if (u.isAlly(this.unit.owner) || u.health <= 0) return false;
         foundAUnit = true;
 
+        // TODO: simulate defense
         this.damage(u, damage);
 
         return false;

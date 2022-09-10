@@ -1,7 +1,6 @@
 import { addScriptHook, Trigger, W3TS_HOOK } from "@voces/w3ts";
 
 import { isDamageSystemOn } from "../damage";
-import type { spawnProjectile as spawnProjectileType } from "../systems/Projectile";
 import { UnitEx } from "../units/UnitEx";
 import { asyncRequire } from "../util/asyncRequire";
 import { Vector2Ex } from "../util/Vector2";
@@ -25,6 +24,7 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
       0,
     );
 
+    // TODO: simulate defense
     if (range < 128) source.damage(target, source.randomDamage());
 
     return false;

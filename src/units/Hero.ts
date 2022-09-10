@@ -1,10 +1,11 @@
-import type { MapPlayer } from "@voces/w3ts";
+import { Effect, MapPlayer } from "@voces/w3ts";
 
 import type { Damage } from "../damage";
 import { equipItem, unequipItem } from "../items/equipping";
 import type { Item } from "../items/Item";
-import { times } from "../util";
+import { startTimeout, times } from "../util";
 import { colorize } from "../util/colorize";
+import { BonusField } from "./heroTypes";
 import { UnitEx } from "./UnitEx";
 
 export const _levelToExperience = (
@@ -58,12 +59,12 @@ type UnitItemSlot = Exclude<keyof Items, "inventory">;
 const unitItemSlots: UnitItemSlot[] = ["leftHand", "rightHand"];
 
 export class Hero extends UnitEx {
-  private _strength!: number;
-  private _dexterity!: number;
-  private _vitality!: number;
-  private _energy!: number;
+  private _strength = new BonusField<number>(0);
+  private _dexterity = new BonusField<number>(0);
+  private _vitality = new BonusField<number>(0);
+  private _energy = new BonusField<number>(0);
 
-  private _maxStamina = 0;
+  private _maxStamina = new BonusField<number>(0);
   private _stamina = 0;
 
   healthPerLevel!: number;
@@ -140,17 +141,12 @@ export class Hero extends UnitEx {
       this.manaPerEnergy = manaPerEnergy;
 
       // Then attributes, since they modify other stats we'll want to rewrite
-      this.strength = strength;
-      this.dexterity = dexterity;
-      this.vitality = vitality;
-      this.energy = energy;
+      this.baseStrength = strength;
+      this.baseDexterity = dexterity;
+      this.baseVitality = vitality;
+      this.baseEnergy = energy;
 
-      this.maxHealth = maxHealth;
-      this.health = maxHealth;
-      this.maxStamina = maxStamina;
-      this.stamina = maxStamina;
-      this.maxMana = maxMana;
-      this.mana = maxMana;
+      this.maxBaseStamina = maxStamina;
 
       this.healthPerLevel = healthPerLevel;
       this.staminaPerLevel = staminaPerLevel;
@@ -164,63 +160,61 @@ export class Hero extends UnitEx {
   }
 
   get strength(): number {
-    return this._strength;
+    return this._strength.total;
   }
-  set strength(value: number) {
-    this._strength = value;
+  get baseStrength() {
+    return this._strength.base;
+  }
+  set baseStrength(value: number) {
+    this._strength.base = value;
     this.emitChange();
   }
 
   get dexterity(): number {
-    return this._dexterity;
+    return this._dexterity.total;
   }
-  set dexterity(value: number) {
-    this._dexterity = value;
+  get baseDexterity() {
+    return this._dexterity.base;
+  }
+  set baseDexterity(value: number) {
+    this._dexterity.base = value;
     this.emitChange();
   }
 
   get vitality(): number {
-    return this._vitality;
+    return this._vitality.total;
   }
-  set vitality(value: number) {
-    const oldVitality = this._vitality ?? 0;
+  get baseVitality() {
+    return this._vitality.base;
+  }
+  set baseVitality(value: number) {
+    const oldVitality = this._vitality.base ?? 0;
 
-    this._vitality = value;
+    this._vitality.base = value;
 
-    const diff = this._vitality - oldVitality;
+    const diff = this._vitality.base - oldVitality;
 
     const healthChange = diff * this.healthPerVitality;
-    this.health += healthChange;
-    this.maxHealth += healthChange;
+    this.maxBaseHealth += healthChange;
 
     const staminaChange = diff * this.staminaPerVitality;
-    this.stamina += staminaChange;
-    this.maxStamina += staminaChange;
+    this.maxBaseStamina += staminaChange;
 
     this.emitChange();
   }
 
   get energy(): number {
-    return this._energy;
+    return this._energy.total;
   }
-  set energy(value: number) {
-    const oldEnergy = this._energy ?? 0;
-
-    this._energy = value;
-
-    const diff = this._energy - oldEnergy;
-    const manaChange = diff * this.manaPerEnergy;
-    this.mana += manaChange;
-    this.maxMana += manaChange;
-
-    this.emitChange();
+  get baseEnergy() {
+    return this._energy.base;
   }
+  set baseEnergy(value: number) {
+    const manaChange = (value - this._energy.base) * this.manaPerEnergy;
 
-  get maxStamina(): number {
-    return this._maxStamina;
-  }
-  set maxStamina(value: number) {
-    this._maxStamina = value;
+    this._energy.base = value;
+    this.maxBaseMana += manaChange;
+
     this.emitChange();
   }
 
@@ -229,6 +223,34 @@ export class Hero extends UnitEx {
   }
   set stamina(value: number) {
     this._stamina = value;
+    this.emitChange();
+  }
+
+  get maxStamina(): number {
+    return this._maxStamina.total;
+  }
+  get maxBaseStamina(): number {
+    return this._maxStamina.base;
+  }
+  set maxBaseStamina(value: number) {
+    const curStaminaPercent = this._maxStamina.total === 0
+      ? 1
+      : this._stamina / this._maxStamina.total;
+    const staminaChange = (value - this._maxStamina.base) * curStaminaPercent;
+    this._maxStamina.base = value;
+    this._stamina += staminaChange;
+    this.emitChange();
+  }
+  get maxBonusStamina(): number {
+    return this._maxStamina.bonus;
+  }
+  set maxBonusStamina(value: number) {
+    const curStaminaPercent = this._maxStamina.total === 0
+      ? 1
+      : this._stamina / this._maxStamina.total;
+    const staminaChange = (value - this._maxStamina.bonus) * curStaminaPercent;
+    this._maxStamina.bonus = value;
+    this._stamina += staminaChange;
     this.emitChange();
   }
 
@@ -241,10 +263,16 @@ export class Hero extends UnitEx {
     const nextLevel = this.level;
     const gains = nextLevel - prevLevel;
     if (gains > 0) {
-      this.health = this.maxHealth += gains * this.healthPerLevel;
-      this.stamina = this.maxStamina += gains * this.staminaPerLevel;
-      this.mana = this.maxMana += gains * this.manaPerLevel;
+      this.health = this.maxBaseHealth += gains * this.healthPerLevel;
+      this.stamina = this.maxBaseStamina += gains * this.staminaPerLevel;
+      this.mana = this.maxBaseMana += gains * this.manaPerLevel;
       this.unasignedStatPoints += gains * 5;
+      const e = new Effect(
+        "Abilities\Spells\Other\Levelup\LevelupCaster.mdl",
+        this.x,
+        this.y,
+      );
+      startTimeout(5, () => e.destroy());
     }
     this.emitChange();
   }

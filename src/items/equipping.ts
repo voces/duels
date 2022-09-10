@@ -1,4 +1,4 @@
-import { applyEffect, unapplyEffect } from "../effects/types";
+import { applyEffect, unapplyEffect } from "../effects";
 import { Hero } from "../units/Hero";
 import { Item } from "./Item";
 

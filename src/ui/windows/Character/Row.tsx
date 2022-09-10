@@ -24,6 +24,7 @@ export const Row = ({
   visible?: boolean;
 }) => {
   const buttonRef = useRefState<framehandle | null>(null);
+  const containerRef = useRefState<framehandle>(null);
   return (
     <container
       position={first
@@ -38,15 +39,16 @@ export const Row = ({
           relativePoint: FRAMEPOINT_BOTTOMLEFT,
           y: header || gap ? -8 : 0,
         }}
-      size={{ width: WIDTH, height: header ? 40 : 20 }}
+      size={{ width: WIDTH, height: header ? 44 : 20 }}
       visible={visible}
+      ref={containerRef}
     >
       {header && (
         <backdrop
           texture="assets/img/red_gradient"
           position={[
             topLeft({ x: -16, y: -2 }),
-            bottomRight({ x: -48, y: 2 }),
+            bottomRight({ x: -48, y: 6 }),
           ]}
           alpha={200}
         />
@@ -63,19 +65,19 @@ export const Row = ({
         onClick={onIncrement}
         visible={canIncrement}
         ref={buttonRef}
-        tooltip={
+        tooltip={containerRef.current && (
           <Tooltip>
             <text
               text={`Increase ${name.toLowerCase()}`}
               position={{
                 point: FRAMEPOINT_LEFT,
-                relative: buttonRef.current ?? "parent",
+                relative: containerRef.current,
                 relativePoint: FRAMEPOINT_RIGHT,
-                x: 210,
+                x: 64,
               }}
             />
           </Tooltip>
-        }
+        )}
       >
         <backdrop
           position="parent"

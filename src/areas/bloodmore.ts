@@ -50,6 +50,7 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
       level: 1,
       maxHealth: () => GetRandomInt(7, 12),
       weapon: { min: { physical: 1 }, max: { physical: 3 } },
+      resistances: { holy: 0 },
     },
   }));
 
@@ -88,6 +89,7 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
           level: 1,
           maxHealth: () => GetRandomInt(1, 4),
           weapon: { min: { physical: 1 }, max: { physical: 2 } },
+          resistances: { holy: 0.5 },
         },
       },
       {
@@ -106,6 +108,7 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
             max: { fire: 3 },
             projectile: "Abilities/Weapons/FireBallMissile/FireBallMissile.mdl",
           },
+          resistances: { holy: 0.25 },
         },
       },
     ];

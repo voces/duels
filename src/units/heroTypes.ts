@@ -190,3 +190,31 @@ export const isHeroType = (unit: UnitEx): boolean => {
   const typeId = unit.unit.typeId;
   return heroTypeIds.includes(typeId);
 };
+
+export class BonusField<T extends number | { [key: string]: number }> {
+  base: T;
+  bonus: T;
+
+  constructor(base: T) {
+    this.base = base;
+    this.bonus =
+      (typeof base === "number"
+        ? 0
+        : Object.fromEntries(Object.keys(base).map((key) => [key, 0]))) as T;
+  }
+
+  get total(): Readonly<T> {
+    if (typeof this.base === "number") {
+      return ((this.base as number) + (this.bonus as number)) as T;
+    }
+
+    const obj = {} as T;
+    Object.keys(this.base).forEach((key) =>
+      obj[key] = (this.base[key] ?? 0) + (this.bonus[key] ?? 0)
+    );
+    Object.keys(this.bonus).forEach((key) =>
+      obj[key] = (this.base[key] ?? 0) + (this.bonus[key] ?? 0)
+    );
+    return obj;
+  }
+}

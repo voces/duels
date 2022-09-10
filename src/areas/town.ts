@@ -9,6 +9,7 @@ import {
 } from "@voces/w3ts";
 
 import { UnitEx } from "../units/UnitEx";
+import { dummyGroup } from "../util";
 import { colorize } from "../util/colorize";
 import { setTown } from "./town2";
 import { WeatherEffect } from "./weather";
@@ -25,6 +26,14 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
     const trigger = new Trigger();
     const rect = Rectangle.fromHandle(gg_rct_camp);
     region.addRect(rect);
+
+    dummyGroup.enumUnitsInRect(
+      Rectangle.fromHandle(gg_rct_camp),
+      Filter(() => {
+        Unit.fromFilter().invulnerable = true;
+        return false;
+      }),
+    );
 
     trigger.registerEnterRegion(
       region.handle,

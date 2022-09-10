@@ -1,16 +1,10 @@
-import {
-  Children,
-  createElement,
-  Pos,
-  useEffect,
-  useForceUpdate,
-} from "w3ts-jsx";
+import { createElement, Pos, useEffect, useForceUpdate } from "w3ts-jsx";
 
 const TooltipFrame = ({
   children,
   anchors,
 }: {
-  children?: Children;
+  children?: JSX.Element;
   anchors?: Pos[];
 }) => {
   const forceUpdate = useForceUpdate();
@@ -50,6 +44,6 @@ export const Tooltip = ({
   children,
   anchors = defaultAnchors,
 }: {
-  children?: Children;
+  children: JSX.Element;
   anchors?: Pos[];
 }) => <TooltipFrame anchors={anchors}>{children}</TooltipFrame>;

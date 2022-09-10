@@ -7,11 +7,13 @@ import { useGlobalState } from "./hooks/useGlobalState";
 import { BottomBar } from "./windows/BottomBar";
 import { Character } from "./windows/Character/Character";
 import { EnemyStatus } from "./windows/EnemyStatus";
+import { Inventory } from "./windows/Inventory/index";
 import { Statuses } from "./windows/Statuses/Statuses";
 
 export const App = () => {
   const state = useGlobalState();
   const [characterVisible, setCharacterVisible] = useState(false);
+  const [inventoryVisible, setInventoryVisible] = useState(false);
 
   useEffect(() => {
     registerCommand({
@@ -22,6 +24,19 @@ export const App = () => {
       fn: (playerId) => {
         if (playerId === MapPlayer.fromLocal().id) {
           setCharacterVisible((v) => !v);
+        }
+        return true;
+      },
+    });
+
+    registerCommand({
+      name: "Toggle inventory",
+      shortcuts: [{ keyboard: "i" }],
+      // More than move, allowing toggling while running
+      priority: 2,
+      fn: (playerId) => {
+        if (playerId === MapPlayer.fromLocal().id) {
+          setInventoryVisible((v) => !v);
         }
         return true;
       },
@@ -40,9 +55,14 @@ export const App = () => {
           <BottomBar
             hero={state.heroes[MapPlayer.fromLocal().id]}
             toggleAttributesVisibile={() => setCharacterVisible((v) => !v)}
+            toggleInventoryVisible={() => setInventoryVisible((v) => !v)}
           />
           <Statuses hero={state.heroes[MapPlayer.fromLocal().id]} />
           <EnemyStatus />
+          <Inventory
+            hero={state.heroes[MapPlayer.fromLocal().id]}
+            visible={inventoryVisible}
+          />
         </>
       )}
     </container>

@@ -12,7 +12,7 @@ export const EnemyStatus = () => {
       absPosition={{
         point: FRAMEPOINT_TOP,
         x: 800,
-        y: 1200 - 64,
+        y: 1200 - 48,
       }}
       size={{
         width: 200,

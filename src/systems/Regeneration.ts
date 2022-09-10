@@ -8,6 +8,7 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () =>
     const time = getElapsedTime();
     const delta = time - last;
     forEachHero((hero) => {
+      if (hero.health <= 0) return;
       hero.health = Math.min(
         hero.health + hero.healthRegen * delta,
         hero.maxHealth,
