@@ -6,25 +6,8 @@
       "war3-types-strict/1.32.10"
     ]
   },
-  "include": [
-    "./src/main.ts",
-    "./src/types.d.ts",
-    "./src/damage.ts",
-    "./src/war3map.d.ts",
-    "./src/util",
-    "./src/actions",
-    "./src/areas",
-    "./src/effects",
-    "./src/hostiles",
-    "./src/input",
-    "./src/items",
-    "./src/skills",
-    "./src/states",
-    "./src/systems",
-    "./src/units",
-    "./src/ui"
-  ],
-  "exclude": ["**/*.test.ts", "**/*.test.tsx"],
+  "include": ["./src"],
+  "exclude": ["**/*.test.ts", "**/*.test.tsx", "**/tests/**"],
   "tstl": {
     "noImplicitSelf": true,
     "luaBundleEntry": "./src/main.ts",

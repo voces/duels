@@ -29,7 +29,10 @@ const advanceFromHeroSelection = () => {
   forEachPlayer((player) => {
     if (state.state !== "hero-selection") return;
 
-    const heroType = state.heroSelection.selections[player.id];
+    const heroType = state.heroSelection.selections[player.id] ?? (() => {
+      const types = Object.keys(heroData);
+      return types[GetRandomInt(0, types.length - 1)];
+    })();
     const hero = new Hero({
       owner: player,
       unit: heroData[heroType].type,

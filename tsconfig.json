@@ -8,6 +8,7 @@
     "target": "ESNext",
     "moduleResolution": "NodeNext",
     "types": [
+      "@typescript-to-lua/language-extensions",
       "jest",
       "lua-types/5.3",
       "node",

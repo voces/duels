@@ -45,7 +45,7 @@ export const Row = ({
     >
       {header && (
         <backdrop
-          texture="assets/img/red_gradient"
+          texture="assets/img2/red_gradient"
           position={[
             topLeft({ x: -16, y: -2 }),
             bottomRight({ x: -48, y: 6 }),

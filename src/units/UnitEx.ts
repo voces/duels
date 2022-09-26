@@ -131,7 +131,10 @@ export class UnitEx {
     if (value < this._health) this.lastHealthLoss = getElapsedTime();
     this._health = value;
     // Only re-render on displayable changes
-    if (Math.floor(value) !== Math.floor(oldValue)) this.emitChange();
+    if (
+      (Math.floor(value) !== Math.floor(oldValue)) ||
+      (Math.round(value) !== Math.round(oldValue))
+    ) this.emitChange();
   }
 
   get maxHealth(): number {
@@ -173,7 +176,10 @@ export class UnitEx {
     const oldValue = this._mana;
     this._mana = value;
     // Only re-render on displayable changes
-    if (Math.floor(value) !== Math.floor(oldValue)) this.emitChange();
+    if (
+      (Math.floor(value) !== Math.floor(oldValue)) ||
+      (Math.round(value) !== Math.round(oldValue))
+    ) this.emitChange();
   }
 
   get maxMana(): number {

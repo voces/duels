@@ -44,7 +44,7 @@ export const App = () => {
   });
 
   return (
-    <container>
+    <>
       {state.state === "hero-selection" && <HeroSelection />}
       {state.state !== "hero-selection" && state.state !== "initial" && (
         <>
@@ -57,7 +57,7 @@ export const App = () => {
             toggleAttributesVisibile={() => setCharacterVisible((v) => !v)}
             toggleInventoryVisible={() => setInventoryVisible((v) => !v)}
           />
-          <Statuses hero={state.heroes[MapPlayer.fromLocal().id]} />
+          {/* <Statuses hero={state.heroes[MapPlayer.fromLocal().id]} /> */}
           <EnemyStatus />
           <Inventory
             hero={state.heroes[MapPlayer.fromLocal().id]}
@@ -65,6 +65,6 @@ export const App = () => {
           />
         </>
       )}
-    </container>
+    </>
   );
 };

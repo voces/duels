@@ -7,7 +7,7 @@ import { mice } from "../data";
 import { registerCommand } from "./registry";
 
 registerCommand({
-  name: "Attack in place",
+  name: "Attack",
   shortcuts: [{ mouse: "left", keyboard: "shift" }],
   priority: 3,
   damage: (playerId) => {

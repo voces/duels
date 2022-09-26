@@ -12,6 +12,10 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
   BlzHideOriginFrames(true);
   // Remove black bar at the bottom, which isn't remove from the above
   BlzFrameSetVisible(BlzGetFrameByName("ConsoleUIBackdrop", 0), false);
+  BlzFrameSetVisible(
+    BlzFrameGetChild(BlzGetFrameByName("ConsoleUI", 0), 5),
+    false,
+  );
 
   // Disable drag selection boxes
   EnableDragSelect(false, false);

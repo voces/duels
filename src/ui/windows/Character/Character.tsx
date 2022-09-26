@@ -66,7 +66,7 @@ export const Character = ({
       visible={visible}
     >
       <backdrop
-        texture="assets/img/stats_bar3"
+        texture="assets/img2/stats_bar3"
         position={[
           {
             point: FRAMEPOINT_BOTTOMLEFT,
@@ -146,7 +146,9 @@ export const Character = ({
       />
       <Row
         name="Stamina"
-        value={`${hero.stamina.toString()}/${hero.maxStamina.toString()}`}
+        value={`${
+          Math.round(hero.stamina).toString()
+        }/${hero.maxStamina.toString()}`}
       />
       <Row
         name="Health"

@@ -146,6 +146,7 @@ export class Hero extends UnitEx {
       this.baseVitality = vitality;
       this.baseEnergy = energy;
 
+      this.maxBaseMana = maxMana;
       this.maxBaseStamina = maxStamina;
 
       this.healthPerLevel = healthPerLevel;
