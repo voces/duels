@@ -13,10 +13,6 @@ export const Inventory = (
       size={{ width: 350, height: 496 }}
       absPosition={{ point: FRAMEPOINT_TOPRIGHT, x: 1600, y: 1200 - 350 }}
       visible={visible}
-      // @ts-ignore
-      onMouseWheel={() => {
-        console.log("foobar");
-      }}
     >
       <backdrop texture="assets/img2/inventory" position="parent" />
       {repeat(42, (index) => (
@@ -37,7 +33,13 @@ export const Inventory = (
             "assets/img2/green"}
         />
       ))}
-      <scrollbar position={bottomRight()} size={50} />
+      <slider
+        position={bottomRight()}
+        size={50}
+        minMaxValue={{ min: 0, max: 1000 }}
+        stepSize={1}
+        inherits="QuestMainListScrollBar"
+      />
     </container>
   );
 };
