@@ -3,7 +3,7 @@ import { Item } from "../../Item";
 
 export const buildShortStaff = (overrides?: Partial<Item>): Item => ({
   slot: "hands",
-  slotSize: { width: 1, height: 3 },
+  image: "assets/img2/staff",
   durability: 20,
   sockets: 2,
   attackSpeed: 0.9,

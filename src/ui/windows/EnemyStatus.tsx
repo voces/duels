@@ -32,7 +32,7 @@ export const EnemyStatus = () => {
         text=""
         value={target ? target.health : 1}
         max={target ? target.maxHealth : 1}
-        barTexture="assets/img/HP_bar_mini_line"
+        barTexture="assets/img2/HP_bar_mini_line"
       />
     </container>
   );

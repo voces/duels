@@ -9,7 +9,6 @@ const TRAILING_COMMA = false;
 const INDENT = "  ";
 const INDENT_WIDTH = INDENT.length;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isArray = (v: any): boolean => {
   if (typeof v !== "object") return false;
 
@@ -23,7 +22,6 @@ const isArray = (v: any): boolean => {
   );
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const userdataType = (userdata: Record<string, any>): string => {
   if (constants.has(userdata as handle)) {
     return constants.get(userdata as handle);
@@ -33,7 +31,6 @@ const userdataType = (userdata: Record<string, any>): string => {
   // return typeString.slice(0, typeString.indexOf(":"));
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
 export const termToString = (v: any, color = false, level = 0): string => {
   if (typeof v === "string") {
     return color ? colorize.string(`"${v}"`) : `"${v}"`;
@@ -48,7 +45,6 @@ export const termToString = (v: any, color = false, level = 0): string => {
   if (v == null) return color ? colorize.boolean("null") : "null";
 
   if (isArray(v)) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const arr = v as Array<any>;
 
     // A minimum; "[ 0 ]".length = 5, "{ 0, 1 }".length = 8, etc
@@ -77,11 +73,6 @@ export const termToString = (v: any, color = false, level = 0): string => {
         .join(",\n") + (TRAILING_COMMA ? "," : ""),
       INDENT.repeat(level) + "]",
     ].join("\n");
-
-    // return `[ ${arr
-    // 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // 	.map((v: any) => termToString(v, color, level + 1))
-    // 	.join(", ")} ]`;
   }
 
   if (typeof v === "object" && v != null) {
@@ -138,7 +129,6 @@ let logStack = 0;
 
 const oldPrint = globalThis.print;
 let logs = 0;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const log = (...args: Array<any>): void => {
   const parts = "  ".repeat(logStack) +
     map(args, (v) => termToString(v)).join(" ");

@@ -12,7 +12,6 @@ const wrapAndPrint = <T>(fn: () => T, fallback: T) => () => {
 };
 
 const OldTriggerAddCondition = TriggerAddCondition;
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 TriggerAddCondition = (
   trigger: trigger,
@@ -26,7 +25,6 @@ TriggerAddCondition = (
 };
 
 const OldTimerStart = TimerStart;
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 TimerStart = (
   whichTimer: timer,
@@ -42,7 +40,6 @@ TimerStart = (
   );
 
 const OldTriggerRegisterEnterRegion = TriggerRegisterEnterRegion;
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 TriggerRegisterEnterRegion = (
   whichTrigger: trigger,

@@ -48,10 +48,8 @@ export const experienceToLevel = (experience: number): number => {
 interface Items {
   leftHand?: Item;
   rightHand?: Item;
-  inventory: {
-    items: { item: Item; x: number; y: number }[];
-    occupancy: boolean[][];
-  };
+  // TODO: maybe use Set instead?
+  inventory: Item[];
 }
 
 type UnitItemSlot = Exclude<keyof Items, "inventory">;
@@ -78,12 +76,7 @@ export class Hero extends UnitEx {
   private _experience = 0;
   private _unasignedStatPoints = 0;
 
-  private items: Items = {
-    inventory: {
-      items: [],
-      occupancy: times(4, () => times(10, () => false)),
-    },
-  };
+  private items: Items = { inventory: [] };
 
   constructor({
     unit,
@@ -269,7 +262,7 @@ export class Hero extends UnitEx {
       this.mana = this.maxBaseMana += gains * this.manaPerLevel;
       this.unasignedStatPoints += gains * 5;
       const e = new Effect(
-        "Abilities\Spells\Other\Levelup\LevelupCaster.mdl",
+        "Abilities\\Spells\\Other\\Levelup\\LevelupCaster.mdl",
         this.x,
         this.y,
       );
@@ -303,60 +296,25 @@ export class Hero extends UnitEx {
     return experienceToLevel(this.experience);
   }
 
-  removeItemFromInventory(item: Item): void {
-    const slot = this.items.inventory.items.find((s) => s.item === item);
-    if (!slot) return;
+  removeItemFromInventory(item: Item): boolean {
+    const index = this.items.inventory.indexOf(item);
+    if (index === -1) return false;
 
-    this.items.inventory.items.splice(
-      this.items.inventory.items.indexOf(slot),
-      1,
-    );
-    for (let y = slot.y; y < slot.y + item.slotSize.width; y++) {
-      for (let x = slot.x; x < slot.x + item.slotSize.height; x++) {
-        this.items.inventory.occupancy[y][x] = false;
-      }
-    }
+    this.items.inventory.splice(index, 1);
+    return true;
   }
 
   addItemToInventory(item: Item): boolean {
-    const slot = this.items.inventory.items.find((s) => s.item === item);
+    const slot = this.items.inventory.find((i) => i === item);
     if (slot) return false;
 
-    let y = 0;
-    let x = 0;
-    for (y = 0; y < 4; y++) {
-      for (x = 0; x < 10; x++) {
-        if (this.items.inventory.occupancy[y][x] === false) {
-          for (let y2 = y; y2 < y + item.slotSize.width; y2++) {
-            for (let x2 = x; x2 < x + item.slotSize.height; x2++) {
-              if (this.items.inventory.occupancy[y2][x]) {
-                x2 = x + item.slotSize.height - 1;
-                y2 = y + item.slotSize.width - 1;
-              }
-            }
-          }
-        }
-      }
-    }
-
-    if (y === 4) return false;
-
-    this.items.inventory.items.push({ item, x, y });
-    for (let y2 = y; y2 < y + item.slotSize.width; y2++) {
-      for (let x2 = x; x2 < x + item.slotSize.height; x2++) {
-        this.items.inventory.occupancy[y2][x2] = true;
-      }
-    }
-
+    this.items.inventory.push(item);
     return true;
   }
 
   unequip(item: Item): boolean {
     const equippedSlot = unitItemSlots.find((s) => this.items[s] === item);
     if (!equippedSlot) return false;
-
-    const slot = this.items.inventory.items.find((s) => s.item === item);
-    if (slot) return false;
 
     if (!this.addItemToInventory(item)) return false;
 
@@ -366,29 +324,26 @@ export class Hero extends UnitEx {
   }
 
   equip(item: Item): boolean {
-    const unequipSlots: UnitItemSlot[] = item.slot === "hands"
+    const unequipSlots = item.slot === "hands"
       ? ["leftHand", "rightHand"]
       : [item.slot];
     const equipSlot = item.slot === "hands" ? "leftHand" : item.slot;
 
-    // TODO: can just call this.removeItemFromInventory ?
-    const removeFromInventory = this.items.inventory.items.some(
-      (s) => s.item === item,
-    );
-    if (removeFromInventory) this.removeItemFromInventory(item);
+    // Don't check if it succeeds, as we can equip directly
+    this.removeItemFromInventory(item);
 
-    const unequippedItems = unequipSlots
+    // Unequip slots (and move to inventory)
+    unequipSlots
       .map((s) => this.items[s])
-      .filter((v: Item | undefined): v is Item => !!v);
-    for (let i = 0; i < unequippedItems.length; i++) {
-      if (!this.unequip(unequippedItems[i])) {
-        for (let n = 0; n < i; n++) this.equip(unequippedItems[i]);
-        return false;
-      }
-    }
+      .filter((v: Item | undefined): v is Item => !!v)
+      .forEach((item) => this.unequip(item));
 
     this.items[equipSlot] = item;
     equipItem(item, this);
     return true;
+  }
+
+  get inventory(): ReadonlyArray<Item> {
+    return this.items.inventory;
   }
 }

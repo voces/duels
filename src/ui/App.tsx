@@ -5,15 +5,14 @@ import { registerCommand } from "../input/commands/registry";
 import { HeroSelection } from "./HeroSelection";
 import { useGlobalState } from "./hooks/useGlobalState";
 import { BottomBar } from "./windows/BottomBar";
-import { Character } from "./windows/Character/Character";
+import { Character } from "./windows/Character";
 import { EnemyStatus } from "./windows/EnemyStatus";
-import { Inventory } from "./windows/Inventory/index";
-import { Statuses } from "./windows/Statuses/Statuses";
+import { Inventory } from "./windows/Inventory";
 
 export const App = () => {
   const state = useGlobalState();
   const [characterVisible, setCharacterVisible] = useState(false);
-  const [inventoryVisible, setInventoryVisible] = useState(false);
+  const [inventoryVisible, setInventoryVisible] = useState(true);
 
   useEffect(() => {
     registerCommand({

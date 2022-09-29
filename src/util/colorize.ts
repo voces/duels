@@ -18,10 +18,10 @@ export const colors = {
 
 export type Color = keyof typeof colors;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const colorize = {} as Record<Color, (v: any) => string>;
 Object.entries(colors).forEach(
-  ([color, code]) => // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (colorize[color as Color] = (string: any): string =>
+  (
+    [color, code],
+  ) => (colorize[color as Color] = (string: any): string =>
     `|cff${code}${string}|r`),
 );

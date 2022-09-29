@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "@esbuild-plugins/node-modules-polyfill": "^0.1.4",
-    "@voces/w3ts": "^3.0.1",
+    "@voces/w3ts": "^3.1.0",
     "basic-pragma": "^4.4.2",
     "lua-types": "^2.11.0",
     "typescript-to-lua": "^1.9.0",

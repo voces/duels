@@ -107,10 +107,8 @@ export class Zone {
     let prop: keyof typeof data;
     for (prop in data) {
       const value = data[prop];
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if (typeof value === "function") data[prop] = value() as any;
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const builtData: InnerSpawnUnitProps = data as any;
 
     const u = new UnitEx({

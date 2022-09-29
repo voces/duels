@@ -5,6 +5,8 @@ import {
   TimerDialog,
   W3TS_HOOK,
 } from "@voces/w3ts";
+import { buildRestoreHealth } from "../effects/restoreHealth";
+import { buildRestoreMana } from "../effects/restoreMana";
 
 import { buildOfFireBolt } from "../items/affixes/suffixes/skills";
 import { buildShortStaff } from "../items/base/staves/shortStaff";
@@ -47,11 +49,28 @@ const advanceFromHeroSelection = () => {
       Camera.setTargetController(hero.handle, 0, 128, false);
     }
 
+    for (let i = 0; i < 6 * 4; i++) {
+      hero.addItemToInventory({
+        slot: "potion",
+        consumable: true,
+        image: "assets/img2/health-potion",
+        effects: [buildRestoreHealth({ amount: 50 })],
+      });
+    }
+
+    for (let i = 0; i < 6 * 4 + 1; i++) {
+      hero.addItemToInventory({
+        slot: "potion",
+        consumable: true,
+        image: "assets/img2/mana-potion",
+        effects: [buildRestoreMana({ amount: 30 })],
+      });
+    }
+
     try {
       if (heroType === "sorceress") {
         hero.equip(
           buildShortStaff({
-            // effects: [{ type: "skillBonus", skill: "Firebolt", levels: 500 }],
             affixes: [buildOfFireBolt({ effect: { levels: 1 } })],
           }),
         );

@@ -38,9 +38,7 @@ const subs: ((newState: State) => void)[] = [];
 export const setGlobalState = (newState: State): void => {
   // This looks dirty, but it should work...
   let prop: keyof State;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   for (prop in state) delete (state as any)[prop];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   for (prop in newState) (state as any)[prop] = newState[prop];
 
   subs.forEach((sub) => sub(state));
