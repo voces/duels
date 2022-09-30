@@ -1,4 +1,5 @@
 import { createElement } from "w3ts-jsx";
+import { bottomRight } from "../../util/pos";
 import { ButtonIcon } from "./ButtonIcon";
 import { ICON_SIZE } from "./constants";
 
@@ -10,13 +11,7 @@ export const Menu = ({
   toggleInventoryVisible: () => void;
 }) => (
   <container
-    position={{
-      point: FRAMEPOINT_BOTTOMRIGHT,
-      relative: "parent",
-      relativePoint: FRAMEPOINT_BOTTOMRIGHT,
-      x: -390,
-      y: 150,
-    }}
+    position={bottomRight({ x: -390, y: 150 })}
     size={{ height: ICON_SIZE, width: 300 }}
   >
     <ButtonIcon

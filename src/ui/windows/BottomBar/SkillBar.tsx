@@ -1,22 +1,14 @@
 import { createElement } from "w3ts-jsx";
+import { bottomLeft, leftToRight } from "../../util/pos";
 import { SkillButton } from "./SkillButton";
 
 export const SkillBar = () => (
   <container
-    position={{
-      point: FRAMEPOINT_BOTTOMLEFT,
-      relative: "previous",
-      relativePoint: FRAMEPOINT_BOTTOMRIGHT,
-    }}
+    position={leftToRight(undefined, "bottom")}
     size={{ height: 114, width: 880 }}
   >
     <backdrop
-      position={{
-        point: FRAMEPOINT_BOTTOMLEFT,
-        relative: "parent",
-        relativePoint: FRAMEPOINT_BOTTOMLEFT,
-        y: 92,
-      }}
+      position={bottomLeft({ y: 92 })}
       size={{ height: 55, width: 880 }}
       texture="assets/img2/XP_bar_full"
     />

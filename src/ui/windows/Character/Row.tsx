@@ -1,7 +1,13 @@
 import { createElement } from "w3ts-jsx";
 import { Tooltip } from "../../components/Tooltip";
 import { useRefState } from "../../hooks/useRefState";
-import { bottomRight, topLeft, topRight } from "../../util/pos";
+import {
+  bottomRight,
+  leftToRight,
+  topDown,
+  topLeft,
+  topRight,
+} from "../../util/pos";
 import { WIDTH } from "./shared";
 
 export const Row = ({
@@ -27,18 +33,7 @@ export const Row = ({
   const containerRef = useRefState<framehandle>(null);
   return (
     <container
-      position={first
-        ? {
-          point: FRAMEPOINT_TOPLEFT,
-          relative: "parent",
-          relativePoint: FRAMEPOINT_TOPLEFT,
-        }
-        : {
-          point: FRAMEPOINT_TOPLEFT,
-          relative: "previous",
-          relativePoint: FRAMEPOINT_BOTTOMLEFT,
-          y: header || gap ? -8 : 0,
-        }}
+      position={first ? topLeft() : topDown({ y: header || gap ? -8 : 0 })}
       size={{ width: WIDTH, height: header ? 44 : 20 }}
       visible={visible}
       ref={containerRef}
@@ -56,12 +51,7 @@ export const Row = ({
       <text text={name} position={topLeft({ y: header ? -10 : 0 })} />
       <button
         size={{ width: 20, height: 20 }}
-        position={{
-          point: FRAMEPOINT_TOPLEFT,
-          relative: "previous",
-          relativePoint: FRAMEPOINT_TOPRIGHT,
-          x: 4,
-        }}
+        position={leftToRight({ x: 4 })}
         onClick={onIncrement}
         visible={canIncrement}
         ref={buttonRef}

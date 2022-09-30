@@ -10,6 +10,7 @@ import { heroTypeMap } from "../../../units/heroTypes";
 import { colorize } from "../../../util/colorize";
 import { LargeText } from "../../components/Text";
 import { useUnitListener } from "../../hooks/useUnitListener";
+import { top } from "../../util/pos";
 import { Row } from "./Row";
 import { WIDTH } from "./shared";
 
@@ -86,12 +87,7 @@ export const Character = ({
       />
       <LargeText
         text="Character"
-        position={{
-          point: FRAMEPOINT_TOP,
-          relative: "parent",
-          relativePoint: FRAMEPOINT_TOP,
-          y: 80,
-        }}
+        position={top({ y: 80 })}
       />
       <Row
         name="Class"

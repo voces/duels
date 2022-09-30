@@ -1,36 +1,23 @@
 import { createElement } from "w3ts-jsx";
 import { Hero } from "../../../units/Hero";
 import { useUnitListener } from "../../hooks/useUnitListener";
+import { above, bottomLeft, bottomRight, center } from "../../util/pos";
 
 export const HealthGlobe = ({ hero }: { hero: Hero }) => {
   useUnitListener(hero);
 
   return (
     <container
-      position={{
-        point: FRAMEPOINT_BOTTOMLEFT,
-        relative: "parent",
-        relativePoint: FRAMEPOINT_BOTTOMLEFT,
-      }}
+      position={bottomLeft()}
       size={{ height: 200, width: 400 }}
     >
       <backdrop
-        position={{
-          point: FRAMEPOINT_BOTTOMRIGHT,
-          relative: "parent",
-          relativePoint: FRAMEPOINT_BOTTOMRIGHT,
-          x: -30,
-          y: 19,
-        }}
+        position={bottomRight({ x: -30, y: 19 })}
         texture="assets/img2/hp_loogtuyt_empty"
         size={{ height: 172, width: 172 }}
       >
         <backdrop
-          position={{
-            point: FRAMEPOINT_CENTER,
-            relative: "parent",
-            relativePoint: FRAMEPOINT_CENTER,
-          }}
+          position={center()}
           texture="assets/img2/hp_loogtuyt"
           size={{
             height: (hero.health / hero.maxHealth) ** 0.5 * 172,
@@ -38,12 +25,7 @@ export const HealthGlobe = ({ hero }: { hero: Hero }) => {
           }}
         />
         <text
-          position={{
-            point: FRAMEPOINT_BOTTOM,
-            relative: "parent",
-            relativePoint: FRAMEPOINT_TOP,
-            y: 16,
-          }}
+          position={above({ y: 16 })}
           text={`${Math.round(hero.health)}/${Math.round(hero.maxHealth)}`}
         />
       </backdrop>
