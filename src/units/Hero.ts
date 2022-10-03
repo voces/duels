@@ -308,6 +308,16 @@ export class Hero extends UnitEx {
     const slot = this.items.inventory.find((i) => i === item);
     if (slot) return false;
 
+    if (typeof item.stacks === "number") {
+      const existingStack = this.items.inventory.find((i) =>
+        i.name === item.name
+      );
+      if (existingStack) {
+        existingStack.stacks = (existingStack.stacks ?? 1) + (item.stacks ?? 1);
+        return true;
+      }
+    }
+
     this.items.inventory.push(item);
     return true;
   }
@@ -324,7 +334,9 @@ export class Hero extends UnitEx {
   }
 
   equip(item: Item): boolean {
-    const unequipSlots = item.slot === "hands"
+    if (item.slot === "potion") return false;
+
+    const unequipSlots: UnitItemSlot[] = item.slot === "hands"
       ? ["leftHand", "rightHand"]
       : [item.slot];
     const equipSlot = item.slot === "hands" ? "leftHand" : item.slot;

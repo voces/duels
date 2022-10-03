@@ -13,12 +13,9 @@ const wrapAndPrint = <T>(fn: () => T, fallback: T) => () => {
 
 const OldTriggerAddCondition = TriggerAddCondition;
 // @ts-ignore
-TriggerAddCondition = (
-  trigger: trigger,
-  fn: conditionfunc | (() => boolean),
-) => {
+TriggerAddCondition = (trigger: trigger, fn: boolexpr) => {
   const condition = typeof fn === "function"
-    ? Condition(wrapAndPrint(fn, false))
+    ? Condition(wrapAndPrint(fn, false))!
     : fn;
 
   OldTriggerAddCondition(trigger, condition);
@@ -44,7 +41,7 @@ const OldTriggerRegisterEnterRegion = TriggerRegisterEnterRegion;
 TriggerRegisterEnterRegion = (
   whichTrigger: trigger,
   whichRegion: region,
-  filter: boolexpr | (() => boolean) | null,
+  filter?: boolexpr | (() => boolean) | undefined,
 ) => {
   const fn = typeof filter === "function"
     ? Filter(wrapAndPrint(filter, false))

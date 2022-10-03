@@ -20,7 +20,7 @@ export function usePlayerState<T>(
   const [state, setState] = useState<T[]>(
     initials ?? (times(bj_MAX_PLAYER_SLOTS, () => initial) as T[]),
   );
-  const localPlayerId = GetPlayerId(GetLocalPlayer());
+  const localPlayerId = GetPlayerId(GetLocalPlayer()!);
   return [
     state[localPlayerId],
     (nextState: T) => {

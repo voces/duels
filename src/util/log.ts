@@ -1,8 +1,8 @@
-import { addScriptHook, File, getElapsedTime, W3TS_HOOK } from "@voces/w3ts";
+// import { addScriptHook, File, getElapsedTime, W3TS_HOOK } from "@voces/w3ts";
 import { colorize } from "./colorize";
 import { map } from "basic-pragma/dist/utils/arrays";
 import { constants } from "./constants";
-import { startTimeout } from "../util";
+// import { startTimeout } from "../util";
 
 const MAX_WIDTH = 78;
 const TRAILING_COMMA = false;
@@ -24,7 +24,7 @@ const isArray = (v: any): boolean => {
 
 const userdataType = (userdata: Record<string, any>): string => {
   if (constants.has(userdata as handle)) {
-    return constants.get(userdata as handle);
+    return constants.get(userdata as handle)!;
   }
   const typeString = userdata.toString();
   return typeString;
@@ -49,7 +49,7 @@ export const termToString = (v: any, color = false, level = 0): string => {
 
     // A minimum; "[ 0 ]".length = 5, "{ 0, 1 }".length = 8, etc
     let tryingCompact = level + arr.length * 3 + 2 < MAX_WIDTH;
-    let compact = "[" + (arr.length ? " " : "");
+    let compact = "[" + (arr.length > 0 ? " " : "");
 
     for (let i = 0; i < arr.length && tryingCompact; i++) {
       compact += termToString(arr[i], color, level + 1) +
@@ -58,7 +58,7 @@ export const termToString = (v: any, color = false, level = 0): string => {
       if (compact.length > MAX_WIDTH) tryingCompact = false;
     }
     if (tryingCompact) {
-      compact += (arr.length ? " " : "") + "]";
+      compact += (arr.length > 0 ? " " : "") + "]";
       if (compact.length <= MAX_WIDTH) return compact;
     }
 
@@ -96,7 +96,7 @@ export const termToString = (v: any, color = false, level = 0): string => {
       }
 
       if (tryingCompact) {
-        compact += (entries.length ? " " : "") + "}";
+        compact += (entries.length > 0 ? " " : "") + "}";
         if (level * INDENT_WIDTH + compact.length <= MAX_WIDTH) {
           return compact;
         }
@@ -142,10 +142,10 @@ export const log = (...args: Array<any>): void => {
     .forEach((line) => oldPrint(line));
 };
 globalThis.print = log;
-globalThis.logGroup = (...args: any[]): void => {
-  log(...args);
-  logStack++;
-};
-globalThis.logGroupEnd = () => {
-  logStack--;
-};
+// globalThis.logGroup = (...args: any[]): void => {
+//   log(...args);
+//   logStack++;
+// };
+// globalThis.logGroupEnd = () => {
+//   logStack--;
+// };

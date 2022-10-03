@@ -76,7 +76,7 @@ export class UnitEx {
       else if (y == null) throw "Expected y when passing in unit type";
       else {
         unit = new Unit(
-          typeof owner === "number" ? MapPlayer.fromIndex(owner) : owner,
+          typeof owner === "number" ? MapPlayer.fromIndex(owner)! : owner,
           typeof unit === "number" ? unit : FourCC(unit),
           // A spot to avoid spawning in a region
           -1056,
@@ -90,7 +90,7 @@ export class UnitEx {
     map.set(unit.handle, this);
     this.unit = unit;
 
-    if (maxHealth) this.maxBaseHealth = maxHealth;
+    if (maxHealth > 0) this.maxBaseHealth = maxHealth;
 
     this._weapon = {
       min: new BonusField(weapon.min),
@@ -314,7 +314,7 @@ export class UnitEx {
       if (typeof rawDamageFromType !== "number") continue;
 
       const damageFromType = rawDamageFromType *
-        (1 - (target._resistances[damageType] ?? 0));
+        (1 - (target._resistances.total[damageType] ?? 0));
 
       target.health = Math.max(0, target.health - damageFromType);
 
@@ -361,7 +361,7 @@ export class UnitEx {
       x,
       y,
       128,
-      Filter((): boolean => {
+      (): boolean => {
         if (foundAUnit) return false;
 
         const u = UnitEx.fromFilter()!;
@@ -373,7 +373,7 @@ export class UnitEx {
         this.damage(u, damage);
 
         return false;
-      }),
+      },
     );
     dummyGroup.clear();
   }
@@ -427,7 +427,7 @@ export class UnitEx {
 
     // Hopefully a pre-placed unit
     if (unitEx == null) {
-      unitEx = new UnitEx({ unit: Unit.fromHandle(unit) });
+      unitEx = new UnitEx({ unit: Unit.fromHandle(unit)! });
     }
 
     // throw "Called UnitEx.fromHandle with an unknown unit";

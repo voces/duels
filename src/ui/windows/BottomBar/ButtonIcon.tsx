@@ -19,22 +19,24 @@ export const ButtonIcon = ({
   return (
     <button
       position={first ? bottomRight() : rightToLeft()}
-      size={{ width: ICON_SIZE, height: ICON_SIZE }}
+      size={ICON_SIZE}
       ref={buttonRef}
       onClick={onClick}
-      tooltip={tooltip && buttonRef.current && (
-        <Tooltip>
-          <text
-            text={tooltip}
-            position={{
-              point: FRAMEPOINT_BOTTOM,
-              relative: buttonRef.current,
-              relativePoint: FRAMEPOINT_TOP,
-              y: 24,
-            }}
-          />
-        </Tooltip>
-      )}
+      tooltip={tooltip && buttonRef.current
+        ? (
+          <Tooltip>
+            <text
+              text={tooltip}
+              position={{
+                point: FRAMEPOINT_BOTTOM,
+                relative: buttonRef.current,
+                relativePoint: FRAMEPOINT_TOP,
+                y: 24,
+              }}
+            />
+          </Tooltip>
+        )
+        : null}
     >
       <backdrop texture={icon} position="parent" />
     </button>

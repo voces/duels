@@ -19,8 +19,8 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
   for (let i = 0; i < bj_MAX_PLAYERS + 4; i++) {
     for (let n = 0; n < bj_MAX_PLAYERS + 4; n++) {
       if (i === n) continue;
-      const player1 = MapPlayer.fromIndex(i);
-      const player2 = MapPlayer.fromIndex(n);
+      const player1 = MapPlayer.fromIndex(i)!;
+      const player2 = MapPlayer.fromIndex(n)!;
       let passive: boolean;
       // Non-hostiles start out passive with eachother
       if (!isHostile(player1)) passive = !isHostile(player2);

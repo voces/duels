@@ -30,7 +30,7 @@ export const Row = ({
   visible?: boolean;
 }) => {
   const buttonRef = useRefState<framehandle | null>(null);
-  const containerRef = useRefState<framehandle>(null);
+  const containerRef = useRefState<framehandle | null>(null);
   return (
     <container
       position={first ? topLeft() : topDown({ y: header || gap ? -8 : 0 })}
@@ -50,7 +50,7 @@ export const Row = ({
       )}
       <text text={name} position={topLeft({ y: header ? -10 : 0 })} />
       <button
-        size={{ width: 20, height: 20 }}
+        size={20}
         position={leftToRight({ x: 4 })}
         onClick={onIncrement}
         visible={canIncrement}

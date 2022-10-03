@@ -14,15 +14,12 @@ export const HealthGlobe = ({ hero }: { hero: Hero }) => {
       <backdrop
         position={bottomRight({ x: -30, y: 19 })}
         texture="assets/img2/hp_loogtuyt_empty"
-        size={{ height: 172, width: 172 }}
+        size={172}
       >
         <backdrop
           position={center()}
           texture="assets/img2/hp_loogtuyt"
-          size={{
-            height: (hero.health / hero.maxHealth) ** 0.5 * 172,
-            width: (hero.health / hero.maxHealth) ** 0.5 * 172,
-          }}
+          size={(hero.health / hero.maxHealth) ** 0.5 * 172}
         />
         <text
           position={above({ y: 16 })}

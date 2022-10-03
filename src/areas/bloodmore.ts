@@ -9,11 +9,11 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
   const rects = [gg_rct_bloodmore1, gg_rct_bloodmore2, gg_rct_bloodmore3].map(
     (h) => {
       EnableWeatherEffect(
-        AddWeatherEffect(h, WeatherEffect.ashenvaleHeavyRain),
+        AddWeatherEffect(h, WeatherEffect.ashenvaleHeavyRain)!,
         true,
       );
 
-      return Rectangle.fromHandle(h);
+      return Rectangle.fromHandle(h)!;
     },
   );
 

@@ -17,22 +17,22 @@ import { WeatherEffect } from "./weather";
 addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
   try {
     EnableWeatherEffect(
-      AddWeatherEffect(gg_rct_camp, WeatherEffect.ashenvaleLightRain),
+      AddWeatherEffect(gg_rct_camp, WeatherEffect.ashenvaleLightRain)!,
       true,
     );
 
     const region = new Region();
     setTown(region);
     const trigger = new Trigger();
-    const rect = Rectangle.fromHandle(gg_rct_camp);
+    const rect = Rectangle.fromHandle(gg_rct_camp)!;
     region.addRect(rect);
 
     dummyGroup.enumUnitsInRect(
-      Rectangle.fromHandle(gg_rct_camp),
-      Filter(() => {
-        Unit.fromFilter().invulnerable = true;
+      Rectangle.fromHandle(gg_rct_camp)!,
+      () => {
+        Unit.fromFilter()!.invulnerable = true;
         return false;
-      }),
+      },
     );
 
     trigger.registerEnterRegion(
@@ -64,13 +64,13 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
     const g = new Group();
     g.enumUnitsInRect(
       rect,
-      Filter(() => {
-        const unit = Unit.fromHandle(GetEnumUnit());
+      () => {
+        const unit = Unit.fromEnum()!;
         unit.invulnerable = true;
         unit.acquireRange = 0;
         new UnitEx({ unit });
         return false;
-      }),
+      },
     );
   } catch (err) {
     console.error(colorize.error(err));

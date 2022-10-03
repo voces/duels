@@ -11,9 +11,9 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
   // Remove defualt UI
   BlzHideOriginFrames(true);
   // Remove black bar at the bottom, which isn't remove from the above
-  BlzFrameSetVisible(BlzGetFrameByName("ConsoleUIBackdrop", 0), false);
+  BlzFrameSetVisible(BlzGetFrameByName("ConsoleUIBackdrop", 0)!, false);
   BlzFrameSetVisible(
-    BlzFrameGetChild(BlzGetFrameByName("ConsoleUI", 0), 5),
+    BlzFrameGetChild(BlzGetFrameByName("ConsoleUI", 0)!, 5)!,
     false,
   );
 
@@ -30,7 +30,7 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
   }
 
   new Timer().start(0.01, false, () => {
-    Timer.fromExpired().destroy();
+    Timer.fromExpired()!.destroy();
     render(<App />, BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0));
   });
 });

@@ -15,8 +15,8 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
   t.addCondition(() => {
     if (!isDamageSystemOn()) return false;
 
-    const source = UnitEx.fromHandle(GetEventDamageSource());
-    const target = UnitEx.fromHandle(BlzGetEventDamageTarget());
+    const source = UnitEx.fromHandle(GetEventDamageSource()!);
+    const target = UnitEx.fromHandle(BlzGetEventDamageTarget()!);
 
     const range = BlzGetUnitWeaponRealField(
       source.unit.handle,
@@ -33,7 +33,7 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
   const t2 = new Trigger();
   t2.registerAnyUnitEvent(EVENT_PLAYER_UNIT_ATTACKED);
   t2.addCondition(() => {
-    const source = UnitEx.fromHandle(GetAttacker());
+    const source = UnitEx.fromHandle(GetAttacker()!);
     const target = UnitEx.fromEvent();
 
     const range = BlzGetUnitWeaponRealField(

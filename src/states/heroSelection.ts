@@ -51,8 +51,10 @@ const advanceFromHeroSelection = () => {
 
     for (let i = 0; i < 6 * 4; i++) {
       hero.addItemToInventory({
+        name: "health-potion",
         slot: "potion",
         consumable: true,
+        stacks: 1,
         image: "assets/img2/health-potion",
         effects: [buildRestoreHealth({ amount: 50 })],
       });
@@ -60,8 +62,10 @@ const advanceFromHeroSelection = () => {
 
     for (let i = 0; i < 6 * 4 + 1; i++) {
       hero.addItemToInventory({
+        name: "mana-potion",
         slot: "potion",
         consumable: true,
+        stacks: 1,
         image: "assets/img2/mana-potion",
         effects: [buildRestoreMana({ amount: 30 })],
       });
@@ -160,7 +164,7 @@ const advanceToHeroSelection = () => {
 
 addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
   new Timer().start(0.25, false, () => {
-    Timer.fromExpired().destroy();
+    Timer.fromExpired()!.destroy();
     advanceToHeroSelection();
   });
 });

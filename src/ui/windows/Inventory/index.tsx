@@ -1,7 +1,48 @@
 import { createElement, useRef, useState } from "w3ts-jsx";
+import type { Item } from "../../../items/Item";
 import type { Hero } from "../../../units/Hero";
 import { repeat } from "../../../util/repeat";
+import { Tooltip } from "../../components/Tooltip";
 import { bottomRight, leftToRight, topDown, topLeft } from "../../util/pos";
+
+const ItemSlot = (
+  { item, index }: { item: Item | undefined; index: number },
+) => {
+  const backdropRef = useRef<framehandle | null>(null);
+
+  return (
+    <backdrop
+      position={index === 0
+        ? topLeft({ y: -125.5, x: 14 })
+        : index % 6 === 0
+        ? topDown({ y: -2, x: -255 })
+        : leftToRight({ x: 2 })}
+      size={49}
+      texture={item?.image}
+      ref={backdropRef}
+      tooltip={
+        <Tooltip>
+          <text
+            position={backdropRef.current
+              ? {
+                point: FRAMEPOINT_RIGHT,
+                relative: backdropRef.current,
+                relativePoint: FRAMEPOINT_LEFT,
+                x: -32,
+              }
+              : null}
+            text={item?.name}
+          />
+        </Tooltip>
+      }
+    >
+      <text
+        position={bottomRight({ x: -3, y: -3 })}
+        text={item?.stacks?.toString() ?? ""}
+      />
+    </backdrop>
+  );
+};
 
 export const Inventory = (
   { hero, visible }: { hero: Hero; visible: boolean },
@@ -16,17 +57,12 @@ export const Inventory = (
       visible={visible}
     >
       <backdrop texture="assets/img2/inventory" position="parent" />
-      {repeat(42, (index) => (
-        <backdrop
-          position={index === 0
-            ? topLeft({ y: -125.5, x: 14 })
-            : index % 6 === 0
-            ? topDown({ y: -2, x: -255 })
-            : leftToRight({ x: 2 })}
-          size={49}
-          texture={hero.inventory[offset * 6 + index]?.image}
-        />
-      ))}
+      {repeat(
+        42,
+        (index) => (
+          <ItemSlot item={hero.inventory[offset * 6 + index]} index={index} />
+        ),
+      )}
       <slider
         position={bottomRight({ x: -10, y: 10 })}
         size={{ height: 360, width: 20 }}
@@ -35,7 +71,7 @@ export const Inventory = (
         inherits="QuestMainListScrollBar"
         ref={mySlider}
         onSliderChanged={() => {
-          console.log(BlzFrameGetValue(mySlider.current));
+          console.log(BlzFrameGetValue(mySlider!.current!));
         }}
       />
     </container>

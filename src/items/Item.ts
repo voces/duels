@@ -3,6 +3,7 @@ import { Affix } from "./affixes/types";
 
 export type Item = {
   slot: "hands" | "leftHand" | "rightHand" | "potion";
+  name: string;
   image: string;
   consumable?: boolean;
   damage?: { min: number; max: number };
@@ -11,4 +12,5 @@ export type Item = {
   attackSpeed?: number;
   affixes?: Affix[];
   effects?: Effect[];
+  stacks?: number;
 };

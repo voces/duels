@@ -69,7 +69,7 @@ Specializes in elemental, shape shifting, and summoning spells.`;
 export const HeroSelection = () => {
   const globalState = useGlobalState();
 
-  const triggerPlayerId = GetPlayerId(GetTriggerPlayer());
+  const triggerPlayerId = GetPlayerId(GetTriggerPlayer()!);
 
   const selected = globalState.state === "hero-selection"
     ? globalState.heroSelection.selections[triggerPlayerId] ?? "amazon"

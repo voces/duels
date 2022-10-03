@@ -89,7 +89,7 @@ const executeCommands = (playerId: number) => {
 
 const mouseDownTrigger = new Trigger();
 const onMouseDown = () => {
-  const player = MapPlayer.fromEvent();
+  const player = MapPlayer.fromEvent()!;
 
   // We must get this before calling EnableUserControl
   const targetHandle = BlzGetMouseFocusUnit();
@@ -99,7 +99,7 @@ const onMouseDown = () => {
 
   const playerId = player.id;
   const button = BlzGetTriggerPlayerMouseButton();
-  const target = UnitEx.fromHandle(targetHandle);
+  const target = targetHandle ? UnitEx.fromHandle(targetHandle) : NONE;
 
   updateMouse(playerId, {
     leftDown: button === MOUSE_BUTTON_TYPE_LEFT
@@ -110,8 +110,8 @@ const onMouseDown = () => {
       : mice[playerId].rightDown,
     x: BlzGetTriggerPlayerMouseX(),
     y: BlzGetTriggerPlayerMouseY(),
-    targetLock: target ?? NONE,
-    target: target ?? NONE,
+    targetLock: target,
+    target: target,
     moved: false,
   });
 
@@ -122,8 +122,9 @@ const onMouseDown = () => {
 
 const mouseUpTrigger = new Trigger();
 const onMouseUp = () => {
-  const playerId = MapPlayer.fromEvent().id;
+  const playerId = MapPlayer.fromEvent()!.id;
   const button = BlzGetTriggerPlayerMouseButton();
+  const unit = BlzGetMouseFocusUnit();
 
   updateMouse(playerId, {
     leftDown: button === MOUSE_BUTTON_TYPE_LEFT
@@ -135,7 +136,7 @@ const onMouseUp = () => {
     x: BlzGetTriggerPlayerMouseX(),
     y: BlzGetTriggerPlayerMouseY(),
     targetLock: NONE,
-    target: UnitEx.fromHandle(BlzGetMouseFocusUnit()) ?? NONE,
+    target: unit ? UnitEx.fromHandle(unit) : NONE,
     moved: false,
   });
 
@@ -144,12 +145,13 @@ const onMouseUp = () => {
 
 const mouseMoveTrigger = new Trigger();
 const onMouseMove = () => {
-  const playerId = MapPlayer.fromEvent().id;
+  const playerId = MapPlayer.fromEvent()!.id;
+  const unit = BlzGetMouseFocusUnit();
 
   updateMouse(playerId, {
     x: BlzGetTriggerPlayerMouseX(),
     y: BlzGetTriggerPlayerMouseY(),
-    target: UnitEx.fromHandle(BlzGetMouseFocusUnit()) ?? NONE,
+    target: unit ? UnitEx.fromHandle(unit) : NONE,
     moved: true,
   });
 
@@ -158,8 +160,8 @@ const onMouseMove = () => {
 
 const keyDownTrigger = new Trigger();
 const onKeyDown = () => {
-  const playerId = MapPlayer.fromEvent().id;
-  const key = osKeyToStringMap(BlzGetTriggerPlayerKey());
+  const playerId = MapPlayer.fromEvent()!.id;
+  const key = osKeyToStringMap(BlzGetTriggerPlayerKey()!);
   if (key) keyboards[playerId][key] = true;
   executeCommands(playerId);
   return false;
@@ -167,8 +169,8 @@ const onKeyDown = () => {
 
 const keyUpTrigger = new Trigger();
 const onKeyUp = () => {
-  const playerId = MapPlayer.fromEvent().id;
-  const key = osKeyToStringMap(BlzGetTriggerPlayerKey());
+  const playerId = MapPlayer.fromEvent()!.id;
+  const key = osKeyToStringMap(BlzGetTriggerPlayerKey()!);
   if (key) keyboards[playerId][key] = false;
   return false;
 };

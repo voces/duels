@@ -1,4 +1,4 @@
-declare const __async__require__: (luaPath: string) => void;
+declare const __async__require__: (luaPath: string) => Record<string, unknown>;
 
 export const asyncRequire = <T>(luaPath: string): T =>
   setmetatable({}, {

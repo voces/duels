@@ -75,7 +75,7 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
         x,
         y,
         projectile.radius,
-        Filter((): boolean => {
+        (): boolean => {
           if (projectile.maxTargets === 0) return false;
 
           const u = UnitEx.UnitEx.fromFilter()!;
@@ -88,7 +88,7 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
           projectile.owner.damage(u, projectile.damage);
 
           return false;
-        }),
+        },
       );
       dummyGroup.clear();
 

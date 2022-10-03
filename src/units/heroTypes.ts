@@ -209,12 +209,14 @@ export class BonusField<T extends number | { [key: string]: number }> {
     }
 
     const obj = {} as T;
-    Object.keys(this.base).forEach((key) =>
+    (Object.keys(this.base)).forEach((key) =>
+      // @ts-ignore
       obj[key] = (this.base[key] ?? 0) + (this.bonus[key] ?? 0)
     );
     Object.keys(this.bonus).forEach((key) =>
+      // @ts-ignore
       obj[key] = (this.base[key] ?? 0) + (this.bonus[key] ?? 0)
     );
-    return obj;
+    return obj as T;
   }
 }

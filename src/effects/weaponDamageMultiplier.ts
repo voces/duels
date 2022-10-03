@@ -36,7 +36,7 @@ export const weaponDamageMultiplierHooks: EffectHook<
     map.set(effect, { min, max });
   },
   unapply: (effect, hero): void => {
-    const { min, max } = map.get(effect);
+    const { min, max } = map.get(effect)!;
 
     hero.adjustWeaponMinBonus(effect.damageType, -min);
     hero.adjustWeaponMaxBonus(effect.damageType, -max);

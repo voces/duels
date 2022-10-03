@@ -14,15 +14,12 @@ export const ManaGlobe = ({ hero }: { hero: Hero }) => {
       <backdrop
         position={bottomLeft({ x: 30, y: 19 })}
         texture="assets/img2/mp_loogtuyt_empty"
-        size={{ height: 172, width: 172 }}
+        size={172}
       >
         <backdrop
           position={center()}
           texture="assets/img2/mp_loogtuyt"
-          size={{
-            height: (hero.mana / hero.maxMana) ** 0.5 * 172,
-            width: (hero.mana / hero.maxMana) ** 0.5 * 172,
-          }}
+          size={(hero.mana / hero.maxMana) ** 0.5 * 172}
         />
         <text
           position={above({ y: 16 })}

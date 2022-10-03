@@ -14,13 +14,16 @@ import { top } from "../../util/pos";
 import { Row } from "./Row";
 import { WIDTH } from "./shared";
 
+const capitalize = <T extends string>(string: T): Capitalize<T> =>
+  (string[0].toUpperCase() + string.slice(1)) as Capitalize<T>;
+
 const incStat = (
   hero: Hero,
   stat: "strength" | "dexterity" | "vitality" | "energy",
 ) => {
   if (hero.unasignedStatPoints <= 0) return;
   hero.unasignedStatPoints--;
-  hero["base" + stat[0].toUpperCase() + stat.slice(1)]++;
+  hero[`base${capitalize(stat)}`]++;
 };
 
 const damageRangeToString = (damage: Command["damage"]) => {

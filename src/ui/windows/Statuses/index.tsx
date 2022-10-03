@@ -10,7 +10,7 @@ export const Statuses = ({ hero }: { hero: Hero }) => {
   return (
     <container
       absPosition={{ point: FRAMEPOINT_TOPLEFT, x: 16, y: 1200 - 16 }}
-      size={{ width: 1, height: 1 }}
+      size={1}
     >
       <Status unit={hero} first />
     </container>

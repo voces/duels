@@ -2,6 +2,7 @@ import { buildWeaponDamageMultiplierEffect } from "../../../effects/weaponDamage
 import { Item } from "../../Item";
 
 export const buildShortStaff = (overrides?: Partial<Item>): Item => ({
+  name: "Short Staff",
   slot: "hands",
   image: "assets/img2/staff",
   durability: 20,

@@ -18,14 +18,14 @@ export const forEachPlayer = (
   filter: (player: MapPlayer) => boolean = isPlayingHuman,
 ): void => {
   for (let i = 0; i < bj_MAX_PLAYER_SLOTS; i++) {
-    const player = MapPlayer.fromHandle(Player(i));
+    const player = MapPlayer.fromHandle(Player(i))!;
     if (filter(player)) fn(player);
   }
 };
 
 export const everyPlayer = (fn: (player: MapPlayer) => boolean): boolean => {
   for (let i = 0; i < bj_MAX_PLAYER_SLOTS; i++) {
-    const player = MapPlayer.fromHandle(Player(i));
+    const player = MapPlayer.fromHandle(Player(i))!;
     if (
       player.controller !== MAP_CONTROL_USER ||
       player.slotState !== PLAYER_SLOT_STATE_PLAYING
