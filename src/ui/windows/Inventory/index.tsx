@@ -3,12 +3,13 @@ import type { Item } from "../../../items/Item";
 import type { Hero } from "../../../units/Hero";
 import { repeat } from "../../../util/repeat";
 import { Tooltip } from "../../components/Tooltip";
+import { useRefState } from "../../hooks/useRefState";
 import { bottomRight, leftToRight, topDown, topLeft } from "../../util/pos";
 
 const ItemSlot = (
   { item, index }: { item: Item | undefined; index: number },
 ) => {
-  const backdropRef = useRef<framehandle | null>(null);
+  const backdropRef = useRefState<framehandle | null>(null);
 
   return (
     <backdrop
@@ -19,10 +20,12 @@ const ItemSlot = (
         : leftToRight({ x: 2 })}
       size={49}
       texture={item?.image}
+      alpha={item ? 255 : 0}
       ref={backdropRef}
       tooltip={
         <Tooltip>
           <text
+            text={item?.name}
             position={backdropRef.current
               ? {
                 point: FRAMEPOINT_RIGHT,
@@ -31,7 +34,6 @@ const ItemSlot = (
                 x: -32,
               }
               : null}
-            text={item?.name}
           />
         </Tooltip>
       }
