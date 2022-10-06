@@ -42,7 +42,7 @@ export class UnitEx {
   private _skills: Skill[] = [];
   private _skillMap: Record<string, Skill> = {};
 
-  private listeners: (() => void)[] = [];
+  private listeners: Record<string, Set<() => void> | undefined> = {};
   private lastHealthLoss = 0;
 
   constructor(props: { unit: Unit });
@@ -110,17 +110,18 @@ export class UnitEx {
     return IsUnitAlly(this.unit.handle, whichPlayer.handle);
   }
 
-  protected emitChange(): void {
-    for (const fn of this.listeners) fn();
+  protected emitChange(key: string): void {
+    const callbacks = this.listeners[key];
+    if (callbacks) for (const callback of callbacks) callback();
   }
 
-  addEventListener(fn: () => void): void {
-    this.listeners.push(fn);
+  addEventListener(key: string, fn: () => void): void {
+    const callbacks = this.listeners[key] ?? (this.listeners[key] = new Set());
+    callbacks.add(fn);
   }
 
-  removeEventListener(fn: () => void): void {
-    const index = this.listeners.indexOf(fn);
-    if (index >= 0) this.listeners.splice(index);
+  removeEventListener(key: string, fn: () => void): void {
+    this.listeners[key]?.delete(fn);
   }
 
   get health(): number {
@@ -134,7 +135,7 @@ export class UnitEx {
     if (
       (Math.floor(value) !== Math.floor(oldValue)) ||
       (Math.round(value) !== Math.round(oldValue))
-    ) this.emitChange();
+    ) this.emitChange("health");
   }
 
   get maxHealth(): number {
@@ -150,7 +151,7 @@ export class UnitEx {
     const healthChange = (value - this._maxHealth.base) * curHealthPercent;
     this._maxHealth.base = value;
     this._health += healthChange;
-    this.emitChange();
+    this.emitChange("health");
   }
   get maxBonusHealth(): number {
     return this._maxHealth.bonus;
@@ -162,7 +163,7 @@ export class UnitEx {
     const healthChange = (value - this._maxHealth.bonus) * curHealthPercent;
     this._maxHealth.bonus = value;
     this._health += healthChange;
-    this.emitChange();
+    this.emitChange("health");
   }
 
   get healthRegen(): number {
@@ -179,7 +180,7 @@ export class UnitEx {
     if (
       (Math.floor(value) !== Math.floor(oldValue)) ||
       (Math.round(value) !== Math.round(oldValue))
-    ) this.emitChange();
+    ) this.emitChange("mana");
   }
 
   get maxMana(): number {
@@ -195,7 +196,7 @@ export class UnitEx {
     const manaChange = (value - this._maxMana.base) * curManaPercent;
     this._maxMana.base = value;
     this._mana += manaChange;
-    this.emitChange();
+    this.emitChange("mana");
   }
   get maxBonusMana(): number {
     return this._maxMana.bonus;
@@ -207,7 +208,7 @@ export class UnitEx {
     const manaChange = (value - this._maxMana.bonus) * curManaPercent;
     this._maxMana.bonus = value;
     this._mana += manaChange;
-    this.emitChange();
+    this.emitChange("mana");
   }
 
   get manaRegen(): number {
@@ -227,30 +228,30 @@ export class UnitEx {
   }
   set weaponMinBonus(value: Damage) {
     this._weapon.min.bonus = value;
-    this.emitChange();
+    this.emitChange("weapon");
   }
   setWeaponMinBonus(type: DamageType, value: number) {
     this._weapon.min.bonus[type] = value;
-    this.emitChange();
+    this.emitChange("weapon");
   }
   adjustWeaponMinBonus(type: DamageType, value: number) {
     this._weapon.min.bonus[type] = (this._weapon.min.bonus[type] ?? 0) + value;
-    this.emitChange();
+    this.emitChange("weapon");
   }
   get weaponMaxBonus() {
     return this._weapon.max.bonus;
   }
   set weaponMaxBonus(value: Damage) {
     this._weapon.max.bonus = value;
-    this.emitChange();
+    this.emitChange("weapon");
   }
   setWeaponMaxBonus(type: DamageType, value: number) {
     this._weapon.max.bonus[type] = value;
-    this.emitChange();
+    this.emitChange("weapon");
   }
   adjustWeaponMaxBonus(type: DamageType, value: number) {
     this._weapon.max.bonus[type] = (this._weapon.max.bonus[type] ?? 0) + value;
-    this.emitChange();
+    this.emitChange("weapon");
   }
 
   get resistances(): Damage {
@@ -262,7 +263,7 @@ export class UnitEx {
   }
   set defense(value: number) {
     this._defense = value;
-    this.emitChange();
+    this.emitChange("defense");
   }
 
   get owner(): MapPlayer {
@@ -275,7 +276,7 @@ export class UnitEx {
 
   set facing(degrees: number) {
     this.unit.facing = degrees;
-    this.emitChange();
+    this.emitChange("facing");
   }
 
   setAnimation(whichAnimation: string | number): void {
@@ -288,7 +289,7 @@ export class UnitEx {
 
   set x(value: number) {
     this.unit.x = value;
-    this.emitChange();
+    this.emitChange("position");
   }
 
   get y(): number {
@@ -297,7 +298,7 @@ export class UnitEx {
 
   set y(value: number) {
     this.unit.y = value;
-    this.emitChange();
+    this.emitChange("position");
   }
 
   get handle(): unit {
@@ -396,7 +397,7 @@ export class UnitEx {
         fn: (playerId) => {
           if (!skill.validate(playerId)) return false;
           queueAction(playerId, {
-            perform: (done) => skill.perform(playerId, done),
+            perform: (done) => skill.onUse(playerId, done),
             interruptable: false,
           });
           return true;

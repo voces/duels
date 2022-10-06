@@ -6,7 +6,7 @@ export interface Skill {
   level: number;
   setLevel: (newLevel: number) => void;
   validate: (playerId: number) => boolean;
-  perform: (playerId: number, done: Done) => void;
+  onUse: (playerId: number, done: Done) => void;
   damage?: {
     min: Damage;
     max: Damage;

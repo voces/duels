@@ -161,7 +161,7 @@ export class Hero extends UnitEx {
   }
   set baseStrength(value: number) {
     this._strength.base = value;
-    this.emitChange();
+    this.emitChange("strength");
   }
 
   get dexterity(): number {
@@ -172,7 +172,7 @@ export class Hero extends UnitEx {
   }
   set baseDexterity(value: number) {
     this._dexterity.base = value;
-    this.emitChange();
+    this.emitChange("dexterity");
   }
 
   get vitality(): number {
@@ -194,7 +194,7 @@ export class Hero extends UnitEx {
     const staminaChange = diff * this.staminaPerVitality;
     this.maxBaseStamina += staminaChange;
 
-    this.emitChange();
+    this.emitChange("vitality");
   }
 
   get energy(): number {
@@ -209,7 +209,7 @@ export class Hero extends UnitEx {
     this._energy.base = value;
     this.maxBaseMana += manaChange;
 
-    this.emitChange();
+    this.emitChange("energy");
   }
 
   get stamina(): number {
@@ -217,7 +217,7 @@ export class Hero extends UnitEx {
   }
   set stamina(value: number) {
     this._stamina = value;
-    this.emitChange();
+    this.emitChange("stamina");
   }
 
   get maxStamina(): number {
@@ -233,7 +233,7 @@ export class Hero extends UnitEx {
     const staminaChange = (value - this._maxStamina.base) * curStaminaPercent;
     this._maxStamina.base = value;
     this._stamina += staminaChange;
-    this.emitChange();
+    this.emitChange("stamina");
   }
   get maxBonusStamina(): number {
     return this._maxStamina.bonus;
@@ -245,7 +245,7 @@ export class Hero extends UnitEx {
     const staminaChange = (value - this._maxStamina.bonus) * curStaminaPercent;
     this._maxStamina.bonus = value;
     this._stamina += staminaChange;
-    this.emitChange();
+    this.emitChange("stamina");
   }
 
   get experience(): number {
@@ -268,7 +268,7 @@ export class Hero extends UnitEx {
       );
       startTimeout(5, () => e.destroy());
     }
-    this.emitChange();
+    this.emitChange("experience");
   }
 
   get unasignedStatPoints(): number {
@@ -276,7 +276,7 @@ export class Hero extends UnitEx {
   }
   set unasignedStatPoints(value: number) {
     this._unasignedStatPoints = value;
-    this.emitChange();
+    this.emitChange("stats");
   }
 
   damage(target: UnitEx, damage: Damage): void {
@@ -301,6 +301,7 @@ export class Hero extends UnitEx {
     if (index === -1) return false;
 
     this.items.inventory.splice(index, 1);
+    this.emitChange("inventory");
     return true;
   }
 
@@ -319,6 +320,7 @@ export class Hero extends UnitEx {
     }
 
     this.items.inventory.push(item);
+    this.emitChange("inventory");
     return true;
   }
 

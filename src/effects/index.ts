@@ -25,3 +25,10 @@ export const unapplyEffect = (effect: Effect, hero: Hero): void => {
     hero,
   );
 };
+
+export const useEffect = (effect: Effect, hero: Hero): void => {
+  effectMap[`${effect.type}Hooks` as `${Effect["type"]}Hooks`].use?.(
+    effect as any,
+    hero,
+  );
+};

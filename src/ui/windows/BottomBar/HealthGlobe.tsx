@@ -4,7 +4,7 @@ import { useUnitListener } from "../../hooks/useUnitListener";
 import { above, bottomLeft, bottomRight, center } from "../../util/pos";
 
 export const HealthGlobe = ({ hero }: { hero: Hero }) => {
-  useUnitListener(hero);
+  useUnitListener(hero, "health");
 
   return (
     <container

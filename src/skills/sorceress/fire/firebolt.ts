@@ -43,7 +43,7 @@ export const fireboltSkill = (): Skill => ({
 
     return hero.mana >= 3;
   },
-  perform(playerId, done) {
+  onUse(playerId, done) {
     if (!("heroes" in state)) return done();
     const hero = state.heroes[playerId];
 

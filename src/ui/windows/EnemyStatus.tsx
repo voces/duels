@@ -6,7 +6,7 @@ import { top, topDown, topLeft } from "../util/pos";
 
 export const EnemyStatus = () => {
   const target = useMouseTarget();
-  useUnitListener(target);
+  useUnitListener(target, "health");
   return (
     <container
       absPosition={{

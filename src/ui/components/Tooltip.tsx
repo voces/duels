@@ -3,9 +3,11 @@ import { createElement, Pos, useEffect, useForceUpdate } from "w3ts-jsx";
 const TooltipFrame = ({
   children,
   anchors,
+  visible = true,
 }: {
   children?: JSX.Element;
   anchors?: Pos[];
+  visible?: boolean;
 }) => {
   const forceUpdate = useForceUpdate();
 
@@ -17,6 +19,7 @@ const TooltipFrame = ({
     <frame
       name="QuestButtonBaseTemplate"
       position={anchors}
+      visible={visible}
     >
       {children}
     </frame>
@@ -43,7 +46,11 @@ const defaultAnchors: Pos[] = [
 export const Tooltip = ({
   children,
   anchors = defaultAnchors,
+  visible = true,
 }: {
   children: JSX.Element;
   anchors?: Pos[];
-}) => <TooltipFrame anchors={anchors}>{children}</TooltipFrame>;
+  visible?: boolean;
+}) => (
+  <TooltipFrame anchors={anchors} visible={visible}>{children}</TooltipFrame>
+);

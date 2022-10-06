@@ -1,56 +1,88 @@
-import { createElement, useRef, useState } from "w3ts-jsx";
+import { createElement, useCallback, useForceUpdate, useState } from "w3ts-jsx";
+import { useItem } from "../../../items/equipping";
 import type { Item } from "../../../items/Item";
 import type { Hero } from "../../../units/Hero";
 import { repeat } from "../../../util/repeat";
 import { Tooltip } from "../../components/Tooltip";
 import { useRefState } from "../../hooks/useRefState";
+import { useUnitListener } from "../../hooks/useUnitListener";
 import { bottomRight, leftToRight, topDown, topLeft } from "../../util/pos";
 
+const genItemText = (item: Item) =>
+  [
+    item.name,
+    ...(item.effects?.map((effect) => {
+      switch (effect.type) {
+        case "restoreHealth":
+          return `Restores ${effect.amount} health on use`;
+        case "restoreMana":
+          return `Restores ${effect.amount} mana on use`;
+        case "skillBonus":
+          return `+${effect.levels} to ${effect.skill}`;
+        case "weaponDamageMultiplier":
+          return `+${effect.multipler * 100}% ${effect.type} damage`;
+      }
+    }).filter((v) => v !== undefined) ?? []),
+  ].join("|n");
+
 const ItemSlot = (
-  { item, index }: { item: Item | undefined; index: number },
+  { hero, item, index }: {
+    hero: Hero;
+    item: Item | undefined;
+    index: number;
+  },
 ) => {
-  const backdropRef = useRefState<framehandle | null>(null);
+  const containerRef = useRefState<framehandle | null>(null);
+  const forceUpdate = useForceUpdate();
+  const onClick = useCallback(() => {
+    if (!item) return;
+    useItem(item, hero);
+    forceUpdate(); // render decreased stack count
+  }, [item, hero]);
 
   return (
-    <backdrop
+    <button
+      inherits="IconButtonTemplate"
       position={index === 0
         ? topLeft({ y: -125.5, x: 14 })
         : index % 6 === 0
         ? topDown({ y: -2, x: -255 })
         : leftToRight({ x: 2 })}
       size={49}
-      texture={item?.image}
       alpha={item ? 255 : 0}
-      ref={backdropRef}
-      tooltip={
-        <Tooltip>
-          <text
-            text={item?.name}
-            position={backdropRef.current
-              ? {
-                point: FRAMEPOINT_RIGHT,
-                relative: backdropRef.current,
-                relativePoint: FRAMEPOINT_LEFT,
-                x: -32,
-              }
-              : null}
-          />
-        </Tooltip>
-      }
+      ref={containerRef}
+      tooltip={containerRef.current &&
+        (
+          <Tooltip visible={!!item}>
+            <text
+              text={item ? genItemText(item) : undefined}
+              position={{
+                point: FRAMEPOINT_TOPRIGHT,
+                relative: containerRef.current,
+                relativePoint: FRAMEPOINT_TOPLEFT,
+                x: -28,
+                y: -16,
+              }}
+            />
+          </Tooltip>
+        )}
+      onClick={onClick}
     >
+      <backdrop position="parent" texture={item?.image} />
       <text
         position={bottomRight({ x: -3, y: -3 })}
         text={item?.stacks?.toString() ?? ""}
       />
-    </backdrop>
+    </button>
   );
 };
 
 export const Inventory = (
   { hero, visible }: { hero: Hero; visible: boolean },
 ) => {
+  useUnitListener(hero, "inventory");
   const [offset, setOffset] = useState(0);
-  const mySlider = useRef<framehandle | null>(null);
+  // const mySlider = useRef<framehandle | null>(null);
 
   return (
     <container
@@ -62,10 +94,15 @@ export const Inventory = (
       {repeat(
         42,
         (index) => (
-          <ItemSlot item={hero.inventory[offset * 6 + index]} index={index} />
+          <ItemSlot
+            hero={hero}
+            item={hero.inventory[offset * 6 + index]}
+            index={index}
+          />
         ),
       )}
-      <slider
+      {
+        /* <slider
         position={bottomRight({ x: -10, y: 10 })}
         size={{ height: 360, width: 20 }}
         minMaxValue={{ min: 0, max: 1000 }}
@@ -75,7 +112,8 @@ export const Inventory = (
         onSliderChanged={() => {
           console.log(BlzFrameGetValue(mySlider!.current!));
         }}
-      />
+      /> */
+      }
     </container>
   );
 };

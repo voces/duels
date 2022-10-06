@@ -51,7 +51,7 @@ const advanceFromHeroSelection = () => {
 
     for (let i = 0; i < 6 * 4; i++) {
       hero.addItemToInventory({
-        name: "health-potion",
+        name: "Health Potion",
         slot: "potion",
         consumable: true,
         stacks: 1,
@@ -62,7 +62,7 @@ const advanceFromHeroSelection = () => {
 
     for (let i = 0; i < 6 * 4 + 1; i++) {
       hero.addItemToInventory({
-        name: "mana-potion",
+        name: "Mana Potion",
         slot: "potion",
         consumable: true,
         stacks: 1,

@@ -60,7 +60,19 @@ export const Character = ({
   hero: Hero;
   visible: boolean;
 }) => {
-  useUnitListener(hero);
+  useUnitListener(
+    hero,
+    "experience",
+    "stats",
+    "strength",
+    "weapon",
+    "dexterity",
+    "vitality",
+    "stamina",
+    "health",
+    "energy",
+    "mana",
+  );
   const primary = primaryCommands[hero.owner.id];
   const secondary = secondaryCommands[hero.owner.id];
   return (
