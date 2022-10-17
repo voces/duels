@@ -40,7 +40,7 @@ export class UnitEx {
   private _maxMana = new BonusField<number>(0);
   protected _level = 0;
   private _skills: Skill[] = [];
-  private _skillMap: Record<string, Skill> = {};
+  private _skillMap: Record<string, Skill | undefined> = {};
 
   private listeners: Record<string, Set<() => void> | undefined> = {};
   private lastHealthLoss = 0;
@@ -398,36 +398,55 @@ export class UnitEx {
   addSkill(skill: Skill): void {
     this._skills.push(skill);
     this._skillMap[skill.name] = skill;
-    registerCommand(
-      {
-        name: skill.name,
-        shortcuts: [{ mouse: "right" }],
-        damage: skill.damage,
-        fn: (playerId) => {
-          if (!skill.validate(playerId)) return false;
-          queueAction(playerId, {
-            perform: (done) => skill.onUse(playerId, done),
-            interruptable: false,
-          });
-          return true;
-        },
-      },
-      this.owner.id,
-    );
+    this.emitChange("skill");
+    // registerCommand(
+    //   {
+    //     name: skill.name,
+    //     shortcuts: [{ mouse: "right" }],
+    //     damage: skill.damage,
+    //     fn: (playerId) => {
+    //       if (!skill.validate(playerId)) return false;
+    //       queueAction(playerId, {
+    //         perform: (done) => skill.onUse(playerId, done),
+    //         interruptable: false,
+    //       });
+    //       return true;
+    //     },
+    //   },
+    //   this.owner.id,
+    // );
+  }
+
+  removeSkill(skill: Skill): void {
+    const index = this._skills.indexOf(skill);
+    if (index === -1) return;
+    this._skills.splice(index, 1);
+    this._skillMap[skill.name] = undefined;
+    this.emitChange("skill");
+  }
+
+  get skills(): readonly Skill[] {
+    return this._skills;
   }
 
   incSkillLevel(skillName: SkillName, levels?: number): void {
     const hasSkill = !!this._skillMap[skillName];
     if (!hasSkill) this.addSkill(skillMap[skillName]());
 
-    const skill = this._skillMap[skillName];
+    const skill = this._skillMap[skillName]!;
     skill.setLevel(skill.level + (levels ?? 1));
+
+    if (skill.level === 0) this.removeSkill(skill);
     // TODO: remove skill if it's now 0
   }
 
   faceTarget(target: Vector2): void {
     const angle = Rad2Deg(Vector2Ex.angleBetweenVectors(this, target));
     this.unit.facing = angle;
+  }
+
+  get level(): number {
+    return this._level;
   }
 
   public static fromHandle(unit: unit): UnitEx;
@@ -459,9 +478,5 @@ export class UnitEx {
     const u = GetTriggerUnit();
     if (!u) return null;
     return this.fromHandle(u);
-  }
-
-  get level(): number {
-    return this._level;
   }
 }

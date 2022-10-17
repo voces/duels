@@ -24,7 +24,7 @@ export const BottomBar = ({
     scale={0.8}
   >
     <HealthGlobe hero={hero} />
-    <SkillBar />
+    <SkillBar hero={hero} />
     <ManaGlobe hero={hero} />
     <Menu
       toggleAttributesVisibile={toggleAttributesVisibile}

@@ -1,32 +1,88 @@
-import { createElement } from "w3ts-jsx";
+import { createElement, useEffect, useState } from "w3ts-jsx";
+import { queueAction } from "../../../actions/queue";
+import { Hero } from "../../../units/Hero";
+import { useUnitListener } from "../../hooks/useUnitListener";
 import { bottomLeft, leftToRight } from "../../util/pos";
 import { SkillButton } from "./SkillButton";
+import { Skill } from "../../../skills/types";
 
-export const SkillBar = () => (
-  <container
-    position={leftToRight(undefined, "bottom")}
-    size={{ height: 114, width: 880 }}
-  >
-    <backdrop
-      position={bottomLeft({ y: 92 })}
-      size={{ height: 55, width: 880 }}
-      texture="assets/img2/XP_bar_full"
-    />
-    <backdrop
-      position="parent"
-      texture="assets/img2/skill_bar_01_NEED_TO_SHRINK"
-    />
-    <SkillButton first />
-    <SkillButton />
-    <SkillButton />
-    <SkillButton />
-    <SkillButton />
-    <SkillButton />
-    <SkillButton />
-    <SkillButton />
-    <SkillButton />
-  </container>
-);
+export const SkillBar = ({ hero }: { hero: Hero }) => {
+  useUnitListener(hero, "skill");
+  const [bindings, setBindings] = useState<
+    ({ skill?: Skill; fn: (playerId: number) => boolean } | undefined)[]
+  >(
+    [],
+  );
+
+  useEffect(() => {
+    let mutated = false;
+    const newBindings = [...bindings];
+
+    // Remove skills that no longer exist
+    for (let i = 0; i < 9; i++) {
+      const skill = newBindings[i]?.skill;
+      if (skill && !hero.skills.includes(skill)) {
+        newBindings[i] = undefined;
+        mutated = true;
+      }
+    }
+
+    // Add skills to empty bindings
+    let n = 0;
+    for (let i = 0; i < 9; i++) {
+      if (bindings[i]) continue;
+      for (; n < hero.skills.length; n++) {
+        const skill = hero.skills[n];
+        if (newBindings.some((b) => b?.skill === skill)) continue;
+        newBindings[i] = {
+          skill,
+          fn: (playerId: number) => {
+            if (!skill.validate(playerId)) return false;
+            queueAction(playerId, {
+              perform: (done) => skill.onUse(playerId, done),
+              interruptable: false,
+            });
+            return true;
+          },
+        };
+        mutated = true;
+        break;
+      }
+    }
+    if (mutated) setBindings(newBindings);
+  }, [hero.skills.map((s) => s.name).join("|")]);
+
+  return (
+    <container
+      position={leftToRight(undefined, "bottom")}
+      size={{ height: 114, width: 880 }}
+    >
+      <backdrop
+        position={bottomLeft({ y: 92 })}
+        size={{ height: 55, width: 880 }}
+        texture="assets/img2/XP_bar_full"
+      />
+      <backdrop
+        position="parent"
+        texture="assets/img2/skill_bar_01_NEED_TO_SHRINK"
+      />
+      <SkillButton
+        shortcut={[{ mouse: "left" }, { keyboard: "q" }]}
+        callback={bindings[0]?.fn}
+        icon={bindings[0]?.skill?.icon}
+        first
+      />
+      <SkillButton shortcut={[{ mouse: "right" }, { keyboard: "w" }]} />
+      <SkillButton shortcut={{ keyboard: "e" }} />
+      <SkillButton shortcut={{ keyboard: "r" }} />
+      <SkillButton shortcut={{ keyboard: "t" }} />
+      <SkillButton shortcut={{ keyboard: "a" }} />
+      <SkillButton shortcut={{ keyboard: "s" }} />
+      <SkillButton shortcut={{ keyboard: "d" }} />
+      <SkillButton shortcut={{ keyboard: "f" }} />
+    </container>
+  );
+};
 
 // const ExperienceBar = ({ hero }: { hero: Hero }) => {
 //   useUnitListener(hero);

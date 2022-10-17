@@ -62,22 +62,22 @@ const registerCommandForPlayer = (command: Command, playerId: number): void => {
 
   const normalizedCommand = normalizeCommand(command);
 
-  const conflicts = [];
-  for (const shortcut of normalizedCommand.shortcuts) {
-    for (const existingCommand of playerCommands) {
-      for (const existingShortcut of existingCommand.shortcuts) {
-        if (
-          (isShortcutSubset(shortcut, existingShortcut) ||
-            isShortcutSubset(existingShortcut, shortcut)) &&
-          normalizedCommand.priority === existingCommand.priority
-        ) {
-          conflicts.push(existingCommand);
-        }
-      }
-    }
-  }
+  // const conflicts = [];
+  // for (const shortcut of normalizedCommand.shortcuts) {
+  //   for (const existingCommand of playerCommands) {
+  //     for (const existingShortcut of existingCommand.shortcuts) {
+  //       if (
+  //         (isShortcutSubset(shortcut, existingShortcut) ||
+  //           isShortcutSubset(existingShortcut, shortcut)) &&
+  //         normalizedCommand.priority === existingCommand.priority
+  //       ) {
+  //         conflicts.push(existingCommand);
+  //       }
+  //     }
+  //   }
+  // }
 
-  setSubtract(playerCommands, conflicts);
+  // setSubtract(playerCommands, conflicts);
 
   const primaryShortcut = normalizedCommand.shortcuts.find(
     (s) =>
@@ -104,11 +104,46 @@ const registerCommandForPlayer = (command: Command, playerId: number): void => {
  */
 export const registerCommand = (command: Command, playerId?: number): void => {
   if (typeof playerId === "number") {
-    registerCommandForPlayer(command, playerId);
+    return registerCommandForPlayer(command, playerId);
   }
 
   for (let i = 0; i < bj_MAX_PLAYER_SLOTS; i++) {
     registerCommandForPlayer(command, i);
+  }
+};
+
+const unregisterCommandForPlayer = (
+  command: Pick<Command, "fn">,
+  playerId: number,
+) => {
+  const playerCommands = playersCommands[playerId];
+
+  for (let i = 0; i < playerCommands.length; i++) {
+    if (playerCommands[i].fn === command.fn) {
+      playerCommands.splice(i, 1);
+      i--;
+    }
+  }
+
+  if (primaryCommands[playerId]?.fn === command.fn) {
+    primaryCommands[playerId] = null;
+  }
+
+  if (secondaryCommands[playerId]?.fn === command.fn) {
+    secondaryCommands[playerId] = null;
+  }
+};
+
+export const unregisterCommand = (
+  command: Pick<Command, "fn">,
+  playerId?: number,
+): void => {
+  if (typeof playerId === "number") {
+    return unregisterCommandForPlayer(command, playerId);
+  }
+
+  for (let i = 0; i < bj_MAX_PLAYER_SLOTS; i++) {
+    unregisterCommandForPlayer(command, i);
   }
 };
 

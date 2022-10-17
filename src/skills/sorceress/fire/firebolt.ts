@@ -13,6 +13,7 @@ const Projectile = asyncRequire<
 
 export const fireboltSkill = (): Skill => ({
   name: "Firebolt",
+  icon: "ReplaceableTextures/CommandButtons/BTNFireBolt.blp",
   level: 0,
   damage: {
     min: { fire: 0 },
