@@ -7,26 +7,17 @@ interface PosObj {
   x?: number | undefined;
   y?: number | undefined;
 }
-
-const topLeftBase: Pos = {
+export const topLeft = (pos: Partial<PosObj> = {}): Pos => ({
   point: FRAMEPOINT_TOPLEFT,
   relative: "parent",
   relativePoint: FRAMEPOINT_TOPLEFT,
-};
-
-export const topLeft = (pos: Partial<PosObj> = {}): Pos => ({
-  ...topLeftBase,
   ...pos,
 });
 
-const topRightBase: Pos = {
+export const topRight = (pos: Partial<PosObj> = {}): Pos => ({
   point: FRAMEPOINT_TOPRIGHT,
   relative: "parent",
   relativePoint: FRAMEPOINT_TOPRIGHT,
-};
-
-export const topRight = (pos: Partial<PosObj> = {}): Pos => ({
-  ...topRightBase,
   ...pos,
 });
 
@@ -34,6 +25,13 @@ export const top = (pos: Partial<PosObj> = {}): Pos => ({
   point: FRAMEPOINT_TOP,
   relative: "parent",
   relativePoint: FRAMEPOINT_TOP,
+  ...pos,
+});
+
+export const right = (pos: Partial<PosObj> = {}): Pos => ({
+  point: FRAMEPOINT_RIGHT,
+  relative: "parent",
+  relativePoint: FRAMEPOINT_RIGHT,
   ...pos,
 });
 

@@ -3,27 +3,19 @@ import { useItem } from "../../../items/equipping";
 import type { Item } from "../../../items/Item";
 import type { Hero } from "../../../units/Hero";
 import { repeat } from "../../../util/repeat";
+import { SmallText } from "../../components/Text";
 import { Tooltip } from "../../components/Tooltip";
 import { useRefState } from "../../hooks/useRefState";
 import { useUnitListener } from "../../hooks/useUnitListener";
-import { bottomRight, leftToRight, topDown, topLeft } from "../../util/pos";
-
-const genItemText = (item: Item) =>
-  [
-    item.name,
-    ...(item.effects?.map((effect) => {
-      switch (effect.type) {
-        case "restoreHealth":
-          return `Restores ${effect.amount} health on use`;
-        case "restoreMana":
-          return `Restores ${effect.amount} mana on use`;
-        case "skillBonus":
-          return `+${effect.levels} to ${effect.skill}`;
-        case "weaponDamageMultiplier":
-          return `+${effect.multipler * 100}% ${effect.type} damage`;
-      }
-    }).filter((v) => v !== undefined) ?? []),
-  ].join("|n");
+import { genItemText } from "../../util/genItemText";
+import {
+  bottomRight,
+  leftToRight,
+  rightToLeft,
+  top,
+  topDown,
+  topLeft,
+} from "../../util/pos";
 
 const ItemSlot = (
   { hero, item, index }: {
@@ -34,21 +26,23 @@ const ItemSlot = (
 ) => {
   const containerRef = useRefState<framehandle | null>(null);
   const forceUpdate = useForceUpdate();
+
   const onClick = useCallback(() => {
     if (!item) return;
-    useItem(item, hero);
-    forceUpdate(); // render decreased stack count
+    const used = useItem(item, hero);
+    if (!used) hero.equip(item);
+    if (item.consumable) forceUpdate(); // render decreased stack count
   }, [item, hero]);
 
   return (
     <button
       inherits="IconButtonTemplate"
       position={index === 0
-        ? topLeft({ y: -125.5, x: 14 })
+        ? topLeft({ y: -108, x: 13 })
         : index % 6 === 0
-        ? topDown({ y: -2, x: -255 })
+        ? topDown({ y: -2, x: -217.5 })
         : leftToRight({ x: 2 })}
-      size={49}
+      size={41.5}
       alpha={item ? 255 : 0}
       ref={containerRef}
       tooltip={containerRef.current &&
@@ -56,21 +50,19 @@ const ItemSlot = (
           <Tooltip visible={!!item}>
             <text
               text={item ? genItemText(item) : undefined}
-              position={{
-                point: FRAMEPOINT_TOPRIGHT,
+              position={rightToLeft({
                 relative: containerRef.current,
-                relativePoint: FRAMEPOINT_TOPLEFT,
                 x: -28,
                 y: -16,
-              }}
+              })}
             />
           </Tooltip>
         )}
       onClick={onClick}
     >
       <backdrop position="parent" texture={item?.image} />
-      <text
-        position={bottomRight({ x: -3, y: -3 })}
+      <SmallText
+        position={bottomRight()}
         text={item?.stacks?.toString() ?? ""}
       />
     </button>
@@ -86,11 +78,12 @@ export const Inventory = (
 
   return (
     <container
-      size={{ width: 350, height: 496 }}
-      absPosition={{ point: FRAMEPOINT_TOPRIGHT, x: 1600, y: 1200 - 350 }}
+      size={{ width: 300, height: 425 }}
+      absPosition={{ point: FRAMEPOINT_TOPRIGHT, x: 1600 - 64, y: 1200 - 544 }}
       visible={visible}
     >
       <backdrop texture="assets/img2/inventory" position="parent" />
+      <text text="Inventory" position={top({ y: -82 })} />
       {repeat(
         42,
         (index) => (

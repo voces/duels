@@ -7,11 +7,13 @@ import { useGlobalState } from "./hooks/useGlobalState";
 import { BottomBar } from "./windows/BottomBar";
 import { Character } from "./windows/Character";
 import { EnemyStatus } from "./windows/EnemyStatus";
+import { Equipment } from "./windows/Equipment/index";
 import { Inventory } from "./windows/Inventory";
 
 export const App = () => {
   const state = useGlobalState();
   const [characterVisible, setCharacterVisible] = useState(false);
+  const [equipmentVisible, setEquipmentVisible] = useState(true);
   const [inventoryVisible, setInventoryVisible] = useState(true);
 
   useEffect(() => {
@@ -58,6 +60,10 @@ export const App = () => {
           />
           {/* <Statuses hero={state.heroes[MapPlayer.fromLocal().id]} /> */}
           <EnemyStatus />
+          <Equipment
+            hero={state.heroes[MapPlayer.fromLocal().id]}
+            visible={equipmentVisible}
+          />
           <Inventory
             hero={state.heroes[MapPlayer.fromLocal().id]}
             visible={inventoryVisible}

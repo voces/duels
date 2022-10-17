@@ -2,7 +2,14 @@ import * as w3api from "w3api";
 
 import "w3api/dist/lua/polyfill";
 
-w3api.ui.setAdapter({ urlRewriter: (url) => `url(${url}.png)` });
+w3api.ui.setAdapter({
+  urlRewriter: (url) =>
+    url
+      ? url.endsWith(".blp") || url.endsWith(".dds")
+        ? `url(https://dds-to-png.deno.dev?path=https://www.hiveworkshop.com/casc-contents?path=${url})`
+        : `url(${url}.png)`
+      : url,
+});
 
 w3api.initUI();
 

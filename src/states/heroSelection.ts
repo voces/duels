@@ -55,7 +55,7 @@ const advanceFromHeroSelection = () => {
         slot: "potion",
         consumable: true,
         stacks: 1,
-        image: "assets/img2/health-potion",
+        image: "ReplaceableTextures/CommandButtons/BTNPotionRed.blp",
         effects: [buildRestoreHealth({ amount: 50 })],
       });
     }
@@ -66,7 +66,7 @@ const advanceFromHeroSelection = () => {
         slot: "potion",
         consumable: true,
         stacks: 1,
-        image: "assets/img2/mana-potion",
+        image: "ReplaceableTextures/CommandButtons/BTNPotionBlue.blp",
         effects: [buildRestoreMana({ amount: 30 })],
       });
     }

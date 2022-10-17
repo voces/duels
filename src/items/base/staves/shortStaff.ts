@@ -4,7 +4,7 @@ import { Item } from "../../Item";
 export const buildShortStaff = (overrides?: Partial<Item>): Item => ({
   name: "Short Staff",
   slot: "hands",
-  image: "assets/img2/staff",
+  image: "ReplaceableTextures/CommandButtons/BTNStaffOfSanctuary.blp",
   durability: 20,
   sockets: 2,
   attackSpeed: 0.9,

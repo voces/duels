@@ -12,11 +12,16 @@ export const unequipItem = (item: Item, hero: Hero): void => {
   item.affixes?.forEach((affix) => unapplyEffect(affix.effect, hero));
 };
 
-export const useItem = (item: Item, hero: Hero): void => {
-  item.effects?.forEach((effect) => useEffect(effect, hero));
-  item.affixes?.forEach((affix) => useEffect(affix.effect, hero));
+export const useItem = (item: Item, hero: Hero): boolean => {
+  const used = [
+    ...(item.effects?.map((effect) => useEffect(effect, hero)) ?? []),
+    ...(item.affixes?.map((affix) => useEffect(affix.effect, hero)) ?? []),
+  ];
+
   if (item.consumable) {
     if (!item.stacks || item.stacks === 1) hero.removeItemFromInventory(item);
     else item.stacks--;
   }
+
+  return used.some((v) => v);
 };

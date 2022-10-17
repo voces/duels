@@ -46,15 +46,23 @@ export const experienceToLevel = (experience: number): number => {
 };
 
 interface Items {
-  leftHand?: Item;
-  rightHand?: Item;
+  mainHand?: Item;
+  offHand?: Item;
+  head?: Item;
+  boots?: Item;
+  armor?: Item;
+  belt?: Item;
+  amulet?: Item;
+  mainRing?: Item;
+  offRing?: Item;
+  gloves?: Item;
   // TODO: maybe use Set instead?
   inventory: Item[];
 }
 
 type UnitItemSlot = Exclude<keyof Items, "inventory">;
 
-const unitItemSlots: UnitItemSlot[] = ["leftHand", "rightHand"];
+const unitItemSlots: UnitItemSlot[] = ["mainHand", "offHand", "head"];
 
 export class Hero extends UnitEx {
   private _strength = new BonusField<number>(0);
@@ -332,6 +340,9 @@ export class Hero extends UnitEx {
 
     this.items[equippedSlot] = undefined;
     unequipItem(item, this);
+
+    this.emitChange("equipment", `equipment-${equippedSlot}`);
+
     return true;
   }
 
@@ -339,9 +350,9 @@ export class Hero extends UnitEx {
     if (item.slot === "potion") return false;
 
     const unequipSlots: UnitItemSlot[] = item.slot === "hands"
-      ? ["leftHand", "rightHand"]
+      ? ["mainHand", "offHand"]
       : [item.slot];
-    const equipSlot = item.slot === "hands" ? "leftHand" : item.slot;
+    const equipSlot = item.slot === "hands" ? "mainHand" : item.slot;
 
     // Don't check if it succeeds, as we can equip directly
     this.removeItemFromInventory(item);
@@ -354,10 +365,17 @@ export class Hero extends UnitEx {
 
     this.items[equipSlot] = item;
     equipItem(item, this);
+
+    this.emitChange("equipment", `equipment-${equipSlot}`);
+
     return true;
   }
 
   get inventory(): ReadonlyArray<Item> {
     return this.items.inventory;
+  }
+
+  get equipment(): Readonly<Omit<Items, "inventory">> {
+    return this.items;
   }
 }

@@ -110,9 +110,18 @@ export class UnitEx {
     return IsUnitAlly(this.unit.handle, whichPlayer.handle);
   }
 
-  protected emitChange(key: string): void {
-    const callbacks = this.listeners[key];
-    if (callbacks) for (const callback of callbacks) callback();
+  protected emitChange(...keys: string[]): void {
+    const called = new Set<() => void>();
+
+    for (const key of keys) {
+      const callbacks = this.listeners[key];
+      if (callbacks) {
+        for (const callback of callbacks) {
+          called.add(callback);
+          callback();
+        }
+      }
+    }
   }
 
   addEventListener(key: string, fn: () => void): void {
@@ -413,6 +422,7 @@ export class UnitEx {
 
     const skill = this._skillMap[skillName];
     skill.setLevel(skill.level + (levels ?? 1));
+    // TODO: remove skill if it's now 0
   }
 
   faceTarget(target: Vector2): void {

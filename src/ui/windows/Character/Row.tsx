@@ -1,14 +1,15 @@
 import { createElement } from "w3ts-jsx";
+import { SmallText } from "../../components/Text";
 import { Tooltip } from "../../components/Tooltip";
 import { useRefState } from "../../hooks/useRefState";
 import {
   bottomRight,
   leftToRight,
+  right,
   topDown,
   topLeft,
   topRight,
 } from "../../util/pos";
-import { WIDTH } from "./shared";
 
 export const Row = ({
   name,
@@ -33,8 +34,8 @@ export const Row = ({
   const containerRef = useRefState<framehandle | null>(null);
   return (
     <container
-      position={first ? topLeft() : topDown({ y: header || gap ? -8 : 0 })}
-      size={{ width: WIDTH, height: header ? 44 : 20 }}
+      position={first ? topLeft() : topDown({ y: gap ? -8 : header ? -3 : 0 })}
+      size={{ width: 240, height: header ? 34 : 20 }}
       visible={visible}
       ref={containerRef}
     >
@@ -42,39 +43,41 @@ export const Row = ({
         <backdrop
           texture="assets/img2/red_gradient"
           position={[
-            topLeft({ x: -16, y: -2 }),
-            bottomRight({ x: -48, y: 6 }),
+            topLeft({ x: -8, y: -2 }),
+            bottomRight({ x: -24, y: 2 }),
           ]}
           alpha={200}
         />
       )}
-      <text text={name} position={topLeft({ y: header ? -10 : 0 })} />
-      <button
-        size={20}
-        position={leftToRight({ x: 4 })}
-        onClick={onIncrement}
-        visible={canIncrement}
-        ref={buttonRef}
-        tooltip={containerRef.current && (
-          <Tooltip>
-            <text
-              text={`Increase ${name.toLowerCase()}`}
-              position={{
-                point: FRAMEPOINT_LEFT,
-                relative: containerRef.current,
-                relativePoint: FRAMEPOINT_RIGHT,
-                x: 64,
-              }}
-            />
-          </Tooltip>
-        )}
-      >
-        <backdrop
-          position="parent"
-          texture="ReplaceableTextures/PassiveButtons/PASBTNStatUp"
-        />
-      </button>
-      <text text={value} position={topRight({ y: header ? -10 : 0 })} />
+      <SmallText text={name} position={topLeft({ y: header ? -10 : 0 })} />
+      {header && (
+        <button
+          size={16}
+          position={leftToRight({ x: 4 })}
+          onClick={onIncrement}
+          visible={canIncrement}
+          ref={buttonRef}
+          tooltip={containerRef.current && (
+            <Tooltip>
+              <text
+                text={`Increase ${name.toLowerCase()}`}
+                position={{
+                  point: FRAMEPOINT_LEFT,
+                  relative: containerRef.current,
+                  relativePoint: FRAMEPOINT_RIGHT,
+                  x: 64,
+                }}
+              />
+            </Tooltip>
+          )}
+        >
+          <backdrop
+            position="parent"
+            texture="ReplaceableTextures/PassiveButtons/PASBTNStatUp.blp"
+          />
+        </button>
+      )}
+      <SmallText text={value} position={topRight({ y: header ? -10 : 0 })} />
     </container>
   );
 };

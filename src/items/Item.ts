@@ -2,7 +2,19 @@ import { Effect } from "../effects/types";
 import { Affix } from "./affixes/types";
 
 export type Item = {
-  slot: "hands" | "leftHand" | "rightHand" | "potion";
+  slot:
+    | "hands"
+    | "mainHand"
+    | "offHand"
+    | "potion"
+    | "head"
+    | "boots"
+    | "armor"
+    | "belt"
+    | "amulet"
+    | "mainRing"
+    | "offRing"
+    | "gloves";
   name: string;
   image: string;
   consumable?: boolean;
