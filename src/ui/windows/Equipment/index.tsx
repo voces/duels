@@ -47,7 +47,7 @@ const EquipmentSlot = (
               position={rightToLeft({
                 relative: containerRef.current,
                 x: -28,
-                y: -16,
+                y: -4,
               })}
             />
           </Tooltip>

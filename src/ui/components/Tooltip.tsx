@@ -17,7 +17,7 @@ const TooltipFrame = ({
 
   return (
     <frame
-      name="QuestButtonBaseTemplate"
+      name="TooltipTemplate"
       position={anchors}
       visible={visible}
     >
@@ -31,15 +31,15 @@ const defaultAnchors: Pos[] = [
     point: FRAMEPOINT_TOPLEFT,
     relative: "children",
     relativePoint: FRAMEPOINT_TOPLEFT,
-    x: -24,
-    y: 24,
+    x: -12,
+    y: 12,
   },
   {
     point: FRAMEPOINT_BOTTOMRIGHT,
     relative: "children",
     relativePoint: FRAMEPOINT_BOTTOMRIGHT,
-    x: 24,
-    y: -24,
+    x: 12,
+    y: -12,
   },
 ];
 

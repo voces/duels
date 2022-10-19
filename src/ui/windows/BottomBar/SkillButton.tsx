@@ -4,16 +4,21 @@ import {
   unregisterCommand,
 } from "../../../input/commands/registry";
 import { Shortcut } from "../../../input/commands/types";
-import { parent } from "../../util/pos";
+import { Tooltip } from "../../components/Tooltip";
+import { useRefState } from "../../hooks/useRefState";
+import { above, parent } from "../../util/pos";
 
 export const SkillButton = (
-  { first, shortcut, callback, icon }: {
+  { first, shortcut, callback, icon, description }: {
     first?: boolean;
     shortcut?: Shortcut | Shortcut[];
     callback?: (playerId: number) => boolean;
     icon?: string;
+    description?: string;
   },
 ) => {
+  const buttonRef = useRefState<framehandle | null>(null);
+
   useEffect(() => {
     if (
       !shortcut || !callback ||
@@ -47,6 +52,16 @@ export const SkillButton = (
         }}
       size={96}
       onClick={() => callback?.(GetPlayerId(GetLocalPlayer()!))}
+      ref={buttonRef}
+      tooltip={buttonRef.current &&
+        (
+          <Tooltip visible={!!icon && !!description}>
+            <text
+              text={description}
+              position={above({ relative: buttonRef.current, y: 48 })}
+            />
+          </Tooltip>
+        )}
     >
       <backdrop
         position={parent({ padding: 2 })}

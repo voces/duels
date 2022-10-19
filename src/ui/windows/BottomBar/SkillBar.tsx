@@ -70,6 +70,7 @@ export const SkillBar = ({ hero }: { hero: Hero }) => {
         shortcut={[{ mouse: "left" }, { keyboard: "q" }]}
         callback={bindings[0]?.fn}
         icon={bindings[0]?.skill?.icon}
+        description="foobar"
         first
       />
       <SkillButton shortcut={[{ mouse: "right" }, { keyboard: "w" }]} />

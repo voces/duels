@@ -57,15 +57,15 @@ export const Row = ({
           onClick={onIncrement}
           visible={canIncrement}
           ref={buttonRef}
-          tooltip={containerRef.current && (
+          tooltip={buttonRef.current && (
             <Tooltip>
               <text
                 text={`Increase ${name.toLowerCase()}`}
                 position={{
                   point: FRAMEPOINT_LEFT,
-                  relative: containerRef.current,
+                  relative: buttonRef.current,
                   relativePoint: FRAMEPOINT_RIGHT,
-                  x: 64,
+                  x: 32,
                 }}
               />
             </Tooltip>
