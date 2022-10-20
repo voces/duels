@@ -1,4 +1,6 @@
+import { Command } from "./input/commands/types";
 import { BonusField } from "./units/heroTypes";
+import { colorize } from "./util/colorize";
 
 export type Damage = {
   physical?: number;
@@ -61,3 +63,35 @@ export const withDamageSystemOff = (fn: () => void): void => {
 };
 
 export const isDamageSystemOn = (): boolean => damageSystemOn;
+
+export const damageRangeToString = (
+  damage: Command["damage"],
+  color = true,
+) => {
+  if (!damage) return "";
+  if (typeof damage === "function") damage = damage(0);
+  if (!damage) return "";
+
+  let minSum = 0;
+  let maxSum = 0;
+  let mainDamageType: DamageType = "physical";
+  let mainDamageAmount = 0;
+
+  for (const damageType of damageTypes) {
+    const minDamage = damage.min[damageType];
+    if (minDamage) minSum += minDamage;
+
+    const maxDamage = damage.max[damageType];
+    if (maxDamage) {
+      maxSum += maxDamage;
+      if (maxDamage > mainDamageAmount) {
+        mainDamageType = damageType;
+        mainDamageAmount = maxDamage;
+      }
+    }
+  }
+
+  const range = `${minSum}-${maxSum}`;
+
+  return color ? colorize[mainDamageType](range) : range;
+};

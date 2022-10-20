@@ -30,6 +30,8 @@ export type KeyboardShortcut =
   | "y"
   | "z";
 
+// TODO: There's no real need to seperate these; should also support targets,
+// such as "target", "enemy", "ally"
 export interface Shortcut {
   mouse?: MouseShortcut | MouseShortcut[];
   keyboard?: KeyboardShortcut | KeyboardShortcut[];

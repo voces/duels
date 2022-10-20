@@ -1,9 +1,9 @@
-import type { SkillName } from "../skills/map";
+import type { SkillId } from "../skills/map";
 import type { EffectHook } from "./types";
 
 export interface SkillBonusEffect {
   type: "skillBonus";
-  skill: SkillName;
+  skill: SkillId;
   levels: number;
 }
 

@@ -1,4 +1,5 @@
 import { Effect, MapPlayer } from "@voces/w3ts";
+import { compact } from "basic-pragma/dist/utils/arrays";
 
 import type { Damage } from "../damage";
 import { equipItem, unequipItem } from "../items/equipping";
@@ -358,9 +359,8 @@ export class Hero extends UnitEx {
     this.removeItemFromInventory(item);
 
     // Unequip slots (and move to inventory)
-    unequipSlots
-      .map((s) => this.items[s])
-      .filter((v: Item | undefined): v is Item => !!v)
+    compact(unequipSlots
+      .map((s) => this.items[s]))
       .forEach((item) => this.unequip(item));
 
     this.items[equipSlot] = item;

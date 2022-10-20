@@ -1,5 +1,5 @@
 import { createElement } from "w3ts-jsx";
-import { DamageType, damageTypes } from "../../../damage";
+import { damageRangeToString, DamageType, damageTypes } from "../../../damage";
 import {
   primaryCommands,
   secondaryCommands,
@@ -23,33 +23,6 @@ const incStat = (
   if (hero.unasignedStatPoints <= 0) return;
   hero.unasignedStatPoints--;
   hero[`base${capitalize(stat)}`]++;
-};
-
-const damageRangeToString = (damage: Command["damage"]) => {
-  if (!damage) return "";
-  if (typeof damage === "function") damage = damage(0);
-  if (!damage) return "";
-
-  let minSum = 0;
-  let maxSum = 0;
-  let mainDamageType: DamageType = "physical";
-  let mainDamageAmount = 0;
-
-  for (const damageType of damageTypes) {
-    const minDamage = damage.min[damageType];
-    if (minDamage) minSum += minDamage;
-
-    const maxDamage = damage.max[damageType];
-    if (maxDamage) {
-      maxSum += maxDamage;
-      if (maxDamage > mainDamageAmount) {
-        mainDamageType = damageType;
-        mainDamageAmount = maxDamage;
-      }
-    }
-  }
-
-  return colorize[mainDamageType](`${minSum}-${maxSum}`);
 };
 
 export const Character = ({

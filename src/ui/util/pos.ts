@@ -42,10 +42,14 @@ export const bottomLeft = (pos: Partial<PosObj> = {}): Pos => ({
   ...pos,
 });
 
-export const bottomRight = (pos: Partial<PosObj> = {}): Pos => ({
+export const bottomRight = (
+  { padding, ...pos }: Partial<PosObj> & { padding?: number } = {},
+): Pos => ({
   point: FRAMEPOINT_BOTTOMRIGHT,
   relative: "parent",
   relativePoint: FRAMEPOINT_BOTTOMRIGHT,
+  x: padding ? -padding : undefined,
+  y: padding,
   ...pos,
 });
 

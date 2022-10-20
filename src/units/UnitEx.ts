@@ -1,10 +1,8 @@
 import { getElapsedTime, MapPlayer, TextTag, Unit } from "@voces/w3ts";
 
-import { queueAction } from "../actions/queue";
 import type { Damage, DamageType, Weapon, WeaponInput } from "../damage";
 import { damageTypes, randomDamage, withDamageSystemOff } from "../damage";
-import { registerCommand } from "../input/commands/registry";
-import type { SkillName } from "../skills/map";
+import type { SkillId } from "../skills/map";
 import { skillMap } from "../skills/map";
 import type { Skill } from "../skills/types";
 import { dummyGroup } from "../util";
@@ -397,7 +395,7 @@ export class UnitEx {
 
   addSkill(skill: Skill): void {
     this._skills.push(skill);
-    this._skillMap[skill.name] = skill;
+    this._skillMap[skill.id] = skill;
     this.emitChange("skill");
     // registerCommand(
     //   {
@@ -421,7 +419,7 @@ export class UnitEx {
     const index = this._skills.indexOf(skill);
     if (index === -1) return;
     this._skills.splice(index, 1);
-    this._skillMap[skill.name] = undefined;
+    this._skillMap[skill.id] = undefined;
     this.emitChange("skill");
   }
 
@@ -429,11 +427,11 @@ export class UnitEx {
     return this._skills;
   }
 
-  incSkillLevel(skillName: SkillName, levels?: number): void {
-    const hasSkill = !!this._skillMap[skillName];
-    if (!hasSkill) this.addSkill(skillMap[skillName]());
+  incSkillLevel(skillId: SkillId, levels?: number): void {
+    const hasSkill = !!this._skillMap[skillId];
+    if (!hasSkill) this.addSkill(skillMap[skillId]());
 
-    const skill = this._skillMap[skillName]!;
+    const skill = this._skillMap[skillId]!;
     skill.setLevel(skill.level + (levels ?? 1));
 
     if (skill.level === 0) this.removeSkill(skill);

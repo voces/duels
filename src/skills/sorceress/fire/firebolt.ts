@@ -1,5 +1,5 @@
 import { isInTown } from "../../../areas/town2";
-import { randomDamage } from "../../../damage";
+import { damageRangeToString, randomDamage } from "../../../damage";
 import { mice } from "../../../input/data";
 import { state } from "../../../states/state";
 import { startTimeout } from "../../../util";
@@ -11,8 +11,21 @@ const Projectile = asyncRequire<
   typeof import("../../../systems/Projectile")
 >("systems.Projectile");
 
+const getDescription = (skill: Skill | undefined) =>
+  [
+    "Fire Bolt",
+    "",
+    "Creates a magical flaming missile",
+    "",
+    `Current Skill Level: ${skill?.level}`,
+    `Mana Cost: ${3}`,
+    `Fire Damage: ${damageRangeToString(skill?.damage, false)}`,
+  ].join("|n");
+
 export const fireboltSkill = (): Skill => ({
-  name: "Firebolt",
+  id: "firebolt",
+  name: "Fire Bolt",
+  description: getDescription(undefined),
   icon: "ReplaceableTextures/CommandButtons/BTNFireBolt.blp",
   level: 0,
   damage: {
@@ -31,6 +44,7 @@ export const fireboltSkill = (): Skill => ({
         0.834 * this.level +
         0.0898 * this.level ** 2,
     );
+    this.description = getDescription(this);
   },
   validate: (playerId) => {
     if (!("heroes" in state)) return false;

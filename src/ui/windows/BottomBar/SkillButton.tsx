@@ -1,3 +1,4 @@
+import { compact } from "basic-pragma/dist/utils/arrays";
 import { createElement, useEffect, useRef } from "w3ts-jsx";
 import {
   registerCommand,
@@ -6,15 +7,24 @@ import {
 import { Shortcut } from "../../../input/commands/types";
 import { Tooltip } from "../../components/Tooltip";
 import { useRefState } from "../../hooks/useRefState";
-import { above, parent } from "../../util/pos";
+import { above, bottomRight, parent } from "../../util/pos";
+
+const shortcutText = (shortcut?: Shortcut | Shortcut[]) => {
+  const mainShortcut = Array.isArray(shortcut) ? shortcut[0] : shortcut;
+  if (!mainShortcut) return;
+
+  return compact(compact([mainShortcut.mouse, mainShortcut.keyboard]).flat())
+    .join("").toUpperCase();
+};
 
 export const SkillButton = (
-  { first, shortcut, callback, icon, description }: {
+  { first, shortcut, callback, icon, description, name }: {
     first?: boolean;
     shortcut?: Shortcut | Shortcut[];
     callback?: (playerId: number) => boolean;
     icon?: string;
     description?: string;
+    name?: string;
   },
 ) => {
   const buttonRef = useRefState<framehandle | null>(null);
@@ -26,9 +36,10 @@ export const SkillButton = (
     ) return;
 
     registerCommand({
-      name: "Skill",
+      name: name ?? "SkillButton",
       fn: callback,
       shortcuts: Array.isArray(shortcut) ? shortcut : [shortcut],
+      priority: 4,
     });
 
     return () => unregisterCommand({ fn: callback });
@@ -58,7 +69,7 @@ export const SkillButton = (
           <Tooltip visible={!!icon && !!description}>
             <text
               text={description}
-              position={above({ relative: buttonRef.current, y: 48 })}
+              position={above({ relative: buttonRef.current, y: 64 })}
             />
           </Tooltip>
         )}
@@ -71,6 +82,10 @@ export const SkillButton = (
       <backdrop
         position="parent"
         texture="assets/img2/Icon_frame2v"
+      />
+      <text
+        position={bottomRight({ padding: 8 })}
+        text={shortcutText(shortcut)}
       />
     </gluebutton>
   );
