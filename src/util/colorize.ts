@@ -7,6 +7,8 @@ export const colors = {
   poison: "08C106",
   holy: "FF00FF",
 
+  hotkey: "FFD700",
+
   error: "ff0303",
 
   string: "ce915b",

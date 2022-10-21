@@ -16,34 +16,6 @@ export const App = () => {
   const [equipmentVisible, setEquipmentVisible] = useState(true);
   const [inventoryVisible, setInventoryVisible] = useState(true);
 
-  useEffect(() => {
-    registerCommand({
-      name: "Toggle character",
-      shortcuts: [{ keyboard: "o" }],
-      // More than move, allowing toggling while running
-      priority: 2,
-      fn: (playerId) => {
-        if (playerId === MapPlayer.fromLocal().id) {
-          setCharacterVisible((v) => !v);
-        }
-        return true;
-      },
-    });
-
-    registerCommand({
-      name: "Toggle inventory",
-      shortcuts: [{ keyboard: "i" }],
-      // More than move, allowing toggling while running
-      priority: 2,
-      fn: (playerId) => {
-        if (playerId === MapPlayer.fromLocal().id) {
-          setInventoryVisible((v) => !v);
-        }
-        return true;
-      },
-    });
-  });
-
   return (
     <>
       {state.state === "hero-selection" && <HeroSelection />}

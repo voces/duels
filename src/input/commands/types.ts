@@ -57,7 +57,7 @@ export interface Command<> {
    * after one returns true.
    */
   priority?: number;
-  shortcuts?: Shortcut[];
+  shortcuts?: Shortcut | Shortcut[];
   damage?:
     | { min: Damage; max: Damage }
     | ((playerId: number) => { min: Damage; max: Damage } | undefined);

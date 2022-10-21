@@ -18,12 +18,14 @@ export const Menu = ({
       icon="assets/img2/Player_eq_icon_r"
       tooltip="Character"
       onClick={toggleAttributesVisibile}
+      shortcut="o"
       first
     />
     <ButtonIcon
       icon="assets/img2/Bag2_eq_icon_r"
       tooltip="Inventory"
       onClick={toggleInventoryVisible}
+      shortcut="i"
     />
   </container>
 );

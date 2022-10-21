@@ -28,9 +28,10 @@ const normalizeShortcut = (shortcut: Shortcut): ShortcutInternal => ({
 
 const normalizeCommand = (command: Command): CommandInternal => {
   command.priority = command.priority ?? 0;
-  command.shortcuts = (command.shortcuts ?? []).map((s) =>
-    normalizeShortcut(s)
-  );
+  command.shortcuts =
+    (Array.isArray(command.shortcuts) ? command.shortcuts : [command.shortcuts])
+      .filter(<T>(s: T | undefined): s is T => !!s)
+      .map((s) => normalizeShortcut(s));
   return command as CommandInternal;
 };
 

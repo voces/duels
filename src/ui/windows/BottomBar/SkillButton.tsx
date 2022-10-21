@@ -1,11 +1,9 @@
 import { compact } from "basic-pragma/dist/utils/arrays";
-import { createElement, useEffect, useRef } from "w3ts-jsx";
-import {
-  registerCommand,
-  unregisterCommand,
-} from "../../../input/commands/registry";
+import { createElement } from "w3ts-jsx";
 import { Shortcut } from "../../../input/commands/types";
+import { colorize } from "../../../util/colorize";
 import { Tooltip } from "../../components/Tooltip";
+import { useShortcut } from "../../hooks/useCommand";
 import { useRefState } from "../../hooks/useRefState";
 import { above, bottomRight, parent } from "../../util/pos";
 
@@ -13,8 +11,10 @@ const shortcutText = (shortcut?: Shortcut | Shortcut[]) => {
   const mainShortcut = Array.isArray(shortcut) ? shortcut[0] : shortcut;
   if (!mainShortcut) return;
 
-  return compact(compact([mainShortcut.mouse, mainShortcut.keyboard]).flat())
-    .join("").toUpperCase();
+  return colorize.hotkey(
+    compact(compact([mainShortcut.mouse, mainShortcut.keyboard]).flat())
+      .join("").toUpperCase(),
+  );
 };
 
 export const SkillButton = (
@@ -29,21 +29,7 @@ export const SkillButton = (
 ) => {
   const buttonRef = useRefState<framehandle | null>(null);
 
-  useEffect(() => {
-    if (
-      !shortcut || !callback ||
-      (Array.isArray(shortcut) && shortcut.length === 0)
-    ) return;
-
-    registerCommand({
-      name: name ?? "SkillButton",
-      fn: callback,
-      shortcuts: Array.isArray(shortcut) ? shortcut : [shortcut],
-      priority: 4,
-    });
-
-    return () => unregisterCommand({ fn: callback });
-  }, [shortcut, callback]);
+  useShortcut({ name, fn: callback, shortcut, priority: 4 });
 
   return (
     <gluebutton
