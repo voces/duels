@@ -35,8 +35,6 @@ Object.assign(globalThis, w3api.api, {
 
 w3api.getGame().localPlayerId = 0;
 
-console.log(w3api.ui.getGlobalScale());
-
 export const tick = () => {
   w3api.getGame().tick();
 };

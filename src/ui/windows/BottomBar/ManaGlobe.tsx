@@ -1,10 +1,11 @@
 import { createElement } from "w3ts-jsx";
-import { Hero } from "../../../units/Hero";
-import { useUnitListener } from "../../hooks/useUnitListener";
+import { useHero } from "../../hooks/useHero";
 import { above, bottomLeft, center, leftToRight } from "../../util/pos";
 
-export const ManaGlobe = ({ hero }: { hero: Hero }) => {
-  useUnitListener(hero, "mana");
+export const ManaGlobe = () => {
+  const hero = useHero("mana");
+
+  if (!hero) return null;
 
   return (
     <container

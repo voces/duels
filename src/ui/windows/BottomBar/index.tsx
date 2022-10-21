@@ -1,23 +1,10 @@
 import { createElement } from "w3ts-jsx";
-import { Hero } from "../../../units/Hero";
 import { HealthGlobe } from "./HealthGlobe";
 import { ManaGlobe } from "./ManaGlobe";
 import { Menu } from "./Menu";
 import { SkillBar } from "./SkillBar";
 
-export const BottomBar = ({
-  toggleAttributesVisibile,
-  toggleInventoryVisible,
-  toggleEquipmentVisible,
-  toggleSkillTreeVisible,
-  hero,
-}: {
-  toggleAttributesVisibile: () => void;
-  toggleInventoryVisible: () => void;
-  toggleEquipmentVisible: () => void;
-  toggleSkillTreeVisible: () => void;
-  hero: Hero;
-}) => (
+export const BottomBar = () => (
   <container
     absPosition={{
       point: FRAMEPOINT_BOTTOMLEFT,
@@ -27,14 +14,9 @@ export const BottomBar = ({
     size={{ width: 1680, height: 200 }}
     scale={0.8}
   >
-    <HealthGlobe hero={hero} />
-    <SkillBar hero={hero} />
-    <ManaGlobe hero={hero} />
-    <Menu
-      toggleAttributesVisibile={toggleAttributesVisibile}
-      toggleInventoryVisible={toggleInventoryVisible}
-      toggleEquipmentVisible={toggleEquipmentVisible}
-      toggleSkillTreeVisible={toggleSkillTreeVisible}
-    />
+    <HealthGlobe />
+    <SkillBar />
+    <ManaGlobe />
+    <Menu />
   </container>
 );

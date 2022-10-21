@@ -1,19 +1,10 @@
 import { createElement } from "w3ts-jsx";
+import { setGlobalState } from "../../../states/state";
 import { bottomRight } from "../../util/pos";
 import { ButtonIcon } from "./ButtonIcon";
 import { ICON_SIZE } from "./constants";
 
-export const Menu = ({
-  toggleAttributesVisibile,
-  toggleInventoryVisible,
-  toggleEquipmentVisible,
-  toggleSkillTreeVisible,
-}: {
-  toggleAttributesVisibile: () => void;
-  toggleInventoryVisible: () => void;
-  toggleEquipmentVisible: () => void;
-  toggleSkillTreeVisible: () => void;
-}) => (
+export const Menu = () => (
   <container
     position={bottomRight({ x: -390, y: 150 })}
     size={{ height: ICON_SIZE, width: 300 }}
@@ -21,26 +12,45 @@ export const Menu = ({
     <ButtonIcon
       icon="assets/img2/Bag2_eq_icon_r"
       tooltip="Equipment"
-      onClick={toggleEquipmentVisible}
+      onClick={() =>
+        setGlobalState((s) => ({
+          ...s,
+          equipmentVisible: !s.equipmentVisible,
+        }))}
       shortcut="p"
       first
     />
     <ButtonIcon
       icon="assets/img2/Player_eq_icon_r"
       tooltip="Character"
-      onClick={toggleAttributesVisibile}
+      onClick={() =>
+        setGlobalState((s) => {
+          console.log("Character toggle", s);
+          return ({
+            ...s,
+            characterVisible: !s.characterVisible,
+          });
+        })}
       shortcut="o"
     />
     <ButtonIcon
       icon="assets/img2/Bag2_eq_icon_r"
       tooltip="Inventory"
-      onClick={toggleInventoryVisible}
+      onClick={() =>
+        setGlobalState((s) => ({
+          ...s,
+          inventoryVisible: !s.inventoryVisible,
+        }))}
       shortcut="i"
     />
     <ButtonIcon
       icon="assets/img2/Bag2_eq_icon_r"
       tooltip="Skill Tree"
-      onClick={toggleSkillTreeVisible}
+      onClick={() =>
+        setGlobalState((s) => ({
+          ...s,
+          skillTreeVisible: !s.skillTreeVisible,
+        }))}
       shortcut="u"
     />
   </container>

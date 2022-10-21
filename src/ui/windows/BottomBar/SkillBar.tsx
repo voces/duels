@@ -1,13 +1,12 @@
 import { createElement, useEffect, useState } from "w3ts-jsx";
 import { queueAction } from "../../../actions/queue";
-import { Hero } from "../../../units/Hero";
-import { useUnitListener } from "../../hooks/useUnitListener";
 import { bottomLeft, leftToRight } from "../../util/pos";
 import { SkillButton } from "./SkillButton";
 import { Skill } from "../../../skills/types";
+import { useHero } from "../../hooks/useHero";
 
-export const SkillBar = ({ hero }: { hero: Hero }) => {
-  useUnitListener(hero, "skill");
+export const SkillBar = () => {
+  const hero = useHero("skill");
   const [bindings, setBindings] = useState<
     ({ skill?: Skill; fn: (playerId: number) => boolean } | undefined)[]
   >(
@@ -15,6 +14,7 @@ export const SkillBar = ({ hero }: { hero: Hero }) => {
   );
 
   useEffect(() => {
+    if (!hero) return;
     let mutated = false;
     const newBindings = [...bindings];
 
@@ -50,7 +50,7 @@ export const SkillBar = ({ hero }: { hero: Hero }) => {
       }
     }
     if (mutated) setBindings(newBindings);
-  }, [hero.skills.map((s) => s.id).join("|")]);
+  }, [hero?.skills.map((s) => s.id).join("|")]);
 
   const propsFromBinding = (binding: number) => ({
     callback: bindings[binding]?.fn,

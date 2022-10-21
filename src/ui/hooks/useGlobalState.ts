@@ -6,19 +6,45 @@ import {
   unsubStateChange,
 } from "../../states/state";
 
-export const useGlobalState = (): State => {
-  const [lState, setState] = useState(state);
+export const useGlobalState = <T extends unknown = State>(
+  fn?: (state: State) => T,
+): T => {
+  const [oldState, setState] = useState(fn ? fn(state) : state);
 
   useEffect(() => {
-    // Listen to state changes
-    subStateChange((state) => {
+    const listener = (newStateOrTransformer: State) => {
       // We clone the state to force a change
-      setState({ ...state });
-    });
+      if (!fn) return setState({ ...newStateOrTransformer });
+
+      const newState = fn(newStateOrTransformer);
+
+      if (
+        !newState || typeof newState !== "object" ||
+        !oldState || typeof oldState !== "object"
+      ) {
+        if (newState !== oldState) setState(newState);
+        return;
+      }
+
+      const oldKeys = Object.keys(oldState);
+      const newKeys = Object.keys(newState);
+
+      if (oldKeys.length !== newKeys.length) return setState(newState);
+
+      for (const key of newKeys) {
+        if (
+          oldState[key as keyof typeof oldState] !==
+            newState[key as keyof typeof newState]
+        ) return setState(newState);
+      }
+    };
+
+    // Listen to state changes
+    subStateChange(listener);
 
     // Stop listening when we unmount
-    return () => unsubStateChange(setState);
-  });
+    return () => unsubStateChange(listener);
+  }, [oldState]);
 
-  return lState;
+  return oldState as T;
 };

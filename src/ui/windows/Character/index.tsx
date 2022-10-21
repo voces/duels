@@ -7,7 +7,8 @@ import {
 import { Hero } from "../../../units/Hero";
 import { heroTypeMap } from "../../../units/heroTypes";
 import { MediumText } from "../../components/Text";
-import { useUnitListener } from "../../hooks/useUnitListener";
+import { useGlobalState } from "../../hooks/useGlobalState";
+import { useHero } from "../../hooks/useHero";
 import { bottomRight, top, topLeft } from "../../util/pos";
 import { Row } from "./Row";
 
@@ -23,15 +24,9 @@ const incStat = (
   hero[`base${capitalize(stat)}`]++;
 };
 
-export const Character = ({
-  hero,
-  visible,
-}: {
-  hero: Hero;
-  visible: boolean;
-}) => {
-  useUnitListener(
-    hero,
+export const Character = () => {
+  const visible = useGlobalState((s) => !!s.characterVisible);
+  const hero = useHero(
     "experience",
     "stats",
     "strength",
@@ -43,6 +38,9 @@ export const Character = ({
     "energy",
     "mana",
   );
+
+  if (!hero) return null;
+
   const primary = primaryCommands[hero.owner.id];
   const secondary = secondaryCommands[hero.owner.id];
   return (

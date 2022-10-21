@@ -1,6 +1,8 @@
 import { createElement } from "w3ts-jsx";
+import { useGlobalState } from "../../hooks/useGlobalState";
 
-export const SkillTree = ({ visible }: { visible: boolean }) => {
+export const SkillTree = () => {
+  const visible = useGlobalState((s) => !!s.skillTreeVisible);
   return (
     <container
       size={{ width: 600, height: 800 }}

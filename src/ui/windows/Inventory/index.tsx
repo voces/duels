@@ -5,6 +5,8 @@ import type { Hero } from "../../../units/Hero";
 import { repeat } from "../../../util/repeat";
 import { SmallText } from "../../components/Text";
 import { Tooltip } from "../../components/Tooltip";
+import { useGlobalState } from "../../hooks/useGlobalState";
+import { useHero } from "../../hooks/useHero";
 import { useRefState } from "../../hooks/useRefState";
 import { useUnitListener } from "../../hooks/useUnitListener";
 import { genItemText } from "../../util/genItemText";
@@ -69,12 +71,13 @@ const ItemSlot = (
   );
 };
 
-export const Inventory = (
-  { hero, visible }: { hero: Hero; visible: boolean },
-) => {
-  useUnitListener(hero, "inventory");
+export const Inventory = () => {
+  const visible = useGlobalState((s) => !!s.inventoryVisible);
+  const hero = useHero("inventory");
   const [offset, setOffset] = useState(0);
   // const mySlider = useRef<framehandle | null>(null);
+
+  if (!hero) return null;
 
   return (
     <container

@@ -3,6 +3,25 @@ import { Timer, TimerDialog } from "@voces/w3ts";
 import { Hero } from "../units/Hero";
 import { HeroType } from "../units/heroTypes";
 
+interface PartialState {
+  heroSelection: {
+    advance: () => void;
+    selections: HeroType[];
+    timer: Timer;
+    timerDialog: TimerDialog;
+  };
+  grind: {
+    advance: () => void;
+    timer: Timer;
+    timerDialog: TimerDialog;
+  };
+  heroes: Hero[];
+  inventoryVisible: boolean;
+  equipmentVisible: boolean;
+  characterVisible: boolean;
+  skillTreeVisible: boolean;
+}
+
 interface InitialState {
   state: "initial";
 }
@@ -27,7 +46,9 @@ interface GrindState {
   heroes: Hero[];
 }
 
-export type State = InitialState | HeroSelectionState | GrindState;
+export type State =
+  & Partial<PartialState>
+  & (InitialState | HeroSelectionState | GrindState);
 
 export const state: State = {
   state: "initial",
@@ -35,7 +56,11 @@ export const state: State = {
 
 const subs: ((newState: State) => void)[] = [];
 
-export const setGlobalState = (newState: State): void => {
+export const setGlobalState = (
+  newState: State | ((oldState: State) => State),
+): void => {
+  if (typeof newState === "function") newState = newState(state);
+
   // This looks dirty, but it should work...
   let prop: keyof State;
   for (prop in state) delete (state as any)[prop];

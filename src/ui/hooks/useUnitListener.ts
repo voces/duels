@@ -2,7 +2,7 @@ import { useEffect, useForceUpdate } from "w3ts-jsx";
 import { UnitEx } from "../../units/UnitEx";
 
 export const useUnitListener = (
-  unit: UnitEx | null,
+  unit: UnitEx | null | undefined,
   ...keys: [string, ...string[]]
 ): void => {
   const forceUpdate = useForceUpdate();
