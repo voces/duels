@@ -12,8 +12,8 @@ const shortcutText = (shortcut?: Shortcut | Shortcut[]) => {
   if (!mainShortcut) return;
 
   return colorize.hotkey(
-    compact(compact([mainShortcut.mouse, mainShortcut.keyboard]).flat())
-      .join("").toUpperCase(),
+    (Array.isArray(mainShortcut) ? mainShortcut.join("") : mainShortcut)
+      .toUpperCase(),
   );
 };
 

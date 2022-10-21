@@ -1,13 +1,11 @@
 import { createElement } from "w3ts-jsx";
-import { damageRangeToString, DamageType, damageTypes } from "../../../damage";
+import { damageRangeToString } from "../../../damage";
 import {
   primaryCommands,
   secondaryCommands,
 } from "../../../input/commands/registry";
-import { Command } from "../../../input/commands/types";
 import { Hero } from "../../../units/Hero";
 import { heroTypeMap } from "../../../units/heroTypes";
-import { colorize } from "../../../util/colorize";
 import { MediumText } from "../../components/Text";
 import { useUnitListener } from "../../hooks/useUnitListener";
 import { bottomRight, top, topLeft } from "../../util/pos";

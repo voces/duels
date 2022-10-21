@@ -9,11 +9,13 @@ export const BottomBar = ({
   toggleAttributesVisibile,
   toggleInventoryVisible,
   toggleEquipmentVisible,
+  toggleSkillTreeVisible,
   hero,
 }: {
   toggleAttributesVisibile: () => void;
   toggleInventoryVisible: () => void;
   toggleEquipmentVisible: () => void;
+  toggleSkillTreeVisible: () => void;
   hero: Hero;
 }) => (
   <container
@@ -32,6 +34,7 @@ export const BottomBar = ({
       toggleAttributesVisibile={toggleAttributesVisibile}
       toggleInventoryVisible={toggleInventoryVisible}
       toggleEquipmentVisible={toggleEquipmentVisible}
+      toggleSkillTreeVisible={toggleSkillTreeVisible}
     />
   </container>
 );
