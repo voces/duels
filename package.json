@@ -6,20 +6,20 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "clean": "rm -rf ./temp",
     "append": "ts-node scripts/append.ts",
     "build-lua": "tstl --project tsconfig.build.json",
     "build": "npm run clean && npm run build-lua && npm run append",
+    "clean": "rm -rf ./temp",
     "webui": "deno run --unstable -A webui/dev.ts"
   },
   "devDependencies": {
     "@esbuild-plugins/node-modules-polyfill": "^0.1.4",
     "@voces/w3ts": "^3.1.0",
-    "basic-pragma": "^4.4.2",
+    "basic-pragma": "^4.4.3",
     "lua-types": "^2.11.0",
     "typescript-to-lua": "^1.9.0",
-    "w3api": "^2.4.1",
-    "w3ts-jsx": "^3.0.0",
+    "w3api": "^2.5.0",
+    "w3ts-jsx": "^3.0.1",
     "war3-types-strict": "github:Z-Machine/war3-types-strict"
   }
 }

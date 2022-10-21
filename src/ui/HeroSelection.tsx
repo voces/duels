@@ -72,8 +72,8 @@ export const HeroSelection = () => {
   const triggerPlayerId = GetPlayerId(GetTriggerPlayer()!);
 
   const selected = globalState.state === "hero-selection"
-    ? globalState.heroSelection.selections[triggerPlayerId] ?? "amazon"
-    : "amazon";
+    ? globalState.heroSelection.selections[triggerPlayerId]
+    : undefined;
   const setSelected = (hero: HeroType) => {
     if (globalState.state !== "hero-selection") return;
     setGlobalState({
@@ -117,7 +117,7 @@ export const HeroSelection = () => {
         absPosition={{ point: FRAMEPOINT_CENTER, x: 0.4, y: 0.55 }}
       />
       <LargeText
-        text={heroData[selected].name}
+        text={selected ? heroData[selected].name : ""}
         absPosition={{ point: FRAMEPOINT_CENTER, x: 0.4, y: 0.5 }}
       />
       <HeroPane

@@ -17,30 +17,24 @@ export const secondaryCommands: (CommandInternal | null)[] = times(
   () => null,
 );
 
-const normalizeShortcut = (shortcut: Shortcut): ShortcutInternal => ({
-  mouse: typeof shortcut.mouse === "string"
-    ? [shortcut.mouse]
-    : shortcut.mouse ?? [],
-  keyboard: typeof shortcut.keyboard === "string"
-    ? [shortcut.keyboard]
-    : shortcut.keyboard ?? [],
-});
+const normalizeShortcut = (shortcut: Shortcut): ShortcutInternal =>
+  Array.isArray(shortcut) ? shortcut : [shortcut];
 
 const normalizeCommand = (command: Command): CommandInternal => {
   command.priority = command.priority ?? 0;
-  command.shortcuts =
-    (Array.isArray(command.shortcuts) ? command.shortcuts : [command.shortcuts])
-      .filter(<T>(s: T | undefined): s is T => !!s)
-      .map((s) => normalizeShortcut(s));
+
+  if (command.shortcuts) {
+    if (Array.isArray(command.shortcuts)) {
+      if (Array.isArray(command.shortcuts[0])) {
+        command.shortcuts = command.shortcuts.map((s) => normalizeShortcut(s));
+      } else {command.shortcuts = [
+          normalizeShortcut(command.shortcuts as Shortcut),
+        ];}
+    } else command.shortcuts = [[command.shortcuts]];
+  } else command.shortcuts = [];
+
   return command as CommandInternal;
 };
-
-const isShortcutSubset = (
-  subset: ShortcutInternal,
-  baseset: ShortcutInternal,
-) =>
-  subset.mouse.every((m) => baseset.mouse.includes(m)) &&
-  subset.keyboard.every((m) => baseset.keyboard.includes(m));
 
 export const getCommands = (
   playerId: number,
@@ -51,7 +45,7 @@ export const getCommands = (
 
   const matchingCommands = playerCommands.filter((command) =>
     command.shortcuts.some((testShortcut) =>
-      isShortcutSubset(testShortcut, normalizedShortcut)
+      testShortcut.every((s) => normalizedShortcut.includes(s))
     )
   );
 
@@ -82,18 +76,13 @@ const registerCommandForPlayer = (command: Command, playerId: number): void => {
 
   const primaryShortcut = normalizedCommand.shortcuts.find(
     (s) =>
-      s.keyboard.length === 1 &&
-      s.keyboard[0] === "shift" &&
-      s.mouse.length === 1 &&
-      s.mouse[0] === "left",
+      s.length === 2 && s[0] !== s[1] &&
+      s.every((v) => v === "shift" || v === "left"),
   );
   if (primaryShortcut) primaryCommands[playerId] = normalizedCommand;
 
   const secondaryShortcut = normalizedCommand.shortcuts.find(
-    (s) =>
-      s.keyboard.length === 0 &&
-      s.mouse.length === 1 &&
-      s.mouse[0] === "right",
+    (s) => s.length === 0 && s[0] === "right",
   );
   if (secondaryShortcut) secondaryCommands[playerId] = normalizedCommand;
 

@@ -1,4 +1,4 @@
-import { expierenceToLevel, levelToExperience } from "./Hero";
+import { experienceToLevel, levelToExperience } from "./Hero";
 
 describe("levelToExperience", () => {
   it("level 1", () => expect(levelToExperience(1)).toEqual(0));
@@ -8,16 +8,16 @@ describe("levelToExperience", () => {
   it("level 5", () => expect(levelToExperience(5)).toEqual(1000));
 });
 
-describe("expierenceToLevel", () => {
-  it("0 expierence", () => expect(expierenceToLevel(0)).toEqual(1));
-  it("1 expierence", () => expect(expierenceToLevel(1)).toEqual(1));
-  it("99 expierence", () => expect(expierenceToLevel(99)).toEqual(1));
-  it("100 expierence", () => expect(expierenceToLevel(100)).toEqual(2));
-  it("101 expierence", () => expect(expierenceToLevel(101)).toEqual(2));
-  it("299 expierence", () => expect(expierenceToLevel(299)).toEqual(2));
-  it("300 expierence", () => expect(expierenceToLevel(300)).toEqual(3));
-  it("599 expierence", () => expect(expierenceToLevel(599)).toEqual(3));
-  it("600 expierence", () => expect(expierenceToLevel(600)).toEqual(4));
-  it("999 expierence", () => expect(expierenceToLevel(999)).toEqual(4));
-  it("1000 expierence", () => expect(expierenceToLevel(1000)).toEqual(5));
+describe("experienceToLevel", () => {
+  it("0 expierence", () => expect(experienceToLevel(0)).toEqual(1));
+  it("1 expierence", () => expect(experienceToLevel(1)).toEqual(1));
+  it("99 expierence", () => expect(experienceToLevel(99)).toEqual(1));
+  it("100 expierence", () => expect(experienceToLevel(100)).toEqual(2));
+  it("101 expierence", () => expect(experienceToLevel(101)).toEqual(2));
+  it("299 expierence", () => expect(experienceToLevel(299)).toEqual(2));
+  it("300 expierence", () => expect(experienceToLevel(300)).toEqual(3));
+  it("599 expierence", () => expect(experienceToLevel(599)).toEqual(3));
+  it("600 expierence", () => expect(experienceToLevel(600)).toEqual(4));
+  it("999 expierence", () => expect(experienceToLevel(999)).toEqual(4));
+  it("1000 expierence", () => expect(experienceToLevel(1000)).toEqual(5));
 });

@@ -8,10 +8,12 @@ import { SkillBar } from "./SkillBar";
 export const BottomBar = ({
   toggleAttributesVisibile,
   toggleInventoryVisible,
+  toggleEquipmentVisible,
   hero,
 }: {
   toggleAttributesVisibile: () => void;
   toggleInventoryVisible: () => void;
+  toggleEquipmentVisible: () => void;
   hero: Hero;
 }) => (
   <container
@@ -29,6 +31,7 @@ export const BottomBar = ({
     <Menu
       toggleAttributesVisibile={toggleAttributesVisibile}
       toggleInventoryVisible={toggleInventoryVisible}
+      toggleEquipmentVisible={toggleEquipmentVisible}
     />
   </container>
 );

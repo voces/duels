@@ -9,7 +9,7 @@ import {
 import { UnitEx } from "../units/UnitEx";
 import { forEachHero, forEachPlayer } from "../util";
 import { processShortcut } from "./commands/registry";
-import { KeyboardShortcut, MouseShortcut } from "./commands/types";
+import { KeyboardShortcut, MouseShortcut, Shortcut } from "./commands/types";
 import { keyboards, mice, NONE, updateMouse } from "./data";
 
 const osKeyToStringMap = (key: oskeytype) => {
@@ -74,15 +74,15 @@ const executeCommands = (playerId: number) => {
   const playerMouse = mice[playerId];
   const playerKeyborad = keyboards[playerId];
 
-  const mouse: MouseShortcut[] = [];
-  if (playerMouse.leftDown) mouse.push("left");
-  if (playerMouse.rightDown) mouse.push("right");
+  const shortcut: Shortcut = [];
+  if (playerMouse.leftDown) shortcut.push("left");
+  if (playerMouse.rightDown) shortcut.push("right");
 
-  const keyboard = Object.entries(playerKeyborad)
-    .filter(([, value]) => value)
-    .map(([key]) => key) as KeyboardShortcut[];
-
-  const shortcut = { mouse, keyboard };
+  shortcut.push(
+    ...Object.entries(playerKeyborad)
+      .filter(([, value]) => value)
+      .map(([key]) => key as KeyboardShortcut),
+  );
 
   processShortcut(playerId, shortcut);
 };

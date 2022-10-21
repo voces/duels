@@ -28,7 +28,7 @@ export const ButtonIcon = ({
       onClick?.(playerId);
       return true;
     },
-    shortcut: { keyboard: shortcut },
+    shortcut,
     priority: 2,
   });
 

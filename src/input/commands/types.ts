@@ -30,17 +30,12 @@ export type KeyboardShortcut =
   | "y"
   | "z";
 
-// TODO: There's no real need to seperate these; should also support targets,
-// such as "target", "enemy", "ally"
-export interface Shortcut {
-  mouse?: MouseShortcut | MouseShortcut[];
-  keyboard?: KeyboardShortcut | KeyboardShortcut[];
-}
+export type Shortcut =
+  | MouseShortcut
+  | KeyboardShortcut
+  | (MouseShortcut | KeyboardShortcut)[];
 
-export interface ShortcutInternal {
-  mouse: MouseShortcut[];
-  keyboard: KeyboardShortcut[];
-}
+export type ShortcutInternal = (MouseShortcut | KeyboardShortcut)[];
 
 export interface Command<> {
   description?: string;
@@ -57,7 +52,7 @@ export interface Command<> {
    * after one returns true.
    */
   priority?: number;
-  shortcuts?: Shortcut | Shortcut[];
+  shortcuts?: Shortcut | (MouseShortcut | KeyboardShortcut)[][];
   damage?:
     | { min: Damage; max: Damage }
     | ((playerId: number) => { min: Damage; max: Damage } | undefined);

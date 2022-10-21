@@ -33,26 +33,26 @@ if (root instanceof HTMLElement) {
   root.style.fontSize = `calc(${root.style.height} / 1600 * 22)`;
 }
 
-let step: "init" | "selected" | "done" = "init";
-let i = setInterval(() => {
-  switch (step) {
-    case "init": {
-      const el = document.querySelector(
-        "body > span > span:nth-child(14) > span",
-      );
-      if (!el || !(el instanceof HTMLElement)) return;
-      el.click();
-      step = "selected";
-      break;
-    }
-    case "selected": {
-      const el = document.querySelector("body > span > span:nth-child(18)");
-      if (!el || !(el instanceof HTMLElement)) return;
-      el.click();
-      step = "done";
-      break;
-    }
-    default:
-      clearInterval(i);
-  }
-}, 1);
+// let step: "init" | "selected" | "done" = "init";
+// let i = setInterval(() => {
+//   switch (step) {
+//     case "init": {
+//       const el = document.querySelector(
+//         "body > span > span:nth-child(14) > span",
+//       );
+//       if (!el || !(el instanceof HTMLElement)) return;
+//       el.click();
+//       step = "selected";
+//       break;
+//     }
+//     case "selected": {
+//       const el = document.querySelector("body > span > span:nth-child(18)");
+//       if (!el || !(el instanceof HTMLElement)) return;
+//       el.click();
+//       step = "done";
+//       break;
+//     }
+//     default:
+//       clearInterval(i);
+//   }
+// }, 1);

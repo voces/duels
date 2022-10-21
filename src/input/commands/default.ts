@@ -8,7 +8,7 @@ import { registerCommand } from "./registry";
 
 registerCommand({
   name: "Attack",
-  shortcuts: [{ mouse: "left", keyboard: "shift" }],
+  shortcuts: ["left", "shift"],
   priority: 3,
   damage: (playerId) => {
     if (state.state !== "grind") return;
@@ -30,7 +30,7 @@ registerCommand({
 
 registerCommand({
   name: "Attack",
-  shortcuts: [{ mouse: "left" }],
+  shortcuts: "left",
   priority: 2,
   fn: (playerId) => {
     if (state.state !== "grind") return false;
@@ -49,7 +49,7 @@ registerCommand({
 
 registerCommand({
   name: "Move",
-  shortcuts: [{ mouse: "left" }],
+  shortcuts: "left",
   priority: 1,
   fn: (playerId) => {
     if (state.state !== "grind") return false;

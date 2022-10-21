@@ -6,9 +6,11 @@ import { ICON_SIZE } from "./constants";
 export const Menu = ({
   toggleAttributesVisibile,
   toggleInventoryVisible,
+  toggleEquipmentVisible,
 }: {
   toggleAttributesVisibile: () => void;
   toggleInventoryVisible: () => void;
+  toggleEquipmentVisible: () => void;
 }) => (
   <container
     position={bottomRight({ x: -390, y: 150 })}
@@ -26,6 +28,12 @@ export const Menu = ({
       tooltip="Inventory"
       onClick={toggleInventoryVisible}
       shortcut="i"
+    />
+    <ButtonIcon
+      icon="assets/img2/Bag2_eq_icon_r"
+      tooltip="Equipment"
+      onClick={toggleEquipmentVisible}
+      shortcut="p"
     />
   </container>
 );

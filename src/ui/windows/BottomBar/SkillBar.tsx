@@ -74,24 +74,21 @@ export const SkillBar = ({ hero }: { hero: Hero }) => {
         texture="assets/img2/skill_bar_01_NEED_TO_SHRINK"
       />
       <SkillButton
-        shortcut={[
-          { keyboard: "q" },
-          { mouse: "left", keyboard: "shift" },
-        ]}
+        shortcut={[["q"], ["left", "shift"]]}
         {...propsFromBinding(0)}
         first
       />
       <SkillButton
-        shortcut={[{ keyboard: "w" }, { mouse: "right" }]}
+        shortcut={[["w"], ["right"]]}
         {...propsFromBinding(1)}
       />
-      <SkillButton shortcut={{ keyboard: "e" }} {...propsFromBinding(2)} />
-      <SkillButton shortcut={{ keyboard: "r" }} {...propsFromBinding(3)} />
-      <SkillButton shortcut={{ keyboard: "t" }} {...propsFromBinding(4)} />
-      <SkillButton shortcut={{ keyboard: "a" }} {...propsFromBinding(5)} />
-      <SkillButton shortcut={{ keyboard: "s" }} {...propsFromBinding(6)} />
-      <SkillButton shortcut={{ keyboard: "d" }} {...propsFromBinding(7)} />
-      <SkillButton shortcut={{ keyboard: "f" }} {...propsFromBinding(8)} />
+      <SkillButton shortcut="e" {...propsFromBinding(2)} />
+      <SkillButton shortcut="r" {...propsFromBinding(3)} />
+      <SkillButton shortcut="t" {...propsFromBinding(4)} />
+      <SkillButton shortcut="a" {...propsFromBinding(5)} />
+      <SkillButton shortcut="s" {...propsFromBinding(6)} />
+      <SkillButton shortcut="d" {...propsFromBinding(7)} />
+      <SkillButton shortcut="f" {...propsFromBinding(8)} />
     </container>
   );
 };

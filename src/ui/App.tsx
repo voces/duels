@@ -13,8 +13,8 @@ import { Inventory } from "./windows/Inventory";
 export const App = () => {
   const state = useGlobalState();
   const [characterVisible, setCharacterVisible] = useState(false);
-  const [equipmentVisible, setEquipmentVisible] = useState(true);
-  const [inventoryVisible, setInventoryVisible] = useState(true);
+  const [equipmentVisible, setEquipmentVisible] = useState(false);
+  const [inventoryVisible, setInventoryVisible] = useState(false);
 
   return (
     <>
@@ -29,6 +29,7 @@ export const App = () => {
             hero={state.heroes[MapPlayer.fromLocal().id]}
             toggleAttributesVisibile={() => setCharacterVisible((v) => !v)}
             toggleInventoryVisible={() => setInventoryVisible((v) => !v)}
+            toggleEquipmentVisible={() => setEquipmentVisible((v) => !v)}
           />
           {/* <Statuses hero={state.heroes[MapPlayer.fromLocal().id]} /> */}
           <EnemyStatus />
