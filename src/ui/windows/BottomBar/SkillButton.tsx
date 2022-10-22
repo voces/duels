@@ -1,6 +1,5 @@
-import { compact } from "basic-pragma/dist/utils/arrays";
 import { createElement } from "w3ts-jsx";
-import { Shortcut } from "../../../input/commands/types";
+import { Command, Shortcut } from "../../../input/commands/types";
 import { colorize } from "../../../util/colorize";
 import { Tooltip } from "../../components/Tooltip";
 import { useShortcut } from "../../hooks/useCommand";
@@ -20,7 +19,7 @@ const shortcutText = (shortcut?: Shortcut | Shortcut[]) => {
 export const SkillButton = (
   { first, shortcut, callback, icon, description, name }: {
     first?: boolean;
-    shortcut?: Shortcut | Shortcut[];
+    shortcut?: Command["shortcuts"];
     callback?: (playerId: number) => boolean;
     icon?: string;
     description?: string;

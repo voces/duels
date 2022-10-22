@@ -6,6 +6,7 @@ import {
   unsubStateChange,
 } from "../../states/state";
 
+// TODO: throw if fn changes
 export const useGlobalState = <T extends unknown = State>(
   fn?: (state: State) => T,
 ): T => {

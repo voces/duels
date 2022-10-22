@@ -10,7 +10,7 @@ export const Menu = () => (
     size={{ height: ICON_SIZE, width: 300 }}
   >
     <ButtonIcon
-      icon="assets/img2/Bag2_eq_icon_r"
+      icon="assets/img2/Cuirass3_eq_icon_r"
       tooltip="Equipment"
       onClick={() =>
         setGlobalState((s) => ({
@@ -24,13 +24,10 @@ export const Menu = () => (
       icon="assets/img2/Player_eq_icon_r"
       tooltip="Character"
       onClick={() =>
-        setGlobalState((s) => {
-          console.log("Character toggle", s);
-          return ({
-            ...s,
-            characterVisible: !s.characterVisible,
-          });
-        })}
+        setGlobalState((s) => ({
+          ...s,
+          characterVisible: !s.characterVisible,
+        }))}
       shortcut="o"
     />
     <ButtonIcon
@@ -44,7 +41,7 @@ export const Menu = () => (
       shortcut="i"
     />
     <ButtonIcon
-      icon="assets/img2/Bag2_eq_icon_r"
+      icon="assets/img2/skilltreeicon"
       tooltip="Skill Tree"
       onClick={() =>
         setGlobalState((s) => ({

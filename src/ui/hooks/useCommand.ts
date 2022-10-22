@@ -12,7 +12,7 @@ export const useCommand = (command: Command, playerId?: number) => {
 
 export const useShortcut = (
   { shortcut, fn, name, priority }: {
-    shortcut?: Shortcut | Shortcut[];
+    shortcut?: Command["shortcuts"];
     fn?: (playerId: number) => boolean;
     name?: string;
     priority?: number;

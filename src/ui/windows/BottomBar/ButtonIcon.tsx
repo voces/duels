@@ -37,7 +37,10 @@ export const ButtonIcon = ({
       position={first ? bottomRight() : rightToLeft()}
       size={ICON_SIZE}
       ref={buttonRef}
-      onClick={() => onClick(GetPlayerId(GetLocalPlayer()!))}
+      onClick={() => {
+        console.log("click", tooltip, GetPlayerId(GetTriggerPlayer()!));
+        onClick(GetPlayerId(GetTriggerPlayer()!));
+      }}
       tooltip={tooltip && buttonRef.current
         ? (
           <Tooltip>

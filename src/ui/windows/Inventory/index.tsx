@@ -8,7 +8,6 @@ import { Tooltip } from "../../components/Tooltip";
 import { useGlobalState } from "../../hooks/useGlobalState";
 import { useHero } from "../../hooks/useHero";
 import { useRefState } from "../../hooks/useRefState";
-import { useUnitListener } from "../../hooks/useUnitListener";
 import { genItemText } from "../../util/genItemText";
 import {
   bottomRight,

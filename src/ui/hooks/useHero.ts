@@ -7,7 +7,7 @@ export const useHero = (...keys: [string, ...string[]]) => {
     state,
   ) => [state.heroes?.[GetLocalPlayerId()]]);
 
-  useUnitListener(hero, ...keys);
+  if (hero) useUnitListener(hero, ...keys);
 
   return hero;
 };

@@ -62,23 +62,27 @@ const EquipmentSlot = ({ slot }: { slot: keyof Hero["equipment"] }) => {
   );
 };
 
-export const Equipment = () => (
-  <container
-    size={{ width: 300, height: 393 }}
-    absPosition={{ point: FRAMEPOINT_TOPRIGHT, x: 1600 - 64, y: 1200 - 128 }}
-    visible={useGlobalState((s) => !!s.equipmentVisible)}
-  >
-    <backdrop texture="assets/img2/Equipment" position="parent" />
-    <text text="Equipment" position={top({ y: -82 })} />
-    <EquipmentSlot slot="mainHand" />
-    <EquipmentSlot slot="offHand" />
-    <EquipmentSlot slot="head" />
-    <EquipmentSlot slot="boots" />
-    <EquipmentSlot slot="armor" />
-    <EquipmentSlot slot="belt" />
-    <EquipmentSlot slot="amulet" />
-    <EquipmentSlot slot="mainRing" />
-    <EquipmentSlot slot="offRing" />
-    <EquipmentSlot slot="gloves" />
-  </container>
-);
+export const Equipment = () => {
+  const visible = useGlobalState((s) => !!s.equipmentVisible);
+
+  return (
+    <container
+      size={{ width: 300, height: 393 }}
+      absPosition={{ point: FRAMEPOINT_TOPRIGHT, x: 1600 - 64, y: 1200 - 128 }}
+      visible={visible}
+    >
+      <backdrop texture="assets/img2/Equipment" position="parent" />
+      <text text="Equipment" position={top({ y: -82 })} />
+      <EquipmentSlot slot="mainHand" />
+      <EquipmentSlot slot="offHand" />
+      <EquipmentSlot slot="head" />
+      <EquipmentSlot slot="boots" />
+      <EquipmentSlot slot="armor" />
+      <EquipmentSlot slot="belt" />
+      <EquipmentSlot slot="amulet" />
+      <EquipmentSlot slot="mainRing" />
+      <EquipmentSlot slot="offRing" />
+      <EquipmentSlot slot="gloves" />
+    </container>
+  );
+};

@@ -1,5 +1,4 @@
-import { MapPlayer } from "@voces/w3ts";
-import { createElement, Fragment, useState } from "w3ts-jsx";
+import { createElement, Fragment } from "w3ts-jsx";
 
 import { HeroSelection } from "./HeroSelection";
 import { useGlobalState } from "./hooks/useGlobalState";

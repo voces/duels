@@ -47,7 +47,7 @@ export const fireboltSkill = (): Skill => ({
     this.description = getDescription(this);
   },
   validate: (playerId) => {
-    if (!("heroes" in state)) return false;
+    if (!state.heroes) return false;
     const hero = state.heroes[playerId];
 
     if (isInTown(hero)) return false;
@@ -59,8 +59,8 @@ export const fireboltSkill = (): Skill => ({
     return hero.mana >= 3;
   },
   onUse(playerId, done) {
-    if (!("heroes" in state)) return done();
-    const hero = state.heroes[playerId];
+    if (!state.heroes) return done();
+    const hero = state.heroes![playerId];
 
     hero.mana -= 3;
 
