@@ -5,6 +5,7 @@ export interface Skill {
   id: string;
   name: string;
   description: string;
+  longDescription: string;
   level: number;
   setLevel: (newLevel: number) => void;
   validate: (playerId: number) => boolean;

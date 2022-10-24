@@ -14,7 +14,7 @@ export const buildOfFireBolt = (
   ...overrides,
   effect: {
     type: "skillBonus",
-    skill: "firebolt",
+    skill: "fireBolt",
     levels: GetRandomInt(1, 3),
     ...overrides?.effect,
   },

@@ -1,9 +1,18 @@
 import { createElement, useEffect, useState } from "w3ts-jsx";
 import { queueAction } from "../../../actions/queue";
-import { bottomLeft, leftToRight } from "../../util/pos";
+import {
+  bottomLeft,
+  bottomRight,
+  leftToRight,
+  parent,
+  topLeft,
+} from "../../util/pos";
 import { SkillButton } from "./SkillButton";
 import { Skill } from "../../../skills/types";
 import { useHero } from "../../hooks/useHero";
+import { levelToExperience } from "../../../units/Hero";
+import { useRefState } from "../../hooks/useRefState";
+import { Tooltip } from "../../components/Tooltip";
 
 export const SkillBar = () => {
   const hero = useHero("skill");
@@ -64,11 +73,7 @@ export const SkillBar = () => {
       position={leftToRight(undefined, "bottom")}
       size={{ height: 114, width: 880 }}
     >
-      <backdrop
-        position={bottomLeft({ y: 92 })}
-        size={{ height: 55, width: 880 }}
-        texture="assets/img2/XP_bar_full"
-      />
+      <ExperienceBar />
       <backdrop
         position="parent"
         texture="assets/img2/skill_bar_01_NEED_TO_SHRINK"
@@ -93,52 +98,55 @@ export const SkillBar = () => {
   );
 };
 
-// const ExperienceBar = ({ hero }: { hero: Hero }) => {
-//   useUnitListener(hero);
-//   const experienceToCurrentLevel = levelToExperience(hero.level);
-//   const experienceToNextLevel = levelToExperience(hero.level + 1);
-//   const value = hero.experience - experienceToCurrentLevel;
-//   const max = experienceToNextLevel - experienceToCurrentLevel;
-//   const containerRef = useRefState<framehandle | null>(null);
-//   return (
-//     <container
-//       absPosition={{ point: FRAMEPOINT_BOTTOMLEFT, x: 400 }}
-//       size={{ height: 29, width: 800 }}
-//       ref={containerRef}
-//       tooltip={containerRef.current && (
-//         <Tooltip>
-//           <text
-//             position={{
-//               point: FRAMEPOINT_BOTTOM,
-//               relative: containerRef.current,
-//               relativePoint: FRAMEPOINT_TOP,
-//               y: 24,
-//             }}
-//             text={`${Math.round(value)}/${
-//               Math.round(
-//                 max,
-//               )
-//             } (${Math.round((value / max) * 100)}%)`}
-//           />
-//         </Tooltip>
-//       )}
-//     >
-//       <container
-//         position={parent({
-//           padding: { top: 8, horizontal: 40, bottom: 2 },
-//         })}
-//       >
-//         <backdrop texture="textures/black32" position="parent" />
-//         <backdrop
-//           texture="assets/img/XP_bar_line"
-//           position={topLeft()}
-//           size={{
-//             height: 19,
-//             width: 720 * (value / max),
-//           }}
-//         />
-//       </container>
-//       <backdrop texture="assets/img/XP_bar" position="parent" />
-//     </container>
-//   );
-// };
+const ExperienceBar = () => {
+  const hero = useHero("experience");
+  const containerRef = useRefState<framehandle | null>(null);
+
+  if (!hero) return null;
+
+  const experienceToCurrentLevel = levelToExperience(hero.level);
+  const experienceToNextLevel = levelToExperience(hero.level + 1);
+  const value = hero.experience - experienceToCurrentLevel;
+  const max = experienceToNextLevel - experienceToCurrentLevel;
+
+  return (
+    <container
+      position={bottomLeft({ y: 92 })}
+      size={{ height: 55, width: 880 }}
+      ref={containerRef}
+      tooltip={containerRef.current && (
+        <Tooltip>
+          <text
+            position={{
+              point: FRAMEPOINT_BOTTOM,
+              relative: containerRef.current,
+              relativePoint: FRAMEPOINT_TOP,
+              y: 24,
+            }}
+            text={`${Math.round(value)}/${
+              Math.round(
+                max,
+              )
+            } (${Math.round((value / max) * 100)}%)`}
+          />
+        </Tooltip>
+      )}
+    >
+      <container
+        position={parent({
+          padding: { top: 8, horizontal: 50, bottom: 20 },
+        })}
+      >
+        <backdrop
+          texture="ui/widgets/tooltips/human/human-tooltip-background.blp"
+          position="parent"
+        />
+        <backdrop
+          texture="assets/img2/XP_bar_line"
+          position={[topLeft(), bottomRight({ x: -780 * (1 - (value / max)) })]}
+        />
+      </container>
+      <backdrop texture="assets/img2/XP_bar" position="parent" />
+    </container>
+  );
+};

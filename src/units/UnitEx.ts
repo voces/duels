@@ -393,34 +393,16 @@ export class UnitEx {
     );
   }
 
-  addSkill(skill: Skill): void {
+  private addSkill(skill: Skill): void {
     this._skills.push(skill);
     this._skillMap[skill.id] = skill;
-    this.emitChange("skill");
-    // registerCommand(
-    //   {
-    //     name: skill.name,
-    //     shortcuts: [{ mouse: "right" }],
-    //     damage: skill.damage,
-    //     fn: (playerId) => {
-    //       if (!skill.validate(playerId)) return false;
-    //       queueAction(playerId, {
-    //         perform: (done) => skill.onUse(playerId, done),
-    //         interruptable: false,
-    //       });
-    //       return true;
-    //     },
-    //   },
-    //   this.owner.id,
-    // );
   }
 
-  removeSkill(skill: Skill): void {
+  private removeSkill(skill: Skill): void {
     const index = this._skills.indexOf(skill);
     if (index === -1) return;
     this._skills.splice(index, 1);
     this._skillMap[skill.id] = undefined;
-    this.emitChange("skill");
   }
 
   get skills(): readonly Skill[] {
@@ -435,7 +417,7 @@ export class UnitEx {
     skill.setLevel(skill.level + (levels ?? 1));
 
     if (skill.level === 0) this.removeSkill(skill);
-    // TODO: remove skill if it's now 0
+    this.emitChange("skill", `skill-${skill.id}`);
   }
 
   faceTarget(target: Vector2): void {

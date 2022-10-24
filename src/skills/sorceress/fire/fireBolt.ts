@@ -4,6 +4,7 @@ import { mice } from "../../../input/data";
 import { state } from "../../../states/state";
 import { startTimeout } from "../../../util";
 import { asyncRequire } from "../../../util/asyncRequire";
+import { colorize } from "../../../util/colorize";
 import { Vector2Ex } from "../../../util/Vector2";
 import { Skill } from "../../types";
 
@@ -18,15 +19,51 @@ const getDescription = (skill: Skill | undefined) =>
     "Creates a magical flaming missile",
     "",
     `Current Skill Level: ${skill?.level}`,
-    `Mana Cost: ${3}`,
+    "Mana Cost: 3",
     `Fire Damage: ${damageRangeToString(skill?.damage, false)}`,
   ].join("|n");
 
-export const fireboltSkill = (): Skill => ({
-  id: "firebolt",
+const damageMin = (level: number) => ({
+  fire: Math.round(3.78 + 0.469 * level - 0.0777 * level ** 2),
+});
+
+const damageMax = (level: number) => ({
+  fire: Math.round(4.96 + 0.834 * level + 0.0898 * level ** 2),
+});
+
+const getLongDescription = (skill: Skill | undefined) =>
+  [
+    colorize.poison("Fire Bolt"),
+    "Creates a magical flaming missile",
+    "",
+    "Mana Cost: 3",
+    ...(skill
+      ? [
+        "",
+        `Current Skill Level: ${skill?.level}`,
+        `Fire Damage: ${damageRangeToString(skill?.damage, false)}`,
+      ]
+      : []),
+    "",
+    skill ? "Next Level" : "First Level",
+    `Fire Damage: ${
+      damageRangeToString({
+        min: damageMin((skill?.level ?? 0) + 1),
+        max: damageMax((skill?.level ?? 0) + 1),
+      }, false)
+    }`,
+    "",
+    colorize.poison("Fire Bolt Receives Bonuses From:"),
+    "Fire Ball: +16% Fire Damage Per Level",
+    "Meteor: +16% Fire Damage Per Level",
+  ].join("|n");
+
+export const fireBoltSkill = (): Skill => ({
+  id: "fireBolt",
   name: "Fire Bolt",
+  icon: "ReplaceableTextures/CommandButtons/BTNFlare.blp",
   description: getDescription(undefined),
-  icon: "ReplaceableTextures/CommandButtons/BTNFireBolt.blp",
+  longDescription: getLongDescription(undefined),
   level: 0,
   damage: {
     min: { fire: 0 },
@@ -34,17 +71,10 @@ export const fireboltSkill = (): Skill => ({
   },
   setLevel(newLevel: number) {
     this.level = newLevel;
-    this.damage!.min.fire = Math.round(
-      3.78 +
-        0.469 * this.level -
-        0.0777 * this.level ** 2,
-    );
-    this.damage!.max.fire = Math.round(
-      4.96 +
-        0.834 * this.level +
-        0.0898 * this.level ** 2,
-    );
+    this.damage!.min.fire = damageMin(this.level).fire;
+    this.damage!.max.fire = damageMax(this.level).fire;
     this.description = getDescription(this);
+    this.longDescription = getLongDescription(this);
   },
   validate: (playerId) => {
     if (!state.heroes) return false;
