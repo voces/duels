@@ -1,12 +1,25 @@
-import { createElement, Fragment, useEffect, useRef, useState } from "w3ts-jsx";
+import {
+  createElement,
+  Fragment,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "w3ts-jsx";
 import { SkillId, skillMap } from "../../../skills/map";
 import { heroKeys, HeroType, heroTypeIds } from "../../../units/heroTypes";
 import { repeat } from "../../../util/repeat";
-import { MediumText } from "../../components/Text";
+import { MediumText, SmallText } from "../../components/Text";
 import { Tooltip } from "../../components/Tooltip";
 import { useGlobalState } from "../../hooks/useGlobalState";
 import { useHero } from "../../hooks/useHero";
-import { rightToLeft, top, topLeft, topRight } from "../../util/pos";
+import {
+  bottomRight,
+  rightToLeft,
+  top,
+  topLeft,
+  topRight,
+} from "../../util/pos";
 
 type TreeSkill = false | SkillId | [SkillId, SkillId | SkillId[]];
 type TreeRow = [TreeSkill, TreeSkill, TreeSkill];
@@ -66,15 +79,26 @@ const Skill = (
     tree: Tree | undefined;
   },
 ) => {
-  const backdropRef = useRef<framehandle | null>(null);
+  const buttonRef = useRef<framehandle | null>(null);
 
   const treeSkill = tree?.[row][column];
   const skillId = skillIdFromTreeSkill(treeSkill);
 
-  const hero = skillId ? useHero(`skill-${skillId}`) : undefined;
+  const hero = useHero(`skill-${skillId}`);
   const skill = skillId
-    ? hero?.skills.find((s) => s.id === skillId) ?? skillMap[skillId]()
+    ? hero?.skills.find((s) => s.id === skillId) ?? skillMap[skillId](hero)
     : undefined;
+
+  const incLevel = useCallback(() => {
+    if (
+      !skill?.canLevel() ||
+      !hero ||
+      hero.unassignedSkillPoints === 0
+    ) return;
+
+    hero.incSkillLevel(skill.id, 1, false);
+    hero.unassignedSkillPoints--;
+  }, [skill?.canLevel(), skill && hero?.unasignedStatPoints]);
 
   const vertDep = Array.isArray(treeSkill)
     ? repeat(row, (i) => i).findIndex((i) =>
@@ -159,26 +183,41 @@ const Skill = (
         visible={rightDiagDep}
       />
 
-      <backdrop
+      <button
         position={topLeft({ x: column * 120 + 45, y: row * -100 - 165 })}
         size={70}
         texture={skill?.icon}
         visible={!!treeSkill}
-        ref={backdropRef}
-        tooltip={backdropRef.current && (
+        ref={buttonRef}
+        tooltip={buttonRef.current && (
           <Tooltip visible={!!treeSkill}>
             <text
-              text={skill?.longDescription}
-              position={rightToLeft({ relative: backdropRef.current })}
+              text={skill?.longDescription()}
+              position={rightToLeft({ relative: buttonRef.current })}
             />
           </Tooltip>
         )}
+        onClick={incLevel}
       >
+        <backdrop
+          position="parent"
+          texture="textures/black32.blp"
+          alpha={(skill?.level.total ?? 0 > 0) ||
+              (skill?.canLevel() && (hero?.unassignedSkillPoints ?? 0 > 0))
+            ? 0
+            : 200}
+        />
         <backdrop
           position="parent"
           texture="assets/img2/icon_frame_corners"
         />
-      </backdrop>
+        <SmallText
+          text={(skill?.level.total ?? 0 > 0)
+            ? skill?.level.total.toString()
+            : ""}
+          position={bottomRight({ x: -5, y: 5 })}
+        />
+      </button>
     </>
   );
 };

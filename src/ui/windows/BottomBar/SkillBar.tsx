@@ -65,7 +65,7 @@ export const SkillBar = () => {
     callback: bindings[binding]?.fn,
     icon: bindings[binding]?.skill?.icon,
     name: bindings[binding]?.skill?.name,
-    description: bindings[binding]?.skill?.description,
+    description: bindings[binding]?.skill?.description(),
   });
 
   return (

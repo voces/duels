@@ -84,6 +84,7 @@ export class Hero extends UnitEx {
 
   private _experience = 0;
   private _unasignedStatPoints = 0;
+  private _unassignedSkillPoints = 0;
 
   private items: Items = { inventory: [] };
 
@@ -264,12 +265,13 @@ export class Hero extends UnitEx {
     const prevLevel = this.level;
     this._experience = value;
     const nextLevel = this.level;
-    const gains = nextLevel - prevLevel;
-    if (gains > 0) {
-      this.health = this.maxBaseHealth += gains * this.healthPerLevel;
-      this.stamina = this.maxBaseStamina += gains * this.staminaPerLevel;
-      this.mana = this.maxBaseMana += gains * this.manaPerLevel;
-      this.unasignedStatPoints += gains * 5;
+    const levelGains = nextLevel - prevLevel;
+    if (levelGains > 0) {
+      this.health = this.maxBaseHealth += levelGains * this.healthPerLevel;
+      this.stamina = this.maxBaseStamina += levelGains * this.staminaPerLevel;
+      this.mana = this.maxBaseMana += levelGains * this.manaPerLevel;
+      this.unasignedStatPoints += levelGains * 5;
+      this.unassignedSkillPoints += levelGains;
       const e = new Effect(
         "Abilities\\Spells\\Other\\Levelup\\LevelupCaster.mdl",
         this.x,
@@ -286,6 +288,14 @@ export class Hero extends UnitEx {
   set unasignedStatPoints(value: number) {
     this._unasignedStatPoints = value;
     this.emitChange("stats");
+  }
+
+  get unassignedSkillPoints() {
+    return this._unassignedSkillPoints;
+  }
+  set unassignedSkillPoints(value: number) {
+    this._unassignedSkillPoints = value;
+    this.emitChange("skillpoints");
   }
 
   damage(target: UnitEx, damage: Damage): void {

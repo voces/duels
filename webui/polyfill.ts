@@ -31,6 +31,7 @@ Object.assign(globalThis, w3api.api, {
   UnitAddType: () => {},
   BlzGetAbilityIcon: () => "",
   GetUnitName: (unit: unit) => `<unit:${(unit as any).handleId}>`,
+  AddSpecialEffect: () => w3api.getHandle(),
 });
 
 w3api.getGame().localPlayerId = 0;

@@ -408,15 +408,18 @@ export class UnitEx {
   get skills(): readonly Skill[] {
     return this._skills;
   }
+  get skillMap(): Readonly<Record<string, Skill | undefined>> {
+    return this._skillMap;
+  }
 
-  incSkillLevel(skillId: SkillId, levels?: number): void {
+  incSkillLevel(skillId: SkillId, levels: number, bonus: boolean): void {
     const hasSkill = !!this._skillMap[skillId];
-    if (!hasSkill) this.addSkill(skillMap[skillId]());
+    if (!hasSkill) this.addSkill(skillMap[skillId](this));
 
     const skill = this._skillMap[skillId]!;
-    skill.setLevel(skill.level + (levels ?? 1));
+    skill.level[bonus ? "bonus" : "base"] += levels;
 
-    if (skill.level === 0) this.removeSkill(skill);
+    if (skill.level.total === 0) this.removeSkill(skill);
     this.emitChange("skill", `skill-${skill.id}`);
   }
 

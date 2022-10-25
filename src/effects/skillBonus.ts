@@ -8,6 +8,8 @@ export interface SkillBonusEffect {
 }
 
 export const skillBonusHooks: EffectHook<SkillBonusEffect> = {
-  apply: (effect, hero) => hero.incSkillLevel(effect.skill, effect.levels),
-  unapply: (effect, hero) => hero.incSkillLevel(effect.skill, -effect.levels),
+  apply: (effect, hero) =>
+    hero.incSkillLevel(effect.skill, effect.levels, true),
+  unapply: (effect, hero) =>
+    hero.incSkillLevel(effect.skill, -effect.levels, true),
 };

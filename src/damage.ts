@@ -12,6 +12,8 @@ export type Damage = {
   holy?: number;
 };
 
+export type DamageRange = { min: Damage; max: Damage };
+
 export const damageTypes = [
   "physical",
   "magic",
@@ -65,12 +67,12 @@ export const withDamageSystemOff = (fn: () => void): void => {
 export const isDamageSystemOn = (): boolean => damageSystemOn;
 
 export const damageRangeToString = (
-  damage: Command["damage"],
+  damageRange: Command["damage"],
   color = true,
 ) => {
-  if (!damage) return "";
-  if (typeof damage === "function") damage = damage(0);
-  if (!damage) return "";
+  if (!damageRange) return "";
+  if (typeof damageRange === "function") damageRange = damageRange(0);
+  if (!damageRange) return "";
 
   let minSum = 0;
   let maxSum = 0;
@@ -78,10 +80,10 @@ export const damageRangeToString = (
   let mainDamageAmount = 0;
 
   for (const damageType of damageTypes) {
-    const minDamage = damage.min[damageType];
+    const minDamage = damageRange.min[damageType];
     if (minDamage) minSum += minDamage;
 
-    const maxDamage = damage.max[damageType];
+    const maxDamage = damageRange.max[damageType];
     if (maxDamage) {
       maxSum += maxDamage;
       if (maxDamage > mainDamageAmount) {

@@ -2,6 +2,8 @@ import { isInTown } from "../../../areas/town2";
 import { damageRangeToString, randomDamage } from "../../../damage";
 import { mice } from "../../../input/data";
 import { state } from "../../../states/state";
+import { BonusField } from "../../../units/heroTypes";
+import { UnitEx } from "../../../units/UnitEx";
 import { startTimeout } from "../../../util";
 import { asyncRequire } from "../../../util/asyncRequire";
 import { colorize } from "../../../util/colorize";
@@ -12,73 +14,95 @@ const Projectile = asyncRequire<
   typeof import("../../../systems/Projectile")
 >("systems.Projectile");
 
-const getDescription = (skill: Skill | undefined) =>
+const getDamage = (level: number, skill: Skill) => ({
+  min: {
+    fire: Math.round(
+      (1.79 + 5.22 * level + 0.302 * level ** 2) *
+        (1.14 ** (skill.unit?.skillMap["fireBolt"]?.level.base ?? 0) +
+          1.14 ** (skill.unit?.skillMap["meteor"]?.level.base ?? 0) - 1),
+    ),
+  },
+  max: {
+    fire: Math.round(
+      (8.97 + 6.49 * level + 0.302 * level ** 2) *
+        (1.14 ** (skill.unit?.skillMap["fireBolt"]?.level.base ?? 0) +
+          1.14 ** (skill.unit?.skillMap["meteor"]?.level.base ?? 0) - 1),
+    ),
+  },
+});
+
+const getDescription = (skill: Skill) =>
   [
     "Fire Ball",
     "",
     "Creates an explosive sphere of fiery death to engulf your enemies",
     "",
-    `Current Skill Level: ${skill?.level}`,
-    `Mana Cost: ${manaCost(skill?.level ?? 1)}`,
-    `Fire Damage: ${damageRangeToString(skill?.damage, false)}`,
+    `Current Skill Level: ${skill.level.total}`,
+    `Mana Cost: ${manaCost(skill.level.total)}`,
+    `Fire Damage: ${
+      damageRangeToString(getDamage(skill.level.total, skill), false)
+    }`,
   ].join("|n");
-
-const damageMin = (level: number) => ({
-  fire: Math.round(1.79 + 5.22 * level + 0.302 * level ** 2),
-});
-
-const damageMax = (level: number) => ({
-  fire: Math.round(8.97 + 6.49 * level + 0.302 * level ** 2),
-});
 
 const manaCost = (level: number) => 9.5 + 0.5 * level;
 
-const getLongDescription = (skill: Skill | undefined) =>
+const getLongDescription = (skill: Skill) =>
   [
     colorize.poison("Fire Ball"),
     "Creates an explosive sphere of fiery death to engulf your enemies",
     "",
     "Radius: 2.6 yards",
-    ...(skill
+    ...(skill.level.total > 0
       ? [
         "",
-        `Current Skill Level: ${skill.level}`,
-        `Fire Damage: ${damageRangeToString(skill.damage, false)}`,
-        `Mana Cost: ${manaCost(skill.level)}`,
+        `Current Skill Level: ${skill.level.total}${
+          skill.level.bonus > 0 ? ` (Base: ${skill.level.base})` : ""
+        }`,
+        `Fire Damage: ${
+          damageRangeToString(getDamage(skill.level.total, skill), false)
+        }`,
+        `Mana Cost: ${manaCost(skill.level.total)}`,
       ]
       : []),
-    "",
-    skill ? "Next Level" : "First Level",
-    `Fire Damage: ${
-      damageRangeToString({
-        min: damageMin((skill?.level ?? 0) + 1),
-        max: damageMax((skill?.level ?? 0) + 1),
-      }, false)
-    }`,
-    `Mana Cost: ${manaCost(skill?.level ?? 1)}`,
+    ...(
+      skill.level.total === 0 || skill.canLevel()
+        ? [
+          "",
+          skill.level.total === 0 ? "First Level" : "Next Level",
+          `Fire Damage: ${
+            damageRangeToString(getDamage(skill.level.total + 1, skill), false)
+          }`,
+          `Mana Cost: ${manaCost(skill.level.total + 1)}`,
+        ]
+        : []
+    ),
     "",
     colorize.poison("Fire Ball Receives Bonuses From:"),
     "Fire Bolt: +14% Fire Damage Per Level",
     "Meteor: +14% Fire Damage Per Level",
   ].join("|n");
 
-export const fireBallSkill = (): Skill => ({
+export const fireBallSkill = (unit: UnitEx | undefined): Skill => ({
   id: "fireBall",
   name: "Fire Ball",
   icon: "ReplaceableTextures/CommandButtons/BTNFireBolt.blp",
-  description: getDescription(undefined),
-  longDescription: getLongDescription(undefined),
-  level: 0,
-  damage: {
-    min: { fire: 0 },
-    max: { fire: 0 },
+  description() {
+    return getDescription(this);
   },
-  setLevel(newLevel: number) {
-    this.level = newLevel;
-    this.damage!.min.fire = damageMin(this.level).fire;
-    this.damage!.max.fire = damageMax(this.level).fire;
-    this.description = getDescription(this);
-    this.longDescription = getLongDescription(this);
+  longDescription() {
+    return getLongDescription(this);
+  },
+  level: new BonusField(0),
+  minHeroLevel: 12,
+  unit,
+  canLevel() {
+    console.log(this.unit?.level ?? 0, this.minHeroLevel ?? 0, this.level.base);
+    return ((this.unit?.level ?? 0) >=
+      (this.minHeroLevel ?? 0) + this.level.base) &&
+      (this.unit?.skillMap.fireBolt?.level.base ?? 0) > 0;
+  },
+  damage() {
+    return getDamage(this.level.total, this);
   },
   validate(playerId) {
     if (!state.heroes) return false;
@@ -90,13 +114,13 @@ export const fireBallSkill = (): Skill => ({
     const target = mouse.targetLock ?? mouse.target ?? mouse;
     if (target === hero) return false;
 
-    return hero.mana >= manaCost(this.level);
+    return hero.mana >= manaCost(this.level.total);
   },
   onUse(playerId, done) {
     if (!state.heroes) return done();
     const hero = state.heroes![playerId];
 
-    hero.mana -= manaCost(this.level);
+    hero.mana -= manaCost(this.level.total);
 
     const mouse = mice[playerId];
     const target = mouse.targetLock ?? mouse.target ?? mouse;
@@ -107,7 +131,7 @@ export const fireBallSkill = (): Skill => ({
     startTimeout(0.51, () => {
       Projectile.spawnProjectile({
         angle: Vector2Ex.angleBetweenVectors(hero, target),
-        damage: randomDamage(this.damage!.min, this.damage!.max),
+        damage: randomDamage(this.damage!().min, this.damage!().max),
         duration: 2.5,
         model: "Abilities/Weapons/RedDragonBreath/RedDragonMissile.mdl",
         owner: hero,

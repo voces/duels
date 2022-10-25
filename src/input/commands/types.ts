@@ -1,4 +1,4 @@
-import { Damage } from "../../damage";
+import { DamageRange } from "../../damage";
 
 export type MouseShortcut = "left" | "right";
 export type KeyboardShortcut =
@@ -54,8 +54,8 @@ export interface Command<> {
   priority?: number;
   shortcuts?: Shortcut | (MouseShortcut | KeyboardShortcut)[][];
   damage?:
-    | { min: Damage; max: Damage }
-    | ((playerId: number) => { min: Damage; max: Damage } | undefined);
+    | DamageRange
+    | ((playerId: number) => DamageRange | undefined);
 }
 
 export interface CommandInternal extends Command {
