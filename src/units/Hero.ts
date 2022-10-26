@@ -307,7 +307,7 @@ export class Hero extends UnitEx {
     const factor = 1 / Math.exp(Math.max(0, levelDiff - 3) / 4);
     const reward = rawReward * factor;
 
-    this.experience += reward;
+    this.experience += reward * 10;
   }
 
   get level(): number {

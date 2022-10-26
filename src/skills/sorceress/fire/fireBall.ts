@@ -88,6 +88,7 @@ const UnitEx = asyncRequire<
 
 export const fireBallSkill = (unit: UnitExType | undefined): Skill => ({
   id: "fireBall",
+  type: "active",
   name: "Fire Ball",
   icon: "ReplaceableTextures/CommandButtons/BTNFireBolt.blp",
   description() {

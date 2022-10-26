@@ -1,5 +1,6 @@
 import { fireBallSkill } from "./sorceress/fire/fireBall";
 import { fireBoltSkill } from "./sorceress/fire/fireBolt";
+import { warmthSkill } from "./sorceress/fire/warmth";
 
 export const skillMap = {
   blaze: fireBoltSkill, // Flame Strike
@@ -31,7 +32,7 @@ export const skillMap = {
   telekinesis: fireBoltSkill,
   teleport: fireBoltSkill,
   thunderstorm: fireBoltSkill,
-  warmth: fireBoltSkill, // Phoenix
+  warmth: warmthSkill, // Phoenix
 };
 
 export type SkillId = keyof typeof skillMap;

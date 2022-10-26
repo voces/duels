@@ -35,6 +35,14 @@ const trees: Record<
   barbarian: {},
   paladin: {},
   sorceress: {
+    "Fire spells": [
+      [false, "fireBolt", "warmth"],
+      ["inferno", false, false],
+      [["blaze", "inferno"], ["fireBall", "fireBolt"], false],
+      [["fireWall", "blaze"], false, ["enchant", "warmth"]],
+      [false, ["meteor", ["fireWall", "fireBall"]], false],
+      [false, "fireMastery", ["hydra", "enchant"]],
+    ],
     "Cold spells": [
       [false, "iceBolt", "frozenArmor"],
       ["frostNova", ["iceBlast", "iceBolt"], false],
@@ -56,14 +64,6 @@ const trees: Record<
         ["chainLightning", "teleport"],
       ]],
       [false, "lightningMastery", false],
-    ],
-    "Fire spells": [
-      [false, "fireBolt", "warmth"],
-      ["inferno", false, false],
-      [["blaze", "inferno"], ["fireBall", "fireBolt"], false],
-      [["fireWall", "blaze"], false, ["enchant", "warmth"]],
-      [false, ["meteor", ["fireWall", "fireBall"]], false],
-      [false, "fireMastery", ["hydra", "enchant"]],
     ],
   },
   druid: {},

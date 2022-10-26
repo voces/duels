@@ -8,7 +8,7 @@ import {
   topLeft,
 } from "../../util/pos";
 import { SkillButton } from "./SkillButton";
-import { Skill } from "../../../skills/types";
+import { ActiveSkill } from "../../../skills/types";
 import { useHero } from "../../hooks/useHero";
 import { levelToExperience } from "../../../units/Hero";
 import { useRefState } from "../../hooks/useRefState";
@@ -17,7 +17,7 @@ import { Tooltip } from "../../components/Tooltip";
 export const SkillBar = () => {
   const hero = useHero("skill");
   const [bindings, setBindings] = useState<
-    ({ skill?: Skill; fn: (playerId: number) => boolean } | undefined)[]
+    ({ skill?: ActiveSkill; fn: (playerId: number) => boolean } | undefined)[]
   >(
     [],
   );
@@ -42,7 +42,9 @@ export const SkillBar = () => {
       if (bindings[i]) continue;
       for (; n < hero.skills.length; n++) {
         const skill = hero.skills[n];
-        if (newBindings.some((b) => b?.skill === skill)) continue;
+        if (
+          newBindings.some((b) => b?.skill === skill) || skill.type !== "active"
+        ) continue;
         newBindings[i] = {
           skill,
           fn: (playerId: number) => {

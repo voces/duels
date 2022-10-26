@@ -80,6 +80,7 @@ const getLongDescription = (skill: Skill) =>
 
 export const fireBoltSkill = (unit: UnitEx | undefined): Skill => ({
   id: "fireBolt",
+  type: "active",
   name: "Fire Bolt",
   icon: "ReplaceableTextures/CommandButtons/BTNFlare.blp",
   description() {
@@ -91,9 +92,7 @@ export const fireBoltSkill = (unit: UnitEx | undefined): Skill => ({
   level: new BonusField(0),
   unit,
   canLevel() {
-    return this.unit
-      ? this.unit.level >= (this.minHeroLevel ?? 0) + this.level.base
-      : false;
+    return this.unit ? this.unit.level >= this.level.base : false;
   },
   damage() {
     return getDamage(this.level.total, this);

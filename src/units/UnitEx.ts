@@ -2,6 +2,8 @@ import { getElapsedTime, MapPlayer, TextTag, Unit } from "@voces/w3ts";
 
 import type { Damage, DamageType, Weapon, WeaponInput } from "../damage";
 import { damageTypes, randomDamage, withDamageSystemOff } from "../damage";
+import { applyEffect, unapplyEffect } from "../effects/index";
+import type { Effect } from "../effects/types";
 import type { SkillId } from "../skills/map";
 import { skillMap } from "../skills/map";
 import type { Skill } from "../skills/types";
@@ -27,6 +29,8 @@ export interface UnitExProps {
   level: number;
 }
 
+const skillEffectsMap = new WeakMap<Skill, Effect[]>();
+
 export class UnitEx {
   readonly unit: Unit;
   private _maxHealth = new BonusField<number>(0);
@@ -42,6 +46,8 @@ export class UnitEx {
 
   private listeners: Record<string, Set<() => void> | undefined> = {};
   private lastHealthLoss = 0;
+
+  addedManaRegen = { flat: 0, percent: 0 };
 
   constructor(props: { unit: Unit });
   constructor(props: UnitExProps);
@@ -219,7 +225,8 @@ export class UnitEx {
   }
 
   get manaRegen(): number {
-    return this.maxMana / 120;
+    return (this.maxMana / 120 + this.addedManaRegen.flat) *
+      (1 + this.addedManaRegen.percent);
   }
 
   get weapon(): WeaponInput {
@@ -418,6 +425,18 @@ export class UnitEx {
 
     const skill = this._skillMap[skillId]!;
     skill.level[bonus ? "bonus" : "base"] += levels;
+
+    if (skill.type === "passive") {
+      if (hasSkill) {
+        const oldEffects = skillEffectsMap.get(skill);
+        oldEffects?.forEach((e) => unapplyEffect(e, this));
+      }
+      if (skill.level.total > 0) {
+        const newEffects = skill.effects();
+        skillEffectsMap.set(skill, newEffects);
+        newEffects.forEach((e) => applyEffect(e, this));
+      }
+    }
 
     if (skill.level.total === 0) this.removeSkill(skill);
     this.emitChange("skill", `skill-${skill.id}`);
