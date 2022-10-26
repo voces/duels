@@ -103,7 +103,8 @@ export const fireBallSkill = (unit: UnitExType | undefined): Skill => ({
   canLevel() {
     return ((this.unit?.level ?? 0) >=
       (this.minHeroLevel ?? 0) + this.level.base) &&
-      (this.unit?.skillMap.fireBolt?.level.base ?? 0) > 0;
+      (this.unit?.skillMap.fireBolt?.level.base ?? 0) > 0 &&
+      this.level.base < 20;
   },
   damage() {
     return getDamage(this.level.total, this);
