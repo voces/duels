@@ -14,21 +14,20 @@ import { asyncRequire } from "../util/asyncRequire";
 
 export interface Projectile {
   angle: number;
-  damage: Damage;
   duration: number;
-  maxTargets?: number;
   model: string;
   owner: UnitExType;
   radius: number;
   speed: number;
   x: number;
   y: number;
+  damage?: Damage;
+  onHit?: (unit: UnitExType, projectile: InnerProjectile) => void;
 }
 
 interface InnerProjectile extends Projectile {
   effect: Effect;
   spawnTime: number;
-  maxTargets: number;
   height: number;
 }
 
@@ -49,7 +48,6 @@ export const spawnProjectile = (projectile: Projectile): void => {
   const p: InnerProjectile = {
     ...projectile,
     effect,
-    maxTargets: projectile.maxTargets ?? 1,
     spawnTime: getElapsedTime(),
     speed: projectile.speed,
     height: point.z + 64,
@@ -71,28 +69,33 @@ addScriptHook(W3TS_HOOK.MAIN_AFTER, () => {
       projectile.effect.y = y;
       projectile.effect.z = projectile.height;
 
+      let hit: UnitExType | undefined;
       dummyGroup.enumUnitsInRange(
         x,
         y,
         projectile.radius,
         (): boolean => {
-          if (projectile.maxTargets === 0) return false;
+          if (hit) return false;
 
           const u = UnitEx.UnitEx.fromFilter()!;
+          if (u.isAlly(projectile.owner.owner) || u.health <= 0) return false;
 
-          if (u.isAlly(projectile.owner.owner) || u.health <= 0) {
-            return false;
-          }
-          projectile.maxTargets--;
-
-          projectile.owner.damage(u, projectile.damage);
+          hit = u;
 
           return false;
         },
       );
-      dummyGroup.clear();
 
-      if (projectile.maxTargets === 0 || delta > projectile.duration) {
+      if (hit) {
+        if (projectile.damage) projectile.owner.damage(hit, projectile.damage);
+        if (projectile.onHit) {
+          projectile.x = x;
+          projectile.y = y;
+          projectile.onHit(hit, projectile);
+        }
+      }
+
+      if (hit || delta > projectile.duration) {
         projectile.effect.destroy();
         projectiles.delete(projectile);
       }

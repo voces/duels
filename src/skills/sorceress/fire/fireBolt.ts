@@ -24,7 +24,7 @@ const getDamage = (level: number, skill: Skill) => ({
   },
   max: {
     fire: Math.round(
-      (6.12 + 0.466 * level + 0.109 * skill.level.total ** 2) *
+      (6.12 + 0.466 * level + 0.109 * level ** 2) *
         (1.16 ** (skill.unit?.skillMap["fireBall"]?.level.base ?? 0) +
           1.16 ** (skill.unit?.skillMap["meteor"]?.level.base ?? 0) - 1),
     ),

@@ -186,7 +186,6 @@ const Skill = (
       <button
         position={topLeft({ x: column * 120 + 45, y: row * -100 - 165 })}
         size={70}
-        texture={skill?.icon}
         visible={!!treeSkill}
         ref={buttonRef}
         tooltip={buttonRef.current && (
@@ -199,11 +198,12 @@ const Skill = (
         )}
         onClick={incLevel}
       >
+        <backdrop position="parent" texture={skill?.icon} />
         <backdrop
           position="parent"
           texture="textures/black32.blp"
-          alpha={(skill?.level.total ?? 0 > 0) ||
-              (skill?.canLevel() && (hero?.unassignedSkillPoints ?? 0 > 0))
+          alpha={((skill?.level.total ?? 0) > 0) ||
+              (skill?.canLevel() && ((hero?.unassignedSkillPoints ?? 0) > 0))
             ? 0
             : 200}
         />
@@ -212,7 +212,7 @@ const Skill = (
           texture="assets/img2/icon_frame_corners"
         />
         <SmallText
-          text={(skill?.level.total ?? 0 > 0)
+          text={((skill?.level.total ?? 0) > 0)
             ? skill?.level.total.toString()
             : ""}
           position={bottomRight({ x: -5, y: 5 })}

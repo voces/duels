@@ -3,8 +3,8 @@ import { damageRangeToString, randomDamage } from "../../../damage";
 import { mice } from "../../../input/data";
 import { state } from "../../../states/state";
 import { BonusField } from "../../../units/heroTypes";
-import { UnitEx } from "../../../units/UnitEx";
-import { startTimeout } from "../../../util";
+import type { UnitEx as UnitExType } from "../../../units/UnitEx";
+import { dummyGroup, startTimeout } from "../../../util";
 import { asyncRequire } from "../../../util/asyncRequire";
 import { colorize } from "../../../util/colorize";
 import { Vector2Ex } from "../../../util/Vector2";
@@ -82,7 +82,11 @@ const getLongDescription = (skill: Skill) =>
     "Meteor: +14% Fire Damage Per Level",
   ].join("|n");
 
-export const fireBallSkill = (unit: UnitEx | undefined): Skill => ({
+const UnitEx = asyncRequire<
+  typeof import("../../../units/UnitEx")
+>("units.UnitEx");
+
+export const fireBallSkill = (unit: UnitExType | undefined): Skill => ({
   id: "fireBall",
   name: "Fire Ball",
   icon: "ReplaceableTextures/CommandButtons/BTNFireBolt.blp",
@@ -96,7 +100,6 @@ export const fireBallSkill = (unit: UnitEx | undefined): Skill => ({
   minHeroLevel: 12,
   unit,
   canLevel() {
-    console.log(this.unit?.level ?? 0, this.minHeroLevel ?? 0, this.level.base);
     return ((this.unit?.level ?? 0) >=
       (this.minHeroLevel ?? 0) + this.level.base) &&
       (this.unit?.skillMap.fireBolt?.level.base ?? 0) > 0;
@@ -131,15 +134,29 @@ export const fireBallSkill = (unit: UnitEx | undefined): Skill => ({
     startTimeout(0.51, () => {
       Projectile.spawnProjectile({
         angle: Vector2Ex.angleBetweenVectors(hero, target),
-        damage: randomDamage(this.damage!().min, this.damage!().max),
         duration: 2.5,
         model: "Abilities/Weapons/RedDragonBreath/RedDragonMissile.mdl",
         owner: hero,
         radius: 128,
-        // splashRadius: 256,
         speed: 600,
         x: hero.x,
         y: hero.y,
+        onHit: (_, p) => {
+          const damage = randomDamage(this.damage!().min, this.damage!().max);
+          dummyGroup.enumUnitsInRange(
+            p.x,
+            p.y,
+            256,
+            (): boolean => {
+              const u = UnitEx.UnitEx.fromFilter()!;
+              if (u.isAlly(hero.owner) || u.health <= 0) return false;
+
+              hero.damage(u, damage);
+
+              return false;
+            },
+          );
+        },
       });
       // Takes another 490ms to finish backswing
       startTimeout(0.49, done);

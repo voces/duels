@@ -1,5 +1,6 @@
 import { compact } from "basic-pragma/dist/utils/arrays";
 import { Item } from "../../items/Item";
+import { skillMap } from "../../skills/map";
 
 export const genItemText = (item: Item) =>
   [
@@ -21,7 +22,9 @@ export const genItemText = (item: Item) =>
             case "restoreMana":
               return `Restores ${effect.amount} mana on use`;
             case "skillBonus":
-              return `+${effect.levels} to ${effect.skill}`;
+              return `+${effect.levels} to ${
+                skillMap[effect.skill](undefined).name
+              }`;
             case "weaponDamageMultiplier":
               return `+${
                 Math.round(effect.multipler * 100)
