@@ -1,5 +1,6 @@
 import { fireBallSkill } from "./sorceress/fire/fireBall";
 import { fireBoltSkill } from "./sorceress/fire/fireBolt";
+import { infernoSkill } from "./sorceress/fire/inferno";
 import { warmthSkill } from "./sorceress/fire/warmth";
 
 export const skillMap = {
@@ -22,7 +23,7 @@ export const skillMap = {
   hydra: fireBoltSkill, // Serpent Ward
   iceBlast: fireBoltSkill,
   iceBolt: fireBoltSkill,
-  inferno: fireBoltSkill, // Resurrection
+  inferno: infernoSkill, // Resurrection
   lightning: fireBoltSkill,
   lightningMastery: fireBoltSkill,
   meteor: fireBoltSkill, // Disenchant

@@ -18,15 +18,15 @@ const getDamage = (level: number, skill: Skill) => ({
   min: {
     fire: Math.round(
       (3.21 + 0.652 * level + 0.0679 * level ** 2) *
-        (1.16 ** (skill.unit?.skillMap["fireBall"]?.level.base ?? 0) +
-          1.16 ** (skill.unit?.skillMap["meteor"]?.level.base ?? 0) - 1),
+        (1 + 0.16 * (skill.unit?.skillMap["fireBall"]?.level.base ?? 0) +
+          0.16 ** (skill.unit?.skillMap["meteor"]?.level.base ?? 0)),
     ),
   },
   max: {
     fire: Math.round(
       (6.12 + 0.466 * level + 0.109 * level ** 2) *
-        (1.16 ** (skill.unit?.skillMap["fireBall"]?.level.base ?? 0) +
-          1.16 ** (skill.unit?.skillMap["meteor"]?.level.base ?? 0) - 1),
+        (1 + 0.16 * (skill.unit?.skillMap["fireBall"]?.level.base ?? 0) +
+          0.16 ** (skill.unit?.skillMap["meteor"]?.level.base ?? 0)),
     ),
   },
 });
@@ -95,9 +95,6 @@ export const fireBoltSkill = (unit: UnitEx | undefined): Skill => ({
     return this.level.base < 20 &&
       (this.unit ? this.unit.level >= this.level.base : false);
   },
-  damage() {
-    return getDamage(this.level.total, this);
-  },
   validate: (playerId) => {
     if (!state.heroes) return false;
     const hero = state.heroes[playerId];
@@ -123,9 +120,11 @@ export const fireBoltSkill = (unit: UnitEx | undefined): Skill => ({
     hero.faceTarget(target);
     hero.setAnimation("spell");
     startTimeout(0.51, () => {
+      if (hero.health === 0) return;
+      const { min, max } = getDamage(this.level.total, this);
       Projectile.spawnProjectile({
         angle: Vector2Ex.angleBetweenVectors(hero, target),
-        damage: randomDamage(this.damage!().min, this.damage!().max),
+        damage: randomDamage(min, max),
         duration: 2.5,
         model: "Abilities/Weapons/FireBallMissile/FireBallMissile.mdl",
         owner: hero,

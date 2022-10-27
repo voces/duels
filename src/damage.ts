@@ -55,6 +55,11 @@ export const randomDamage = (min: Damage, max: Damage): Damage => {
   return damage;
 };
 
+export const damageScale = (damage: Damage, scalar: number): Damage =>
+  Object.fromEntries(
+    Object.entries(damage).map(([type, amount]) => [type, amount * scalar]),
+  );
+
 let damageSystemOn = true;
 
 export const withDamageSystemOff = (fn: () => void): void => {

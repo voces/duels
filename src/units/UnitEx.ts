@@ -142,12 +142,13 @@ export class UnitEx {
   }
   set health(value: number) {
     const oldValue = this._health;
-    if (value < this._health) this.lastHealthLoss = getElapsedTime();
-    this._health = value;
+    const newValue = Math.max(value, 0);
+    if (newValue < this._health) this.lastHealthLoss = getElapsedTime();
+    this._health = newValue;
     // Only re-render on displayable changes
     if (
-      (Math.floor(value) !== Math.floor(oldValue)) ||
-      (Math.round(value) !== Math.round(oldValue))
+      (Math.floor(newValue) !== Math.floor(oldValue)) ||
+      (Math.round(newValue) !== Math.round(oldValue))
     ) this.emitChange("health");
   }
 

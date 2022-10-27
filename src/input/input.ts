@@ -9,7 +9,7 @@ import {
 import { UnitEx } from "../units/UnitEx";
 import { forEachHero, forEachPlayer } from "../util";
 import { processShortcut } from "./commands/registry";
-import { KeyboardShortcut, MouseShortcut, Shortcut } from "./commands/types";
+import { KeyboardShortcut, Shortcut } from "./commands/types";
 import { keyboards, mice, NONE, updateMouse } from "./data";
 
 const osKeyToStringMap = (key: oskeytype) => {

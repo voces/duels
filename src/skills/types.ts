@@ -15,10 +15,6 @@ type BaseSkill = {
   unit: UnitEx | undefined;
   canLevel: () => boolean;
   icon: string;
-  damage?: () => {
-    min: Damage;
-    max: Damage;
-  };
 };
 
 export type ActiveSkill = BaseSkill & {

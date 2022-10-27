@@ -60,6 +60,11 @@ interface Keyboard {
   z: boolean;
 }
 
+/**
+ * Each player's mouse.
+ * NOTE: Individual mice are not updated in place and are instead replaced each
+ * update.
+ */
 export const mice: Mouse[] = times(bj_MAX_PLAYER_SLOTS, () => ({
   leftDown: false,
   rightDown: false,
@@ -109,6 +114,10 @@ export const updateMouse = (
   return mice[playerId];
 };
 
+/**
+ * Each player's keyboard.
+ * NOTE: Individual keyboards are updated in place.
+ */
 export const keyboards: Keyboard[] = times(bj_MAX_PLAYER_SLOTS, () => ({
   shift: false,
   a: false,
@@ -152,3 +161,24 @@ type InputEventMap = {
 };
 
 export const input = emitter<typeof host, InputEventMap>(host);
+
+export const inputUnchanged = (
+  playerId: number,
+  mouse: Mouse,
+  keyboard: Keyboard,
+) => {
+  const currentMouse = mice[playerId];
+  if (
+    mouse.leftDown !== currentMouse.leftDown ||
+    mouse.rightDown !== currentMouse.rightDown
+  ) return false;
+
+  const currentKeyboard = keyboards[playerId];
+
+  let key: keyof Keyboard;
+  for (key in currentKeyboard) {
+    if (currentKeyboard[key] !== keyboard[key]) return false;
+  }
+
+  return true;
+};

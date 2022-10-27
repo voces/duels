@@ -18,15 +18,15 @@ const getDamage = (level: number, skill: Skill) => ({
   min: {
     fire: Math.round(
       (1.79 + 5.22 * level + 0.302 * level ** 2) *
-        (1.14 ** (skill.unit?.skillMap["fireBolt"]?.level.base ?? 0) +
-          1.14 ** (skill.unit?.skillMap["meteor"]?.level.base ?? 0) - 1),
+        (1 + 0.14 * (skill.unit?.skillMap["fireBolt"]?.level.base ?? 0) +
+          0.14 * (skill.unit?.skillMap["meteor"]?.level.base ?? 0)),
     ),
   },
   max: {
     fire: Math.round(
       (8.97 + 6.49 * level + 0.302 * level ** 2) *
-        (1.14 ** (skill.unit?.skillMap["fireBolt"]?.level.base ?? 0) +
-          1.14 ** (skill.unit?.skillMap["meteor"]?.level.base ?? 0) - 1),
+        (1 + 0.14 * (skill.unit?.skillMap["fireBolt"]?.level.base ?? 0) +
+          0.14 * (skill.unit?.skillMap["meteor"]?.level.base ?? 0)),
     ),
   },
 });
@@ -87,7 +87,7 @@ const UnitEx = asyncRequire<
 >("units.UnitEx");
 
 export const fireBallSkill = (unit: UnitExType | undefined): Skill => ({
-  id: "fireBall",
+  id: "inferno",
   type: "active",
   name: "Fire Ball",
   icon: "ReplaceableTextures/CommandButtons/BTNFireBolt.blp",
@@ -105,9 +105,6 @@ export const fireBallSkill = (unit: UnitExType | undefined): Skill => ({
       (this.minHeroLevel ?? 0) + this.level.base) &&
       (this.unit?.skillMap.fireBolt?.level.base ?? 0) > 0 &&
       this.level.base < 20;
-  },
-  damage() {
-    return getDamage(this.level.total, this);
   },
   validate(playerId) {
     if (!state.heroes) return false;
@@ -134,6 +131,7 @@ export const fireBallSkill = (unit: UnitExType | undefined): Skill => ({
     hero.faceTarget(target);
     hero.setAnimation("spell");
     startTimeout(0.51, () => {
+      if (hero.health === 0) return;
       Projectile.spawnProjectile({
         angle: Vector2Ex.angleBetweenVectors(hero, target),
         duration: 2.5,
@@ -144,7 +142,8 @@ export const fireBallSkill = (unit: UnitExType | undefined): Skill => ({
         x: hero.x,
         y: hero.y,
         onHit: (_, p) => {
-          const damage = randomDamage(this.damage!().min, this.damage!().max);
+          const { min, max } = getDamage(this.level.total, this);
+          const damage = randomDamage(min, max);
           dummyGroup.enumUnitsInRange(
             p.x,
             p.y,
